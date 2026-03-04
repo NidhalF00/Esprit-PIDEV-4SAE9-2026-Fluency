@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Topic } from 'src/app/models/topic';
 import { TopicService } from 'src/app/services/topic.service';
 declare var bootstrap: any;
+
 @Component({
   selector: 'app-topic-list',
   templateUrl: './topic-list.component.html',
@@ -11,9 +12,13 @@ declare var bootstrap: any;
 export class TopicListComponent implements OnInit {
   topics: Topic[] = [];
   showForm = false;
-  currentTopic: Topic = { title: '', content: '', categoryId: 0 };
+  currentTopic: Topic = { title: '', content: '', categoryId: 0, authorEmail: '' };
   categoryId!: number;
-  selectedTopicId: number | null = null; // <--- for modal
+  selectedTopicId: number | null = null;
+
+  // ✅ Search variables
+  searchTitle: string = '';
+  searchDateFrom: string = '';
 
   constructor(
     private topicService: TopicService,
@@ -30,13 +35,27 @@ export class TopicListComponent implements OnInit {
     this.topicService.getByCategory(this.categoryId).subscribe(data => this.topics = data);
   }
 
-  handleSave(topic: Topic) {
-  if (topic.id) {
-    this.topicService.update(topic.id, topic).subscribe(() => this.afterSave());
-  } else {
-    this.topicService.create(topic, this.categoryId).subscribe(() => this.afterSave());
+  // ✅ Search method - fires on every keystroke (AJAX)
+  onSearch() {
+    if (!this.searchTitle && !this.searchDateFrom) {
+      this.loadTopics();
+      return;
+    }
+    this.topicService.search(
+      this.searchTitle,
+      this.categoryId,
+      this.searchDateFrom
+    ).subscribe(data => this.topics = data);
   }
-}
+
+  handleSave(topic: Topic) {
+    if (topic.id) {
+      this.topicService.update(topic.id, topic).subscribe(() => this.afterSave());
+    } else {
+      this.topicService.create(topic, this.categoryId).subscribe(() => this.afterSave());
+    }
+  }
+
   editTopic(topic: Topic) {
     this.currentTopic = { ...topic };
     this.showForm = true;
@@ -44,31 +63,34 @@ export class TopicListComponent implements OnInit {
 
   cancelForm() {
     this.showForm = false;
-    this.currentTopic = { title: '', content: '', categoryId: this.categoryId };
+    this.currentTopic = { title: '', content: '', categoryId: this.categoryId, authorEmail: '' };
   }
 
   deleteTopic(id: number) {
-  this.selectedTopicId = id;
-  const modalEl = document.getElementById('deleteTopicModal')!;
-  const modal = new bootstrap.Modal(modalEl);
-  modal.show();
-}
-
-confirmDelete() {
-  if (this.selectedTopicId !== null) {
-    this.topicService.delete(this.selectedTopicId).subscribe(() => {
-      this.loadTopics();
-      this.selectedTopicId = null;
-
-      const modalEl = document.getElementById('deleteTopicModal')!;
-      const modal = bootstrap.Modal.getInstance(modalEl);
-      modal?.hide();
-    });
+    this.selectedTopicId = id;
+    const modalEl = document.getElementById('deleteTopicModal')!;
+    const modal = new bootstrap.Modal(modalEl);
+    modal.show();
   }
-}
+
+  confirmDelete() {
+    if (this.selectedTopicId !== null) {
+      this.topicService.delete(this.selectedTopicId).subscribe(() => {
+        this.loadTopics();
+        this.selectedTopicId = null;
+        const modalEl = document.getElementById('deleteTopicModal')!;
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        modal?.hide();
+      });
+    }
+  }
 
   goToReplies(topic: Topic) {
     this.router.navigate([`/topics/${topic.id}/replies`]);
+  }
+
+  goBack() {
+    this.router.navigate(['/categories']);
   }
 
   private afterSave() {

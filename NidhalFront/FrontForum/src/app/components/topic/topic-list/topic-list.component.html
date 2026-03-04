@@ -1,4 +1,12 @@
 <div class="container mt-5">
+
+  <!-- Back button -->
+  <div class="mb-3">
+    <button class="btn btn-outline-secondary btn-sm" (click)="goBack()">
+      <i class="fas fa-arrow-left me-1"></i> Back to Categories
+    </button>
+  </div>
+
   <!-- Header -->
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="text-primary fw-bold">Topics</h2>
@@ -11,17 +19,52 @@
   <app-topic-form *ngIf="showForm"
     [topic]="currentTopic"
     [titleForm]="currentTopic.id ? 'Edit Topic' : 'Add Topic'"
-    (save)="handleSave($event)"
+    (save)="handleSave($any($event))"
     (cancel)="cancelForm()">
   </app-topic-form>
 
+  <!-- ✅ Search bar -->
+  <div class="card p-3 mb-4 shadow-sm">
+    <div class="row g-2">
+
+      <!-- Search by title -->
+      <div class="col-md-6">
+        <input type="text"
+               class="form-control"
+               placeholder="🔍 Search by title..."
+               [(ngModel)]="searchTitle"
+               (input)="onSearch()">
+      </div>
+
+      <!-- Filter by date -->
+      <div class="col-md-4">
+        <input type="date"
+               class="form-control"
+               [(ngModel)]="searchDateFrom"
+               (change)="onSearch()">
+      </div>
+
+      <!-- Reset button -->
+      <div class="col-md-2">
+        <button class="btn btn-outline-secondary w-100"
+                (click)="searchTitle=''; searchDateFrom=''; loadTopics()">
+          Reset
+        </button>
+      </div>
+
+    </div>
+  </div>
+
   <!-- Topics list -->
   <ul class="list-group shadow-sm">
-    <li class="list-group-item d-flex justify-content-between align-items-center mb-2 rounded hover-shadow" 
+    <li class="list-group-item d-flex justify-content-between align-items-center mb-2 rounded"
         *ngFor="let topic of topics">
       <div class="me-3">
         <h5 class="mb-1 text-truncate" style="max-width: 300px;">{{ topic.title }}</h5>
-        <small class="text-muted text-truncate" style="max-width: 300px;">{{ topic.content }}</small>
+        <small class="text-muted d-block text-truncate" style="max-width: 300px;">{{ topic.content }}</small>
+        <small class="text-muted d-block">
+          <i class="fas fa-envelope me-1"></i>{{ topic.authorEmail }}
+        </small>
       </div>
       <div class="d-flex">
         <button class="btn btn-success btn-sm me-2" (click)="goToReplies(topic)">Reply</button>
@@ -29,7 +72,13 @@
         <button class="btn btn-danger btn-sm" (click)="deleteTopic(topic.id!)">Delete</button>
       </div>
     </li>
+
+    <!-- ✅ No results message -->
+    <li class="list-group-item text-center text-muted" *ngIf="topics.length === 0">
+      <i class="fas fa-search me-2"></i>No topics found.
+    </li>
   </ul>
+
 </div>
 
 <!-- Delete Confirmation Modal -->

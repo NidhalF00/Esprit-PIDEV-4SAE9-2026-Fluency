@@ -31,4 +31,11 @@ export class TopicService {
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
+  search(title?: string, categoryId?: number, dateFrom?: string): Observable<Topic[]> {
+    let params: any = {};
+    if (title)      params.title = title;
+    if (categoryId) params.categoryId = categoryId;
+    if (dateFrom)   params.dateFrom = dateFrom;
+    return this.http.get<Topic[]>(`${this.baseUrl}/search`, { params });
+  }
 }

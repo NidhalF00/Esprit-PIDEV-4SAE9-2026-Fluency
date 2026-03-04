@@ -1,6 +1,6 @@
 // src/app/components/reply/reply-list/reply-list.component.ts
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Route, Router } from '@angular/router';
 import { Reply } from 'src/app/models/reply';
 import { ReplyDto } from 'src/app/models/reply-dto';
 import { ReplyService } from 'src/app/services/reply.service';
@@ -16,7 +16,7 @@ export class ReplyListComponent implements OnInit {
   currentReply: Reply = { content: '', topicId: 0 };
   topicId!: number;
 
-  constructor(private replyService: ReplyService, private route: ActivatedRoute) {}
+  constructor(private replyService: ReplyService, private route: ActivatedRoute, private router:Router) {}
 
   ngOnInit() {
     this.topicId = Number(this.route.snapshot.paramMap.get('topicId'));
@@ -82,5 +82,8 @@ confirmDelete() {
   private afterSave() {
     this.loadReplies();
     this.cancelForm();
+  }
+  goBack() {
+    this.router.navigate(['/categories']);
   }
 }

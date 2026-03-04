@@ -7,14 +7,14 @@ import { Topic } from 'src/app/models/topic';
   styleUrls: ['./topic-form.component.css']
 })
 export class TopicFormComponent {
- @Input() topic: Topic = { title: '', content: '', categoryId: 0 };
+
+  @Input() topic: Topic = { title: '', content: '', categoryId: 0, authorEmail: '' };
   @Input() titleForm: string = 'Add Topic';
 
   @Output() save = new EventEmitter<Topic>();
   @Output() cancel = new EventEmitter<void>();
 
   onSave() {
-    // ✅ Validation simple
     if (!this.topic.title || this.topic.title.trim().length < 3) {
       alert('Title is required and must be at least 3 characters.');
       return;
@@ -23,10 +23,12 @@ export class TopicFormComponent {
       alert('Content is required and must be at least 3 characters.');
       return;
     }
-
+    if (!this.topic.authorEmail || !this.topic.authorEmail.includes('@')) {
+      alert('Please enter a valid email address.');
+      return;
+    }
     this.save.emit(this.topic);
   }
 
   onCancel() { this.cancel.emit(); }
-
 }

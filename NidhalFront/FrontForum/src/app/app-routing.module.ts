@@ -8,6 +8,7 @@ const routes: Routes = [
    { path: '', redirectTo: '/categories', pathMatch: 'full' },
   { path: 'categories', component: CategoryListComponent },
   { path: 'categories/:categoryId/topics', component: TopicListComponent },
+  
   { path: 'topics/:topicId/replies', component: ReplyListComponent },
   { path: '**', redirectTo: '/categories' }
 ];

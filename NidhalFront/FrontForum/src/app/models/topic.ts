@@ -3,5 +3,6 @@ export interface Topic {
   title: string;
   content: string;
   createdAt?: string;
-  categoryId: number;   // pour savoir à quelle catégorie appartient le topic
+  categoryId: number; 
+  authorEmail: string;  // pour savoir à quelle catégorie appartient le topic
 }
