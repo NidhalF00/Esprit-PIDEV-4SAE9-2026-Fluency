@@ -1,0 +1,119 @@
+<div class="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#faf5ff] to-[#f8fafc] px-4 py-12">
+  <div class="w-full max-w-[720px]">
+
+      
+      <div class="text-center mb-8">
+        <h3 class="text-3xl font-bold tracking-tight text-[#1e293b]">
+          Create an account
+        </h3>
+
+      </div>
+
+      <form class="space-y-6" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        
+        <!-- ✅ GRID: 2 blocs par ligne -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+          <!-- Full Name -->
+          <div class="space-y-1">
+            <label class="text-sm font-semibold text-slate-700 ml-1" for="fullName">Full Name</label>
+            <input id="fullName" type="text" formControlName="fullName" placeholder="John Doe"
+              class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50/60 px-4 text-sm transition-all
+                     focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-[#7c3aed]
+                     hover:border-violet-300"
+            />
+          </div>
+
+          <!-- Email -->
+          <div class="space-y-1">
+            <label class="text-sm font-semibold text-slate-700 ml-1" for="email">Email</label>
+            <input id="email" type="email" formControlName="email" placeholder="you@example.com"
+              class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50/60 px-4 text-sm transition-all
+                     focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-[#7c3aed]
+                     hover:border-violet-300"
+            />
+          </div>
+
+          <!-- Phone -->
+          <div class="space-y-1">
+            <label class="text-sm font-semibold text-slate-700 ml-1" for="phone">Phone Number</label>
+            <input id="phone" type="tel" formControlName="phone" placeholder="+1 (555) 000-0000"
+              class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50/60 px-4 text-sm transition-all
+                     focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-[#7c3aed]
+                     hover:border-violet-300"
+            />
+          </div>
+
+          <!-- Password -->
+          <div class="space-y-1">
+            <label class="text-sm font-semibold text-slate-700 ml-1" for="password">Password</label>
+            <input id="password" type="password" formControlName="password" placeholder="••••••••"
+              class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50/60 px-4 text-sm transition-all
+                     focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-[#7c3aed]
+                     hover:border-violet-300"
+            />
+          </div>
+
+          <!-- Confirm Password -->
+          <div class="space-y-1 md:col-span-2">
+            <label class="text-sm font-semibold text-slate-700 ml-1" for="confirmPassword">
+              Confirm Password
+            </label>
+            <input id="confirmPassword" type="password" formControlName="confirmPassword" placeholder="••••••••"
+              class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50/60 px-4 text-sm transition-all
+                     focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-[#7c3aed]
+                     hover:border-violet-300"
+            />
+          </div>
+
+        </div>
+
+        <!-- Role -->
+        <div class="space-y-2">
+
+          <div class="grid grid-cols-2 gap-3">
+            <button type="button" (click)="setRole('STUDENT')"
+              [class]="selectedRole === 'STUDENT'
+                ? 'border-[#7c3aed] bg-violet-50 text-[#7c3aed]'
+                : 'border-slate-200 text-slate-500'"
+              class="flex h-12 items-center justify-center rounded-xl border-2 font-semibold transition-all hover:border-violet-300">
+              Student
+            </button>
+              <button type="button" (click)="setRole('TUTOR')"
+          [class]="selectedRole === 'TUTOR' ? 'border-[#0066FF] bg-blue-50 text-[#0066FF]' : 'border-slate-200 text-slate-500'"
+          class="flex h-12 items-center justify-center rounded-xl border-2 font-medium transition-all">
+    Teacher
+  </button>
+          </div>
+        </div>
+
+        <!-- Terms -->
+        <div class="flex items-start gap-2 ml-1">
+          <input type="checkbox" id="terms" formControlName="agreeTerms"
+            class="mt-1 h-4 w-4 rounded border-slate-300 text-[#7c3aed] focus:ring-[#7c3aed]">
+          <label for="terms" class="text-xs text-slate-500 leading-snug">
+            I agree to the
+            <a href="#" class="text-[#7c3aed] font-semibold hover:underline">Terms of Service</a>
+            and
+            <a href="#" class="text-[#7c3aed] font-semibold hover:underline">Privacy Policy</a>
+          </label>
+        </div>
+
+        <!-- Button -->
+        <button type="submit" [disabled]="registerForm.invalid"
+          class="w-full h-12 bg-gradient-to-r from-[#7c3aed] to-[#a855f7] text-white rounded-xl font-bold text-base
+                 hover:from-[#6d28d9] hover:to-[#9333ea]
+                 transition-all active:scale-[0.98] disabled:opacity-50 shadow-md shadow-violet-500/25 mt-2">
+          Create Account
+        </button>
+      </form>
+
+      <p class="mt-8 text-center text-sm text-slate-500 font-medium">
+        Already have an account?
+        <a routerLink="/login" class="text-[#7c3aed] hover:underline font-bold ml-1">
+          Sign in
+        </a>
+      </p>
+   
+  </div>
+</div>

@@ -1,0 +1,96 @@
+<!-- Main Wrapper -->
+<div class="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#faf5ff] to-[#f8fafc] px-4 py-12">
+  <div class="w-full max-w-[420px]">
+    
+    <!-- Logo Section -->
+    <div class="mb-10 flex flex-col items-center justify-center gap-4">
+      <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-tr from-[#7c3aed] to-[#a855f7] shadow-lg shadow-violet-500/30">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+          <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+        </svg>
+      </div>
+      <h1 class="text-3xl font-extrabold tracking-tight text-[#1e293b]">
+        All About Spelling
+      </h1>
+    </div>
+
+    <!-- Card -->
+    <div class="rounded-[32px] border border-slate-100 bg-white p-10 shadow-[0_25px_60px_rgba(124,58,237,0.08)] backdrop-blur-sm">
+      
+      <!-- Header -->
+      <div class="mb-10 text-center">
+        <h2 class="text-3xl font-bold text-[#1e293b] mb-2">Welcome back</h2>
+        <p class="text-slate-500 font-medium">
+          Sign in to your account to continue
+        </p>
+      </div>
+
+      <!-- Form -->
+      <form class="space-y-6" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        
+        <!-- Email -->
+        <div class="space-y-2">
+          <label class="text-sm font-bold text-slate-700 ml-1" for="email">Email</label>
+          <input 
+            id="email" 
+            type="email" 
+            formControlName="email"
+            placeholder="you@example.com"
+            class="flex h-13 w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-3 text-sm transition-all duration-200
+                   focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-[#7c3aed] focus:bg-white
+                   hover:border-violet-300"
+          />
+        </div>
+
+        <!-- Password -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between ml-1">
+            <label class="text-sm font-bold text-slate-700" for="password">Password</label>
+          </div>
+          <input 
+            id="password" 
+            type="password" 
+            formControlName="password"
+            placeholder="••••••••"
+            class="flex h-13 w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-3 text-sm transition-all duration-200
+                   focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-[#7c3aed] focus:bg-white
+                   hover:border-violet-300"
+          />
+        </div>
+
+        <!-- Forgot -->
+        <a routerLink="/forgot-password" class="text-xs font-bold text-[#7c3aed] hover:text-[#6d28d9] hover:underline">
+          Forgot password?
+        </a>
+        <br>
+
+        <!-- Button -->
+        <button 
+          type="submit" 
+          [disabled]="loginForm.invalid"
+          class="w-1/2 h-13 bg-gradient-to-r from-[#7c3aed] to-[#a855f7] text-white rounded-2xl font-bold text-base
+                 hover:from-[#6d28d9] hover:to-[#9333ea]
+                 transition-all duration-200 active:scale-[0.98]
+                 disabled:opacity-50 shadow-lg shadow-violet-500/25 mt-2 ml-20 p-2">
+          Login
+        </button>
+      </form>
+
+      <!-- Divider -->
+      <div class="relative my-8">
+        <div class="absolute inset-0 flex items-center">
+          <span class="w-full border-t border-slate-100"></span>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <p class="mt-10 text-center text-sm text-slate-500 font-medium">
+        Don't have an account? 
+        <a routerLink="/register" class="text-[#7c3aed] hover:underline font-extrabold ml-1">
+          Sign up
+        </a>
+      </p>
+    </div>
+  </div>
+</div>

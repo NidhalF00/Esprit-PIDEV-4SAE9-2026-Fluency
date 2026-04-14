@@ -1,0 +1,81 @@
+<div class="max-w-3xl mx-auto p-6 bg-white shadow-md rounded-lg">
+  <h2 class="text-2xl font-bold mb-4">Create a New Quiz</h2>
+  <div class="flex flex-col sm:flex-row sm:items-center mb-6 gap-2">
+    <input
+      type="text"
+      [(ngModel)]="quiz.title"
+      placeholder="Quiz title"
+      class="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+    <button
+      (click)="createQuiz()"
+      [disabled]="!quiz.title.trim()"
+      class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition">
+      Create Quiz
+    </button>
+  </div>
+
+  <div *ngIf="quiz.id">
+    <h3 class="text-xl font-semibold mb-3">Add Questions</h3>
+    <div class="flex justify-end mb-4">
+      <button
+        (click)="finishQuiz()"
+        class="bg-slate-900 text-white px-4 py-2 rounded-lg hover:bg-slate-800 transition">
+        Finish Quiz
+      </button>
+    </div>
+    <div class="flex flex-col sm:flex-row sm:items-center gap-2 mb-4">
+      <input
+        type="text"
+        [(ngModel)]="newQuestionText"
+        placeholder="New question"
+        class="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+      <button
+        (click)="addQuestion()"
+        [disabled]="!newQuestionText.trim()"
+        class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition">
+        New Question
+      </button>
+    </div>
+
+    <div *ngFor="let q of quiz.questions; let i = index" class="border border-gray-200 rounded-lg p-4 mb-4 bg-gray-50">
+      <div class="flex justify-between items-center mb-2">
+        <span class="font-medium">{{ i + 1 }}. {{ q.text }}</span>
+        <button
+          (click)="selectQuestion(i)"
+          class="bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-600 transition">
+          New Answer
+        </button>
+      </div>
+
+      <div *ngIf="currentQuestionIndex === i" class="mt-2">
+        <div class="flex gap-2 mb-2">
+          <input
+            type="text"
+            [(ngModel)]="newAnswerText"
+            placeholder="New answer"
+            class="flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+          <button
+            (click)="addAnswer(quiz.questions[i])"
+            [disabled]="!newAnswerText.trim()"
+            class="bg-green-500 text-white px-3 py-2 rounded-lg hover:bg-green-600 transition">
+            Add Answer
+          </button>
+        </div>
+
+        <label class="inline-flex items-center gap-2 mb-3 text-sm text-gray-700">
+          <input
+            type="checkbox"
+            [(ngModel)]="newAnswerCorrect"
+            class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+          <span>Correct answer</span>
+        </label>
+
+        <ul class="list-disc pl-5">
+          <li *ngFor="let a of q.answers" class="mb-1">
+            {{ a.text }} <span *ngIf="a.correct" class="text-green-600 font-semibold">(Correct)</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

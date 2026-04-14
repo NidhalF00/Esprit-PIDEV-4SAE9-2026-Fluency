@@ -1,0 +1,23 @@
+<h2>Teacher Applications</h2>
+
+<table border="1">
+  <thead>
+    <tr>
+      <th>Email</th>
+      <th>Status</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr *ngFor="let app of applications">
+      <td>{{ app.email }}</td>
+      <td>{{ app.status }}</td>
+      <td>
+        <button (click)="scheduleInterview(app.id!)">
+          Schedule Interview
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>

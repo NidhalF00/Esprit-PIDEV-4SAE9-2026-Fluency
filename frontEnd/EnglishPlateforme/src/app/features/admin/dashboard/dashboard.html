@@ -1,0 +1,92 @@
+<!-- Stats Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+  <div class="bg-white p-6 rounded-[24px] border border-slate-100 shadow-sm flex items-center gap-5">
+    <div class="w-14 h-14 bg-blue-50 text-[#0066FF] rounded-2xl flex items-center justify-center">
+      <!-- icon -->
+    </div>
+    <div>
+      <p class="text-slate-500 text-sm font-medium">Total Applications</p>
+      <h4 class="text-2xl font-black text-slate-900">{{ total }}</h4>
+    </div>
+  </div>
+
+  <div class="bg-white p-6 rounded-[24px] border border-slate-100 shadow-sm flex items-center gap-5">
+    <div class="w-14 h-14 bg-yellow-50 text-yellow-800 rounded-2xl flex items-center justify-center">
+      <!-- icon -->
+    </div>
+    <div>
+      <p class="text-slate-500 text-sm font-medium">Pending Applications</p>
+      <h4 class="text-2xl font-black text-slate-900">{{ pending }}</h4>
+    </div>
+  </div>
+
+  <div class="bg-white p-6 rounded-[24px] border border-slate-100 shadow-sm flex items-center gap-5">
+    <div class="w-14 h-14 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center">
+      <!-- icon -->
+    </div>
+    <div>
+      <p class="text-slate-500 text-sm font-medium">Scheduled Applications</p>
+      <h4 class="text-2xl font-black text-slate-900">{{ scheduled }}</h4>
+    </div>
+  </div>
+</div>
+
+<!-- Recent Applications Table -->
+<div class="bg-white rounded-[32px] border border-slate-200 shadow-sm overflow-hidden">
+  <div class="p-8 border-b border-slate-100 flex items-center justify-between">
+    <h3 class="text-xl font-bold text-slate-900">Recent Job Applications</h3>
+    <button class="text-sm font-bold text-[#0066FF] hover:underline">View All</button>
+  </div>
+
+  <table class="w-full text-left border-collapse">
+    <thead class="bg-slate-50/50 text-slate-500 text-xs uppercase font-bold tracking-wider">
+      <tr>
+        <th class="px-8 py-4">Email</th>
+        <th class="px-8 py-4">Status</th>
+        <th class="px-8 py-4 text-center">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let app of applications" class="border-b border-slate-100">
+        <td class="px-8 py-4">{{ app.email }}</td>
+
+        <td class="px-8 py-4">
+          <span class="px-3 py-1 rounded-full text-xs font-semibold" [ngClass]="getStatusColor(app.status)">
+            {{ app.status }}
+          </span>
+        </td>
+        <td class="px-8 py-4 text-center">
+  <div class="flex items-center justify-center gap-3">
+
+    <!-- Accept -->
+    <button
+      class="px-3 py-1 text-xs font-bold text-white bg-green-600 rounded-lg hover:bg-green-700 transition"
+      (click)="acceptApplication(app)">
+      Accept
+    </button>
+
+    <!-- Reject -->
+    <button
+      class="px-3 py-1 text-xs font-bold text-white bg-red-600 rounded-lg hover:bg-red-700 transition"
+      (click)="rejectApplication(app)">
+      Reject
+    </button>
+ <button
+      class="px-3 py-1 text-xs font-bold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition"
+(click)="app.id ? downloadCv(app.id) : null">      Download CV
+    </button>
+
+  </div>
+</td>
+       
+<td class="px-8 py-4 text-center">
+  <button class="text-sm text-[#0066FF] hover:underline"
+          (click)="app.id ? programInterview(app.id) : null">
+    Program Interview
+  </button>
+</td>   
+      </tr>
+    </tbody>
+  </table>
+  
+</div>

@@ -1,0 +1,47 @@
+<div class="application-wrapper">
+  <div class="application-card">
+    <h2>Apply as Teacher</h2>
+    <p class="subtitle">
+      Submit your CV to apply for the teacher position
+    </p>
+
+    <div class="form-group">
+      <label>Email</label>
+      <input
+        type="email"
+        [(ngModel)]="email"
+        placeholder="Enter your email"
+      />
+    </div>
+
+    <div class="form-group">
+      <label>Upload CV (PDF)</label>
+      <input
+        type="file"
+        accept="application/pdf"
+        (change)="onFileSelected($event)"
+      />
+    </div>
+
+    <button
+      class="submit-btn"
+      (click)="submit()"
+      [disabled]="isSubmitting"
+    >
+      {{ isSubmitting ? 'Submitting...' : 'Submit Application' }}
+    </button>
+  </div>
+</div>
+
+<!-- 🔥 POPUP -->
+<div class="popup-overlay" *ngIf="showPopup">
+  <div class="popup-box">
+    <h3 [class.success]="popupSuccess" [class.error]="!popupSuccess">
+      {{ popupSuccess ? 'Success' : 'Error' }}
+    </h3>
+
+    <p>{{ popupMessage }}</p>
+
+    <button class="ok-btn" (click)="closePopup()">OK</button>
+  </div>
+</div>
