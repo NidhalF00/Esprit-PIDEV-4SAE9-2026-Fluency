@@ -1,6 +1,5 @@
 package tn.english.school.authservice.service;
 
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,7 +22,6 @@ public class StudentAcademicProfileService {
     private final UserRepository userRepository;
 
     /** Auto-generate fictional academic profiles for every STUDENT on startup. */
-    @PostConstruct
     public void seedProfiles() {
         List<AppUser> students = userRepository.findAll().stream()
                 .filter(u -> u.getRole() == Role.STUDENT)

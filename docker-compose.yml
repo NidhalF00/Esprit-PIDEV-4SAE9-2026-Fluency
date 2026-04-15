@@ -21,6 +21,22 @@ services:
       timeout: 5s
       retries: 10
 
+  # ── PHPMyAdmin ────────────────────────────────────────────────────────────────
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: phpmyadmin
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "8888:80"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - platform-network
+
   # ── Eureka Server ─────────────────────────────────────────────────────────────
   eureka-server:
     build:
