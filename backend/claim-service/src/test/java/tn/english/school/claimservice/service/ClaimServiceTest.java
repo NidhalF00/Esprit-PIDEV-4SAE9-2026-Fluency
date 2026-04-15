@@ -64,7 +64,7 @@ class ClaimServiceTest {
                 List.of(ClaimStatus.OPEN, ClaimStatus.IN_PROGRESS))).thenReturn(false);
         when(claimRepository.save(any(Claim.class))).thenReturn(claim);
 
-        Claim result = claimService.createClaim(claim);
+        var result = claimService.createClaim(claim);
 
         assertThat(result).isNotNull();
         assertThat(result.getStatus()).isEqualTo(ClaimStatus.OPEN);
@@ -78,7 +78,7 @@ class ClaimServiceTest {
         when(claimRepository.findById(1L)).thenReturn(Optional.of(claim));
         when(claimRepository.save(any(Claim.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        Claim result = claimService.authorizeRetake(1L);
+        var result = claimService.authorizeRetake(1L);
 
         assertThat(result.getStatus()).isEqualTo(ClaimStatus.RETAKE_AUTHORIZED);
         verify(claimRepository).save(claim);
@@ -89,7 +89,7 @@ class ClaimServiceTest {
         claim.setStatus(ClaimStatus.RETAKE_AUTHORIZED);
         when(claimRepository.findById(1L)).thenReturn(Optional.of(claim));
 
-        Claim result = claimService.authorizeRetake(1L);
+        var result = claimService.authorizeRetake(1L);
 
         assertThat(result.getStatus()).isEqualTo(ClaimStatus.RETAKE_AUTHORIZED);
         verify(claimRepository, never()).save(any());
@@ -118,7 +118,7 @@ class ClaimServiceTest {
         claim.setStatus(ClaimStatus.IN_PROGRESS);
         when(claimRepository.findById(1L)).thenReturn(Optional.of(claim));
 
-        Claim updated = new Claim();
+        var updated = new Claim();
         updated.setSubject("New subject");
         updated.setDescription("New desc");
         updated.setType(ClaimType.TECHNICAL);
