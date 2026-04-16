@@ -1,0 +1,156 @@
+# Fluency — stack distribuée (MySQL, Config, Eureka, Gateway, MS, Angular)
+# Démarrage : à la racine du projet →  docker compose up -d --build
+# URLs : Gateway http://localhost:8555  |  Eureka http://localhost:8761  |  Front http://localhost:4200
+# Mot de passe MySQL root : root (identique pour tous les SPRING_DATASOURCE_*)
+
+name: fluency
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: fluency-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - fluency_mysql_data:/var/lib/mysql
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d:ro
+    networks:
+      - fluency
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 8s
+      timeout: 5s
+      retries: 15
+      start_period: 40s
+
+  config-server:
+    build: ./Backend/config-server
+    container_name: fluency-config
+    ports:
+      - "8899:8899"
+    environment:
+      EUREKA_CLIENT_ENABLED: "false"
+      EUREKA_CLIENT_REGISTER_WITH_EUREKA: "false"
+      EUREKA_CLIENT_FETCH_REGISTRY: "false"
+    networks:
+      - fluency
+
+  eureka-server:
+    build: ./Backend/EurekaServer
+    container_name: fluency-eureka
+    ports:
+      - "8761:8761"
+    depends_on:
+      - config-server
+    environment:
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8899
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+    networks:
+      - fluency
+
+  api-gateway:
+    build: ./Backend/APIGateway
+    container_name: fluency-gateway
+    ports:
+      - "8555:8555"
+    depends_on:
+      - eureka-server
+      - config-server
+    environment:
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8899
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+    networks:
+      - fluency
+
+  python-predict:
+    build: ./Backend/microservices/python-predict
+    container_name: fluency-python-predict
+    depends_on:
+      - config-server
+      - eureka-server
+    environment:
+      CONFIG_SERVER_URL: http://config-server:8899
+      EUREKA_SERVER_URL: http://eureka-server:8761/eureka/
+      SERVICE_HOST: python-predict
+      SERVICE_PORT: "8090"
+    networks:
+      - fluency
+
+  user-service:
+    build: ./Backend/microservices/users
+    container_name: fluency-users
+    depends_on:
+      mysql:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+      config-server:
+        condition: service_started
+    environment:
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8899
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/userdbb?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+    networks:
+      - fluency
+
+  courses-service:
+    build: ./Backend/microservices/courses
+    container_name: fluency-courses
+    depends_on:
+      mysql:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+      config-server:
+        condition: service_started
+      python-predict:
+        condition: service_started
+    environment:
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8899
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/projetpi?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_APPLICATION_JSON: '{"python.predict.base-url":"http://python-predict:8090","python.predict.connect-timeout":"5s","python.predict.read-timeout":"10s"}'
+    networks:
+      - fluency
+
+  forum-service:
+    build: ./Backend/microservices/ForumBackend
+    container_name: fluency-forum
+    depends_on:
+      mysql:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+      config-server:
+        condition: service_started
+    environment:
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8899
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/foruml?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+    networks:
+      - fluency
+
+  frontend:
+    build: ./hendfront/Frontend
+    container_name: fluency-frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - api-gateway
+    networks:
+      - fluency
+
+volumes:
+  fluency_mysql_data:
+
+networks:
+  fluency:
+    driver: bridge

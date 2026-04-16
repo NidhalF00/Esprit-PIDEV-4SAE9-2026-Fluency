@@ -1,0 +1,6 @@
+fastapi==0.115.12
+uvicorn[standard]==0.34.2
+pydantic==2.11.3
+requests==2.32.3
+rapidfuzz==3.13.0
+py-eureka-client==0.13.2

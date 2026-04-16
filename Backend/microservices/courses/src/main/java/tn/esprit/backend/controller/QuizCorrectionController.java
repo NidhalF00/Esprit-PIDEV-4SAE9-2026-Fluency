@@ -1,0 +1,33 @@
+package tn.esprit.backend.controller;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import tn.esprit.backend.dto.AnswerSubmissionMetaDTO;
+import tn.esprit.backend.dto.QuizResultDTO;
+import tn.esprit.backend.dto.QuizSubmissionDTO;
+import tn.esprit.backend.services.QuizCorrectionService;
+
+import java.util.Map;
+
+@RestController
+@RequestMapping("/api/quizzes")
+@CrossOrigin(origins = "*")
+@RequiredArgsConstructor
+public class QuizCorrectionController {
+
+    private final QuizCorrectionService quizCorrectionService;
+
+    @PostMapping("/{quizId}/submit")
+    public ResponseEntity<QuizResultDTO> soumettreQuiz(
+            @PathVariable Long quizId,
+            @RequestBody QuizSubmissionDTO body) {
+        Map<Long, Long> reponses = QuizCorrectionService.toReponsesMap(
+                body != null ? body.getReponsesEtudiant() : null);
+        Map<Long, AnswerSubmissionMetaDTO> meta = QuizCorrectionService.toMetaMap(
+                body != null ? body.getReponsesMeta() : null);
+        Long userId = body != null ? body.getUserId() : null;
+        QuizResultDTO result = quizCorrectionService.corrigerQuiz(quizId, reponses, meta, userId);
+        return ResponseEntity.ok(result);
+    }
+}
