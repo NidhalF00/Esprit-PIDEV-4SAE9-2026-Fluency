@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["src/app/pages/quizzes/quiz-detail/quiz-detail.component.css"],
-  "sourcesContent": [".page {\r\n  max-width: 720px;\r\n  margin: 0 auto;\r\n  padding: 1.5rem 1rem 2rem;\r\n}\r\n\r\n.page-head {\r\n  display: flex;\r\n  align-items: flex-start;\r\n  justify-content: space-between;\r\n  gap: 1rem;\r\n  flex-wrap: wrap;\r\n  margin-bottom: 1.25rem;\r\n}\r\n\r\n.page-head h1 {\r\n  margin: 0;\r\n  font-size: 1.5rem;\r\n  color: #0f172a;\r\n}\r\n\r\n.head-actions {\r\n  display: flex;\r\n  gap: 0.5rem;\r\n  flex-wrap: wrap;\r\n}\r\n\r\n.detail-card {\r\n  border-radius: 12px !important;\r\n  padding: 1rem 1.25rem;\r\n}\r\n\r\n.detail-grid {\r\n  display: grid;\r\n  grid-template-columns: 160px 1fr;\r\n  gap: 0.75rem 1rem;\r\n  margin: 0;\r\n}\r\n\r\n.detail-grid dt {\r\n  margin: 0;\r\n  font-weight: 600;\r\n  color: #475569;\r\n}\r\n\r\n.detail-grid dd {\r\n  margin: 0;\r\n  color: #0f172a;\r\n}\r\n\r\n.multiline {\r\n  white-space: pre-wrap;\r\n}\r\n\r\n.muted {\r\n  color: #64748b;\r\n}\r\n"],
-  "mappings": ";AAAA,CAAC;AACC,aAAW;AACX,UAAQ,EAAE;AACV,WAAS,OAAO,KAAK;AACvB;AAEA,CAAC;AACC,WAAS;AACT,eAAa;AACb,mBAAiB;AACjB,OAAK;AACL,aAAW;AACX,iBAAe;AACjB;AAEA,CATC,UASU;AACT,UAAQ;AACR,aAAW;AACX,SAAO;AACT;AAEA,CAAC;AACC,WAAS;AACT,OAAK;AACL,aAAW;AACb;AAEA,CAAC;AACC,iBAAe;AACf,WAAS,KAAK;AAChB;AAEA,CAAC;AACC,WAAS;AACT,yBAAuB,MAAM;AAC7B,OAAK,QAAQ;AACb,UAAQ;AACV;AAEA,CAPC,YAOY;AACX,UAAQ;AACR,eAAa;AACb,SAAO;AACT;AAEA,CAbC,YAaY;AACX,UAAQ;AACR,SAAO;AACT;AAEA,CAAC;AACC,eAAa;AACf;AAEA,CAAC;AACC,SAAO;AACT;",
-  "names": []
-}
