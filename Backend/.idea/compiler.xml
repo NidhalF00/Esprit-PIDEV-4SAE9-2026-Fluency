@@ -2,6 +2,10 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
+<<<<<<< HEAD
+=======
+      <profile default="true" name="Default" enabled="true" />
+>>>>>>> 3d2679db (clean initial version)
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
@@ -19,6 +23,10 @@
         </processorPath>
         <module name="Backend" />
       </profile>
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 3d2679db (clean initial version)
       <profile name="Annotation profile for user" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
@@ -28,6 +36,11 @@
         </processorPath>
         <module name="user" />
       </profile>
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> 4ced7214 (revision de test)
+>>>>>>> 3d2679db (clean initial version)
       <profile name="Annotation profile for backend-parent" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
@@ -46,7 +59,14 @@
       <module name="EurekaServer" options="-parameters" />
       <module name="Forum" options="-parameters" />
       <module name="config-server" options="-parameters" />
+<<<<<<< HEAD
       <module name="user" options="-parameters" />
+=======
+<<<<<<< HEAD
+      <module name="user" options="-parameters" />
+=======
+>>>>>>> 4ced7214 (revision de test)
+>>>>>>> 3d2679db (clean initial version)
     </option>
   </component>
 </project>

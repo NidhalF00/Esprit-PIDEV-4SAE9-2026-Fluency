@@ -2,6 +2,10 @@ package tn.esprit.backend.Entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+<<<<<<< HEAD
+=======
+import lombok.*;
+>>>>>>> 3d2679db (clean initial version)
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,8 +40,16 @@ public class Module {
     @OneToMany(mappedBy = "module", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Cours> cours = new ArrayList<>();
+<<<<<<< HEAD
 
     public Module() {
+=======
+    public Module(){
+    }
+    public Module(Long id, String titre){
+        this.id = id;
+        this.titre = titre;
+>>>>>>> 3d2679db (clean initial version)
     }
 
     public Long getId() {

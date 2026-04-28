@@ -86,7 +86,11 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+<<<<<<< HEAD
             <optional>true</optional>
+=======
+            <scope>provided</scope>
+>>>>>>> 3d2679db (clean initial version)
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -121,6 +125,14 @@
             <artifactId>openhtmltopdf-pdfbox</artifactId>
             <version>1.0.10</version>
         </dependency>
+<<<<<<< HEAD
+=======
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+>>>>>>> 3d2679db (clean initial version)
     </dependencies>
 
     <build>

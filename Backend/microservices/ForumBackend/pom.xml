@@ -34,12 +34,21 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId> <!-- ✅ CHANGED : webmvc → web -->
 		</dependency>
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 3d2679db (clean initial version)
 		<!-- Aligné sur Spring Boot 3.3.x (Spring Framework 6.1) : 2.8.x exige Spring 6.2+ (LiteWebJarsResourceResolver) -->
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 			<version>2.6.0</version>
 		</dependency>
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> 4ced7214 (revision de test)
+>>>>>>> 3d2679db (clean initial version)
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
