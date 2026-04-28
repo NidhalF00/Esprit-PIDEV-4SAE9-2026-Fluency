@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/pages/modules/module-list/module-list.component.css"],
+  "sourcesContent": [".page {\r\n  max-width: 1100px;\r\n  margin: 0 auto;\r\n  padding: 1.5rem 1rem 2rem;\r\n}\r\n\r\n.page-head {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: space-between;\r\n  gap: 1rem;\r\n  flex-wrap: wrap;\r\n  margin-bottom: 1.25rem;\r\n}\r\n\r\n.page-head h1 {\r\n  margin: 0;\r\n  font-size: 1.5rem;\r\n  color: #0f172a;\r\n}\r\n\r\n.table-wrap {\r\n  overflow: auto;\r\n  border-radius: 12px;\r\n  background: #fff;\r\n}\r\n\r\n.data-table {\r\n  width: 100%;\r\n}\r\n\r\n.col-actions {\r\n  text-align: right;\r\n  white-space: nowrap;\r\n}\r\n\r\n.col-actions button {\r\n  margin-left: 0.35rem;\r\n}\r\n\r\n.empty {\r\n  padding: 1rem 1.25rem;\r\n  margin: 0;\r\n}\r\n\r\n.muted {\r\n  color: #64748b;\r\n}\r\n"],
+  "mappings": ";AAAA,CAAC;AACC,aAAW;AACX,UAAQ,EAAE;AACV,WAAS,OAAO,KAAK;AACvB;AAEA,CAAC;AACC,WAAS;AACT,eAAa;AACb,mBAAiB;AACjB,OAAK;AACL,aAAW;AACX,iBAAe;AACjB;AAEA,CATC,UASU;AACT,UAAQ;AACR,aAAW;AACX,SAAO;AACT;AAEA,CAAC;AACC,YAAU;AACV,iBAAe;AACf,cAAY;AACd;AAEA,CAAC;AACC,SAAO;AACT;AAEA,CAAC;AACC,cAAY;AACZ,eAAa;AACf;AAEA,CALC,YAKY;AACX,eAAa;AACf;AAEA,CAAC;AACC,WAAS,KAAK;AACd,UAAQ;AACV;AAEA,CAAC;AACC,SAAO;AACT;",
+  "names": []
+}
