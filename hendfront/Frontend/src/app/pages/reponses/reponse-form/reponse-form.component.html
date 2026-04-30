@@ -1,0 +1,40 @@
+<div class="page">
+  <h1>{{ editId != null ? 'Modifier la réponse' : 'Nouvelle réponse' }}</h1>
+
+  @if (loading()) {
+    <p class="muted">Chargement…</p>
+  } @else {
+    <mat-card appearance="outlined" class="form-card">
+      <form [formGroup]="form" (ngSubmit)="save()">
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Question</mat-label>
+          <mat-select formControlName="questionId">
+            @for (q of questions(); track q.id) {
+              <mat-option [value]="q.id">{{ questionLabel(q) }}</mat-option>
+            }
+          </mat-select>
+          @if (form.controls.questionId.touched && form.controls.questionId.hasError('required')) {
+            <mat-error>Requis</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Texte</mat-label>
+          <textarea matInput rows="3" formControlName="texte"></textarea>
+          @if (form.controls.texte.touched && form.controls.texte.hasError('required')) {
+            <mat-error>Requis</mat-error>
+          }
+        </mat-form-field>
+
+        <div class="check-row">
+          <mat-checkbox formControlName="correcte">Réponse correcte</mat-checkbox>
+        </div>
+
+        <div class="actions">
+          <button mat-stroked-button type="button" (click)="cancel()">Annuler</button>
+          <button mat-flat-button color="primary" type="submit">Enregistrer</button>
+        </div>
+      </form>
+    </mat-card>
+  }
+</div>

@@ -1,0 +1,42 @@
+<h2 mat-dialog-title>Détail du cours</h2>
+
+<mat-dialog-content class="scd-body">
+  @if (loading()) {
+    <div class="scd-loading">
+      <mat-spinner diameter="36" />
+      <span>Chargement…</span>
+    </div>
+  } @else if (error()) {
+    <p class="scd-alert" role="alert">{{ error() }}</p>
+  } @else if (cours(); as c) {
+    <mat-card appearance="outlined" class="scd-card">
+      <h3 class="scd-title">{{ c.titre }}</h3>
+      <p class="scd-meta">
+        {{ c.typeContenu }} · {{ c.duree }} min ·
+        {{ c.gratuit ? 'Gratuit' : 'Payant' }} · {{ c.publie ? 'Publié' : 'Brouillon' }}
+      </p>
+      @if (c.module?.titre; as titreModule) {
+        <p class="scd-module">Module : {{ titreModule }}</p>
+      }
+      <div class="scd-contenu">{{ c.contenu }}</div>
+      @if (c.urlRessource?.trim()) {
+        <p class="scd-url">
+          <span class="scd-label">Ressource</span>
+          <span class="scd-url-text">{{ c.urlRessource }}</span>
+        </p>
+      }
+    </mat-card>
+  } @else {
+    <p class="scd-muted">Aucune donnée pour ce cours.</p>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="scd-actions">
+  @if (!loading() && cours() && hasPdf()) {
+    <button mat-flat-button color="accent" type="button" (click)="openPdf()">Ouvrir le PDF</button>
+  }
+  @if (!loading() && cours() && firstQuizId() != null) {
+    <button mat-flat-button color="primary" type="button" (click)="passQuiz()">Passer le quiz</button>
+  }
+  <button mat-stroked-button type="button" (click)="close()">Fermer</button>
+</mat-dialog-actions>

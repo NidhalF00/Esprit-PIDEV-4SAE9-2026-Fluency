@@ -1,0 +1,82 @@
+<div class="login-page">
+  <div class="login-page__bg" aria-hidden="true"></div>
+  <div class="login-page__grid">
+    <section class="login-page__hero">
+      <a routerLink="/" class="login-page__brand">Fluency</a>
+      <h1 class="login-page__title">Reprenez votre apprentissage où vous l’avez laissé</h1>
+      <p class="login-page__lead">
+        Connexion de démonstration — choisissez un rôle pour explorer l’espace Étudiant ou Formateur. Aucun appel
+        serveur.
+      </p>
+      <ul class="login-page__bullets">
+        <li><span class="login-page__dot"></span> Parcours modules & cours</li>
+        <li><span class="login-page__dot"></span> Quiz & scores</li>
+        <li><span class="login-page__dot"></span> Tableaux de bord enrichis</li>
+      </ul>
+    </section>
+
+    <mat-card class="login-card" appearance="outlined">
+      <div class="login-card__head">
+        <h2 class="login-card__h">Connexion</h2>
+        <p class="login-card__sub">Email, mot de passe et rôle</p>
+      </div>
+
+      @if (error) {
+        <p class="login-card__alert" role="alert">{{ error }}</p>
+      }
+
+      <form class="login-form" (ngSubmit)="submit()">
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" name="email" [(ngModel)]="email" autocomplete="username" required />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Mot de passe</mat-label>
+          <input
+            matInput
+            type="password"
+            name="password"
+            [(ngModel)]="password"
+            autocomplete="current-password"
+            required
+          />
+        </mat-form-field>
+
+        <div class="login-role">
+          <span class="login-role__label">Je me connecte en tant que</span>
+          <mat-radio-group [(ngModel)]="role" name="role" class="login-role__group">
+            <mat-radio-button value="student">Étudiant</mat-radio-button>
+            <mat-radio-button value="teacher">Enseignant</mat-radio-button>
+          </mat-radio-group>
+        </div>
+
+        @if (role === 'student') {
+          <mat-form-field appearance="outline" class="full">
+            <mat-label>ID utilisateur API (optionnel)</mat-label>
+            <input
+              matInput
+              type="number"
+              name="userIdApi"
+              [(ngModel)]="userIdApi"
+              min="1"
+              step="1"
+              placeholder="ex. 1 — pour certificats Spring"
+            />
+            <mat-hint>
+              Même identifiant qu’en base « utilisateur ». Après connexion, l’app lit votre e-mail en base (champ
+              <code>mail</code> / <code>email</code>) et l’envoie avec la soumission du quiz pour le certificat.
+            </mat-hint>
+          </mat-form-field>
+        }
+
+        <button mat-flat-button color="primary" class="login-card__submit" type="submit" [disabled]="submitting">
+          Se connecter
+        </button>
+      </form>
+
+      <p class="login-card__hint">Mot de passe factice : au moins 4 caractères.</p>
+      <a routerLink="/" class="login-card__back">← Retour à l’accueil</a>
+    </mat-card>
+  </div>
+</div>

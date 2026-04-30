@@ -1,0 +1,8 @@
+{
+  "/courses": {
+    "target": "http://localhost:8555",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "silent"
+  }
+}

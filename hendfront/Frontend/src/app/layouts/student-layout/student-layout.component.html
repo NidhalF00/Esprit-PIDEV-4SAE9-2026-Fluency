@@ -1,0 +1,41 @@
+<div class="st">
+  <header class="st-header" [class.st-header--open]="menuOpen">
+    <div class="st-header__inner">
+      <a routerLink="/student/modules" class="st-brand" (click)="closeMenu()">
+        <span class="st-brand__mark" aria-hidden="true">◆</span>
+        <span class="st-brand__text">Fluency</span>
+        <span class="st-brand__pill">Étudiant</span>
+      </a>
+
+      <button
+        type="button"
+        class="st-burger"
+        [attr.aria-expanded]="menuOpen"
+        aria-label="Menu"
+        (click)="toggleMenu()"
+      >
+        <span></span><span></span><span></span>
+      </button>
+
+      <nav class="st-nav" [class.st-nav--open]="menuOpen">
+        <a routerLink="/student/modules" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMenu()">Modules</a>
+        <a routerLink="/student/cours" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMenu()">Cours</a>
+        <a routerLink="/student/cours" fragment="passer-quiz" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMenu()">Passer quiz</a>
+        <a routerLink="/student/recommandations" routerLinkActive="is-active" (click)="closeMenu()">Recommandations</a>
+        <a routerLink="/student/recherche" routerLinkActive="is-active" (click)="closeMenu()">Recherche</a>
+        <a routerLink="/student/statistiques" routerLinkActive="is-active" (click)="closeMenu()">Statistiques</a>
+        <a routerLink="/student/resultat" routerLinkActive="is-active" (click)="closeMenu()">Dernier résultat</a>
+        <a routerLink="/student/certificats" routerLinkActive="is-active" (click)="closeMenu()">Mes certificats</a>
+      </nav>
+
+      <div class="st-actions">
+        <span class="st-email" title="Session locale">{{ auth.email() }}</span>
+        <button mat-stroked-button type="button" color="primary" (click)="logout()">Déconnexion</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="st-main">
+    <router-outlet />
+  </main>
+</div>

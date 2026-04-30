@@ -1,0 +1,35 @@
+<h2 mat-dialog-title>Cours du module — {{ data.module.titre }}</h2>
+
+<mat-dialog-content class="smcd-body">
+  @if (loading()) {
+    <div class="smcd-loading">
+      <mat-spinner diameter="40" />
+      <span>Chargement des cours…</span>
+    </div>
+  } @else if (error()) {
+    <p class="smcd-alert" role="alert">{{ error() }}</p>
+  } @else if (!cours().length) {
+    <p class="smcd-muted">Aucun cours dans ce module pour le moment.</p>
+  } @else {
+    <div class="smcd-grid">
+      @for (c of cours(); track c.id ?? $index) {
+        <mat-card class="smcd-card" appearance="outlined">
+          <span class="smcd-ordre">#{{ c.ordreCours }}</span>
+          <h3 class="smcd-card-title">{{ c.titre }}</h3>
+          <p class="smcd-excerpt">{{ (c.contenu || '').slice(0, 120) }}{{ (c.contenu || '').length > 120 ? '…' : '' }}</p>
+          <p class="smcd-type">{{ c.typeContenu }} · {{ c.duree }} min</p>
+          <div class="smcd-actions">
+            <button mat-stroked-button color="primary" type="button" (click)="openDetail(c)">Voir détail du cours</button>
+            @if (firstQuizId(c) != null) {
+              <button mat-flat-button color="primary" type="button" (click)="passQuiz(c)">Passer le quiz</button>
+            }
+          </div>
+        </mat-card>
+      }
+    </div>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button type="button" (click)="close()">Fermer</button>
+</mat-dialog-actions>

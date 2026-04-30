@@ -1,0 +1,52 @@
+<div class="page">
+  <h1>{{ editId != null ? 'Modifier la question' : 'Nouvelle question' }}</h1>
+
+  @if (loading()) {
+    <p class="muted">Chargement…</p>
+  } @else {
+    <mat-card appearance="outlined" class="form-card">
+      <form [formGroup]="form" (ngSubmit)="save()">
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Quiz</mat-label>
+          <mat-select formControlName="quizId">
+            @for (q of quizzes(); track q.id) {
+              <mat-option [value]="q.id">{{ q.titre }}</mat-option>
+            }
+          </mat-select>
+          @if (form.controls.quizId.touched && form.controls.quizId.hasError('required')) {
+            <mat-error>Requis</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Énoncé</mat-label>
+          <textarea matInput rows="4" formControlName="enonce"></textarea>
+          @if (form.controls.enonce.touched && form.controls.enonce.hasError('required')) {
+            <mat-error>Requis</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Type de question</mat-label>
+          <input matInput formControlName="typeQuestion" />
+          @if (form.controls.typeQuestion.touched && form.controls.typeQuestion.hasError('required')) {
+            <mat-error>Requis</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="narrow">
+          <mat-label>Points</mat-label>
+          <input matInput type="number" formControlName="points" />
+          @if (form.controls.points.invalid && form.controls.points.touched) {
+            <mat-error>Valeur numérique valide requise</mat-error>
+          }
+        </mat-form-field>
+
+        <div class="actions">
+          <button mat-stroked-button type="button" (click)="cancel()">Annuler</button>
+          <button mat-flat-button color="primary" type="submit">Enregistrer</button>
+        </div>
+      </form>
+    </mat-card>
+  }
+</div>

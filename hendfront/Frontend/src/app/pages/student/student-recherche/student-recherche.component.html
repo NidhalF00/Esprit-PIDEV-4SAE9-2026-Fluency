@@ -1,0 +1,96 @@
+<section class="srec-head">
+  <h1 class="srec-title">Recherche avancée</h1>
+  <p class="srec-lead">Filtrez les modules et les cours selon vos critères (API).</p>
+</section>
+
+<mat-tab-group [(selectedIndex)]="tab" class="srec-tabs" animationDuration="200ms">
+  <mat-tab label="Modules">
+    <div class="srec-panel">
+      <div class="srec-fields">
+        <mat-form-field appearance="outline">
+          <mat-label>Mot-clé</mat-label>
+          <input matInput [(ngModel)]="motCle" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Niveau</mat-label>
+          <input matInput [(ngModel)]="niveau" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Catégorie</mat-label>
+          <input matInput [(ngModel)]="categorie" />
+        </mat-form-field>
+      </div>
+      <button mat-flat-button color="primary" type="button" (click)="searchModules()" [disabled]="loadingM()">
+        Rechercher
+      </button>
+      @if (errM()) {
+        <p class="srec-alert">{{ errM() }}</p>
+      }
+      @if (loadingM()) {
+        <p class="srec-muted">Chargement…</p>
+      }
+      <div class="srec-results">
+        @for (m of modules(); track m.id ?? $index) {
+          <mat-card class="srec-card" appearance="outlined" (click)="openModule(m)">
+            <h3>{{ m.titre }}</h3>
+            <p>{{ m.description }}</p>
+            <div class="srec-meta">{{ m.niveau }} · {{ m.categorie }}</div>
+          </mat-card>
+        }
+      </div>
+    </div>
+  </mat-tab>
+
+  <mat-tab label="Cours">
+    <div class="srec-panel">
+      <div class="srec-fields">
+        <mat-form-field appearance="outline">
+          <mat-label>Titre</mat-label>
+          <input matInput [(ngModel)]="titre" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Type de contenu</mat-label>
+          <input matInput [(ngModel)]="typeContenu" placeholder="VIDEO, PDF…" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Publié</mat-label>
+          <mat-select [(ngModel)]="publieFiltre">
+            <mat-option value="">Tous</mat-option>
+            <mat-option value="oui">Oui</mat-option>
+            <mat-option value="non">Non</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="srec-row">
+        <button mat-flat-button color="primary" type="button" (click)="searchCours()" [disabled]="loadingC()">
+          Rechercher
+        </button>
+      </div>
+      <div class="srec-typeonly">
+        <mat-form-field appearance="outline" class="srec-grow">
+          <mat-label>Type seul (ex. PDF)</mat-label>
+          <input matInput [(ngModel)]="typeSeul" />
+        </mat-form-field>
+        <button mat-stroked-button color="primary" type="button" (click)="searchParType()" [disabled]="loadingC()">
+          Par type
+        </button>
+      </div>
+      @if (errC()) {
+        <p class="srec-alert">{{ errC() }}</p>
+      }
+      @if (loadingC()) {
+        <p class="srec-muted">Chargement…</p>
+      }
+      <div class="srec-results">
+        @for (c of cours(); track c.id ?? $index) {
+          <mat-card class="srec-card srec-card--cours" appearance="outlined">
+            <h3>{{ c.titre }}</h3>
+            <p>{{ (c.contenu || '').slice(0, 140) }}…</p>
+            <div class="srec-meta">{{ c.typeContenu }} · ordre {{ c.ordreCours }}</div>
+            <button mat-stroked-button color="primary" type="button" (click)="openCours(c)">Ouvrir</button>
+          </mat-card>
+        }
+      </div>
+    </div>
+  </mat-tab>
+</mat-tab-group>

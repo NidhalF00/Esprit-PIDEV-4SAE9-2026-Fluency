@@ -1,0 +1,113 @@
+<h2 mat-dialog-title>Passer le quiz</h2>
+
+<mat-dialog-content class="sqpd-body">
+  @if (loading()) {
+    <div class="sqpd-loading">
+      <mat-spinner diameter="40" />
+      <span class="sqpd-muted">Chargement du quiz…</span>
+    </div>
+  } @else if (errorMsg() && !quiz()) {
+    <p class="sqpd-alert" role="alert">{{ errorMsg() }}</p>
+  } @else if (quiz(); as qz) {
+    <div class="sqpd-head">
+      <button mat-stroked-button type="button" (click)="close()">← Fermer</button>
+      <h3 class="sqpd-title">{{ qz.titre }}</h3>
+      <p class="sqpd-muted">{{ qz.description }}</p>
+    </div>
+
+    @if (result(); as res) {
+      <mat-card class="sqpd-result" appearance="outlined">
+        <div class="sqpd-result__header">
+          <h4>Résultat</h4>
+          <span class="sqpd-badge" [class.sqpd-badge--ok]="valide()" [class.sqpd-badge--ko]="!valide()">
+            {{ valide() ? 'Validé' : 'Non validé' }}
+          </span>
+        </div>
+        <div class="sqpd-result-grid">
+          <div class="sqpd-stat">
+            <span class="sqpd-stat__label">Score</span>
+            <strong class="sqpd-stat__value">{{ scoreDisplay() }}</strong>
+          </div>
+          <div class="sqpd-stat">
+            <span class="sqpd-stat__label">Pourcentage</span>
+            <strong class="sqpd-stat__value">{{ pourcentageDisplay() }}</strong>
+          </div>
+          @if (bonnes() != null) {
+            <div class="sqpd-stat">
+              <span class="sqpd-stat__label">Bonnes réponses</span>
+              <strong class="sqpd-stat__value">{{ bonnes() }}</strong>
+            </div>
+          }
+          @if (mauvaises() != null) {
+            <div class="sqpd-stat">
+              <span class="sqpd-stat__label">Mauvaises réponses</span>
+              <strong class="sqpd-stat__value">{{ mauvaises() }}</strong>
+            </div>
+          }
+        </div>
+        @if (res.pourcentage != null) {
+          <mat-progress-bar mode="determinate" [value]="progressValue()"></mat-progress-bar>
+        }
+        @if (res.message) {
+          <p class="sqpd-result-msg">{{ res.message }}</p>
+        }
+      </mat-card>
+      <app-student-certificat-celebration [result]="res" />
+    }
+
+    @if (errorMsg() && quiz()) {
+      <p class="sqpd-alert">{{ errorMsg() }}</p>
+    }
+
+    @if (!result() && totalQuestions() === 0) {
+      <p class="sqpd-muted">Ce quiz ne contient aucune question.</p>
+    }
+
+    @if (!result() && totalQuestions() > 0) {
+      <p class="sqpd-hint">Réponds à toutes les questions ci-dessous, puis clique sur « Soumettre le quiz ».</p>
+      <div class="sqpd-questions">
+        @for (q of qz.questions; track q.id ?? $index; let i = $index) {
+          <mat-card class="sqpd-q" appearance="outlined">
+            <h4 class="sqpd-q__title">
+              <span class="sqpd-q__n">{{ i + 1 }}.</span>
+              {{ q.enonce }}
+              <span class="sqpd-q__pts">({{ q.points }} pt{{ q.points > 1 ? 's' : '' }})</span>
+            </h4>
+            @if (q.reponses?.length && q.id != null) {
+              <mat-radio-group
+                class="sqpd-q__group"
+                [value]="selection()[q.id]"
+                (change)="choose(q.id, $event.value)"
+              >
+                @for (r of q.reponses; track r.id) {
+                  <mat-radio-button [value]="r.id">{{ r.texte }}</mat-radio-button>
+                }
+              </mat-radio-group>
+            } @else {
+              <p class="sqpd-muted">Aucune réponse pour cette question.</p>
+            }
+          </mat-card>
+        }
+      </div>
+
+      <div class="sqpd-actions">
+        <button
+          mat-flat-button
+          color="primary"
+          type="button"
+          [disabled]="!canSubmit() || submitting()"
+          (click)="submit()"
+        >
+          {{ submitting() ? 'Correction…' : 'Soumettre le quiz' }}
+        </button>
+      </div>
+    }
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  @if (result()) {
+    <button mat-flat-button color="primary" type="button" (click)="goResultPage()">Voir la page résultat</button>
+  }
+  <button mat-stroked-button type="button" (click)="close()">Fermer</button>
+</mat-dialog-actions>

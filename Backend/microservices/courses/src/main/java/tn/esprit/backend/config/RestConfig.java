@@ -20,7 +20,6 @@ public class RestConfig implements RepositoryRestConfigurer {
                 Quiz.class,
                 Question.class,
                 Reponse.class,
-                QuizAnswerInference.class,
                 Certificat.class);
     }
 }

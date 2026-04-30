@@ -1,0 +1,138 @@
+.quiz-pass {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 2.5rem;
+}
+
+.quiz-pass__head {
+  margin-bottom: 1.5rem;
+}
+
+.quiz-pass__head h1 {
+  margin: 0.75rem 0 0.35rem;
+  font-size: 1.5rem;
+  color: #0f172a;
+}
+
+.muted {
+  color: #64748b;
+  margin: 0;
+}
+
+.result-card {
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.25rem !important;
+  border-radius: 12px !important;
+  background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
+}
+
+.result-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.result-card__header h2 {
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+.badge {
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+}
+
+.badge--ok {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.badge--ko {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.result-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.stat__label {
+  display: block;
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.stat__value {
+  font-size: 1.25rem;
+  color: #1e293b;
+}
+
+.result-msg {
+  margin: 0.75rem 0 0;
+  font-size: 0.95rem;
+  color: #475569;
+}
+
+mat-progress-bar {
+  height: 10px;
+  border-radius: 6px;
+}
+
+.alert {
+  color: #b91c1c;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+}
+
+.q-card {
+  margin-bottom: 1rem;
+  padding: 1rem 1.25rem !important;
+  border-radius: 12px !important;
+}
+
+.q-card__title {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.q-card__n {
+  color: #6366f1;
+  margin-right: 0.25rem;
+}
+
+.q-card__pts {
+  font-weight: 500;
+  color: #64748b;
+  font-size: 0.85rem;
+}
+
+.q-card__group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+.quiz-pass__hint {
+  margin: 0 0 1rem;
+  font-size: 0.92rem;
+  color: #64748b;
+  line-height: 1.45;
+}
+
+.quiz-pass__actions {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+}

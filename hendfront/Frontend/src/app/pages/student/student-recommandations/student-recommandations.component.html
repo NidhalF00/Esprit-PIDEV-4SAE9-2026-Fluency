@@ -1,0 +1,57 @@
+<section class="sr-head">
+  <h1 class="sr-title">Recommandations</h1>
+  <p class="sr-lead">Suggestions de modules selon le niveau et la catégorie (API Spring).</p>
+</section>
+
+<mat-card class="sr-filters" appearance="outlined">
+  <div class="sr-filters__row">
+    <mat-form-field appearance="outline" class="sr-field">
+      <mat-label>Niveau (modules)</mat-label>
+      <input matInput [(ngModel)]="niveau" />
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="sr-field">
+      <mat-label>Catégorie (modules)</mat-label>
+      <input matInput [(ngModel)]="categorie" />
+    </mat-form-field>
+    <button mat-flat-button color="primary" type="button" (click)="load()" [disabled]="loading()">Actualiser</button>
+  </div>
+</mat-card>
+
+@if (loading()) {
+  <p class="sr-muted">Chargement…</p>
+}
+@if (error()) {
+  <p class="sr-alert">{{ error() }}</p>
+}
+
+<section class="sr-section">
+  <h2 class="sr-h2">Modules — même niveau</h2>
+  <div class="sr-grid">
+    @for (m of modulesNiveau(); track m.id ?? $index) {
+      <article class="sr-card" (click)="openModule(m)">
+        <h3>{{ m.titre }}</h3>
+        <p>{{ m.description }}</p>
+        <span class="sr-pill">{{ m.niveau }}</span>
+      </article>
+    }
+  </div>
+  @if (!modulesNiveau().length && !loading()) {
+    <p class="sr-muted">Aucun résultat pour ce niveau.</p>
+  }
+</section>
+
+<section class="sr-section">
+  <h2 class="sr-h2">Modules — même catégorie</h2>
+  <div class="sr-grid">
+    @for (m of modulesCat(); track m.id ?? $index) {
+      <article class="sr-card" (click)="openModule(m)">
+        <h3>{{ m.titre }}</h3>
+        <p>{{ m.description }}</p>
+        <span class="sr-pill sr-pill--2">{{ m.categorie }}</span>
+      </article>
+    }
+  </div>
+  @if (!modulesCat().length && !loading()) {
+    <p class="sr-muted">Aucun résultat pour cette catégorie.</p>
+  }
+</section>

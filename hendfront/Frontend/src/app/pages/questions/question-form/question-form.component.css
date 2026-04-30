@@ -1,0 +1,37 @@
+.page {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 2rem;
+}
+
+.page h1 {
+  margin: 0 0 1.25rem;
+  font-size: 1.5rem;
+  color: #0f172a;
+}
+
+.form-card {
+  padding: 0.5rem 0.25rem 1rem;
+  border-radius: 12px !important;
+}
+
+.full {
+  width: 100%;
+  display: block;
+}
+
+.narrow {
+  width: 100%;
+  max-width: 200px;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.muted {
+  color: #64748b;
+}

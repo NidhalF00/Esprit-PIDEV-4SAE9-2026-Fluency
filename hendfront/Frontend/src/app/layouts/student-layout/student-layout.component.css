@@ -1,0 +1,145 @@
+.st {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 35%, #f1f5f9 100%);
+}
+
+.st-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.35);
+  box-shadow: 0 4px 24px rgba(15, 23, 42, 0.06);
+}
+
+.st-header__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0.65rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.st-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  text-decoration: none;
+  color: #1e1b4b;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin-right: auto;
+}
+
+.st-brand__mark {
+  color: #6366f1;
+  font-size: 1.1rem;
+}
+
+.st-brand__pill {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #dbeafe, #e0e7ff);
+  color: #4338ca;
+}
+
+.st-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  align-items: center;
+}
+
+.st-nav a {
+  color: #475569;
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 0.35rem 0;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.st-nav a:hover {
+  color: #312e81;
+}
+
+.st-nav a.is-active {
+  color: #4f46e5;
+  border-bottom-color: #4f46e5;
+}
+
+.st-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.st-email {
+  font-size: 0.8rem;
+  color: #64748b;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.st-burger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 42px;
+  height: 42px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.st-burger span {
+  display: block;
+  height: 2px;
+  background: #334155;
+  border-radius: 2px;
+}
+
+.st-main {
+  flex: 1;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 2.5rem;
+}
+
+@media (max-width: 960px) {
+  .st-burger {
+    display: flex;
+  }
+
+  .st-nav {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0.5rem 0 0;
+  }
+
+  .st-header--open .st-nav {
+    display: flex;
+  }
+
+  .st-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}

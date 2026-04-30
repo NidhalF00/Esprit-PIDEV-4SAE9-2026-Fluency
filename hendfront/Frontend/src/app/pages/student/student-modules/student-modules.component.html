@@ -1,0 +1,44 @@
+<section class="sm-hero">
+  <div class="sm-hero__copy">
+    <p class="sm-hero__badge">Parcours e-learning</p>
+    <h1 class="sm-hero__title">Vos modules</h1>
+    <p class="sm-hero__lead">Choisissez un module et explorez les cours associés, quiz et ressources.</p>
+    <a routerLink="/student/certificats" class="sm-hero__cert-cta">Voir mes certificats de réussite</a>
+  </div>
+</section>
+
+@if (loading()) {
+  <p class="sm-muted">Chargement des modules…</p>
+}
+@if (error()) {
+  <p class="sm-alert">{{ error() }}</p>
+}
+
+<div class="sm-grid">
+  @for (m of modules(); track m.id ?? $index; let i = $index) {
+    <article class="sm-card">
+      <div class="sm-card__media">
+        <img [src]="coverFor(m, i)" [alt]="'Illustration ' + m.titre" width="400" height="220" loading="lazy" />
+        <span class="sm-card__badge" [class.sm-card__badge--off]="!m.actif">{{ m.actif ? 'Actif' : 'Inactif' }}</span>
+      </div>
+      <div class="sm-card__body">
+        <div class="sm-card__tags">
+          <span class="sm-tag">{{ m.niveau }}</span>
+          <span class="sm-tag sm-tag--soft">{{ m.categorie }}</span>
+        </div>
+        <h2 class="sm-card__title">{{ m.titre }}</h2>
+        <p class="sm-card__desc">{{ m.description }}</p>
+        <div class="sm-card__meta">
+          <span>⏱ {{ m.dureeTotale }} h</span>
+        </div>
+        <button mat-flat-button color="primary" type="button" class="sm-card__btn" (click)="openCours(m)">
+          Voir les cours
+        </button>
+      </div>
+    </article>
+  }
+</div>
+
+@if (!loading() && !modules().length && !error()) {
+  <p class="sm-muted">Aucun module disponible pour le moment.</p>
+}

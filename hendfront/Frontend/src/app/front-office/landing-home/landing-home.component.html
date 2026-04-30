@@ -1,0 +1,209 @@
+<div class="landing">
+  <app-fo-navbar />
+
+  <section class="landing__hero">
+    <div class="landing__hero-inner">
+      <div class="landing__hero-copy">
+        <p class="landing__badge">Plateforme e-learning nouvelle génération</p>
+        <h1 class="landing__h1">Apprenez autrement, <span class="landing__gradient">progressez chaque jour</span></h1>
+        <p class="landing__lead">
+          Votre espace moderne pour suivre des modules structurés, des cours enrichis et des quiz interactifs — avec un
+          suivi clair de votre réussite.
+        </p>
+        <div class="landing__hero-cta">
+          <button type="button" mat-flat-button color="primary" class="landing__btn-main" (click)="demarrer()">
+            Démarrer
+          </button>
+          <button type="button" mat-stroked-button class="landing__btn-ghost" (click)="decouvrirCours()">
+            Découvrir les cours
+          </button>
+        </div>
+        <ul class="landing__hero-bullets" aria-label="Points clés">
+          <li><span class="landing__tick">✓</span> Parcours par modules</li>
+          <li><span class="landing__tick">✓</span> Quiz & évaluations</li>
+          <li><span class="landing__tick">✓</span> Suivi de progression</li>
+        </ul>
+      </div>
+      <div class="landing__hero-visual">
+        <div class="landing__hero-card">
+          <img
+            class="landing__hero-img"
+            src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=900&q=80"
+            width="440"
+            height="330"
+            alt="Étudiants collaborant sur un projet e-learning"
+            loading="eager"
+          />
+          <div class="landing__hero-float landing__hero-float--1">
+            <span class="landing__mini-icon">📊</span>
+            <span>Progression suivie</span>
+          </div>
+          <div class="landing__hero-float landing__hero-float--2">
+            <span class="landing__mini-icon">🎯</span>
+            <span>Objectifs clairs</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="landing__section landing__why" id="apropos">
+    <div class="landing__container">
+      <header class="landing__section-head">
+        <h2 class="landing__h2">Pourquoi choisir Fluency ?</h2>
+        <p class="landing__sub">Une expérience pensée pour la réussite des apprenants et la clarté des parcours.</p>
+      </header>
+      <div class="landing__cards landing__cards--4">
+        <article class="landing__card">
+          <div class="landing__card-icon" aria-hidden="true">🕐</div>
+          <h3 class="landing__h3">Apprentissage flexible</h3>
+          <p>Accédez aux contenus où et quand vous voulez, à votre rythme.</p>
+        </article>
+        <article class="landing__card">
+          <div class="landing__card-icon" aria-hidden="true">🧠</div>
+          <h3 class="landing__h3">Quiz interactifs</h3>
+          <p>Questions variées pour ancrer les notions et mesurer votre niveau.</p>
+        </article>
+        <article class="landing__card">
+          <div class="landing__card-icon" aria-hidden="true">📈</div>
+          <h3 class="landing__h3">Suivi de progression</h3>
+          <p>Visualisez vos avancements module par module.</p>
+        </article>
+        <article class="landing__card">
+          <div class="landing__card-icon" aria-hidden="true">🎓</div>
+          <h3 class="landing__h3">Parcours structurés</h3>
+          <p>Modules et cours organisés pour une montée en compétences logique.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="landing__section landing__features">
+    <div class="landing__container">
+      <header class="landing__section-head">
+        <h2 class="landing__h2">Nos fonctionnalités</h2>
+        <p class="landing__sub">Tout ce dont vous avez besoin pour former, évaluer et progresser.</p>
+      </header>
+      <div class="landing__feature-grid">
+        <div class="landing__feature">
+          <span class="landing__feature-badge">01</span>
+          <h3>Modules</h3>
+          <p>Regroupez vos contenus par thématique, niveau et durée.</p>
+        </div>
+        <div class="landing__feature">
+          <span class="landing__feature-badge">02</span>
+          <h3>Cours</h3>
+          <p>Leçons riches : texte, médias et ressources liées à chaque module.</p>
+        </div>
+        <div class="landing__feature">
+          <span class="landing__feature-badge">03</span>
+          <h3>Quiz</h3>
+          <p>Évaluez les acquis avec des barèmes et scores adaptés.</p>
+        </div>
+        <div class="landing__feature">
+          <span class="landing__feature-badge">04</span>
+          <h3>Questions & réponses</h3>
+          <p>Banques de questions et corrections pour un apprentissage actif.</p>
+        </div>
+        <div class="landing__feature landing__feature--wide">
+          <span class="landing__feature-badge">05</span>
+          <h3>Expérience utilisateur</h3>
+          <p>Interface sobre, lisible et agréable — pour rester concentré sur l’essentiel : apprendre.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="landing__section landing__path">
+    <div class="landing__container">
+      <header class="landing__section-head">
+        <h2 class="landing__h2">Votre parcours d’apprentissage</h2>
+        <p class="landing__sub">Un scénario simple, du premier clic à la réussite.</p>
+      </header>
+      <ol class="landing__timeline">
+        @for (e of etapes; track e.titre; let i = $index) {
+          <li class="landing__step">
+            <div class="landing__step-num">{{ i + 1 }}</div>
+            <div class="landing__step-body">
+              <span class="landing__step-ico">{{ e.icon }}</span>
+              <h3 class="landing__h3">{{ e.titre }}</h3>
+              <p>{{ e.desc }}</p>
+            </div>
+          </li>
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="landing__stats" aria-label="Chiffres clés">
+    <div class="landing__container landing__stats-inner">
+      <div class="landing__stat">
+        <strong class="landing__stat-val">{{ stats.modules }}+</strong>
+        <span>Modules</span>
+      </div>
+      <div class="landing__stat">
+        <strong class="landing__stat-val">{{ stats.cours }}+</strong>
+        <span>Cours</span>
+      </div>
+      <div class="landing__stat">
+        <strong class="landing__stat-val">{{ stats.quiz }}+</strong>
+        <span>Quiz</span>
+      </div>
+      <div class="landing__stat">
+        <strong class="landing__stat-val">{{ stats.apprenants | number: '1.0-0' }}</strong>
+        <span>Apprenants</span>
+      </div>
+      <div class="landing__stat">
+        <strong class="landing__stat-val">{{ stats.reussite }}%</strong>
+        <span>Taux de réussite</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="landing__section landing__testi">
+    <div class="landing__container">
+      <header class="landing__section-head">
+        <h2 class="landing__h2">Ils progressent avec Fluency</h2>
+        <p class="landing__sub">Témoignages d’apprenants — avis fictifs à titre illustratif.</p>
+      </header>
+      <div class="landing__testi-grid">
+        @for (t of temoignages; track t.nom) {
+          <article class="landing__testi-card">
+            <div class="landing__stars" [attr.aria-label]="t.note + ' sur 5'">
+              @for (s of [1, 2, 3, 4, 5]; track s) {
+                <span [class.is-off]="s > t.note">★</span>
+              }
+            </div>
+            <p class="landing__testi-text">« {{ t.texte }} »</p>
+            <div class="landing__testi-user">
+              <img [src]="t.avatar" [alt]="'Avatar ' + t.nom" width="48" height="48" loading="lazy" />
+              <div>
+                <strong>{{ t.nom }}</strong>
+                <span>{{ t.role }}</span>
+              </div>
+            </div>
+          </article>
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="landing__cta" id="contact">
+    <div class="landing__container landing__cta-inner">
+      <div class="landing__cta-copy">
+        <h2 class="landing__h2 landing__h2--light">Prêt à commencer ?</h2>
+        <p>Rejoignez un parcours clair, des contenus de qualité et une communauté qui apprend chaque jour.</p>
+      </div>
+      <div class="landing__cta-btns">
+        <button type="button" mat-flat-button color="accent" class="landing__btn-light" (click)="commencerMaintenant()">
+          Commencer maintenant
+        </button>
+        <button type="button" mat-stroked-button class="landing__btn-outline" (click)="explorerModules()">
+          Explorer les modules
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <app-fo-footer />
+</div>

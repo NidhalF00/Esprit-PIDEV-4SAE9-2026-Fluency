@@ -1,0 +1,27 @@
+<div class="page">
+  @if (loading()) {
+    <p class="muted">Chargement…</p>
+  } @else if (quiz) {
+    <div class="page-head">
+      <h1>{{ quiz.titre }}</h1>
+      <div class="head-actions">
+        <button mat-stroked-button type="button" (click)="back()">Retour</button>
+        @if (quiz.id != null) {
+          <a mat-stroked-button [routerLink]="['/quizzes', quiz.id, 'pass']">Passer le quiz</a>
+        }
+        <button mat-flat-button color="primary" type="button" (click)="edit()">Modifier</button>
+      </div>
+    </div>
+
+    <mat-card appearance="outlined" class="detail-card">
+      <dl class="detail-grid">
+        <dt>Cours</dt>
+        <dd>{{ quiz.cours?.titre ?? '—' }}</dd>
+        <dt>Description</dt>
+        <dd class="multiline">{{ quiz.description }}</dd>
+        <dt>Score maximum</dt>
+        <dd>{{ quiz.scoreMax }}</dd>
+      </dl>
+    </mat-card>
+  }
+</div>

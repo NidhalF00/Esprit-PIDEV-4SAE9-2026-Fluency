@@ -1,0 +1,32 @@
+<header class="fo-nav" [class.fo-nav--open]="menuOpen">
+  <div class="fo-nav__inner">
+    <a routerLink="/" class="fo-nav__brand" (click)="closeMenu()">
+      <span class="fo-nav__logo" aria-hidden="true">◆</span>
+      <span class="fo-nav__title">Fluency</span>
+    </a>
+
+    <button
+      type="button"
+      class="fo-nav__burger"
+      [attr.aria-expanded]="menuOpen"
+      aria-controls="fo-nav-menu"
+      (click)="toggleMenu()"
+    >
+      <span class="fo-nav__burger-lines"></span>
+    </button>
+
+    <nav id="fo-nav-menu" class="fo-nav__links" [class.fo-nav__links--open]="menuOpen">
+      <a routerLink="/" class="fo-nav__link" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMenu()">Home</a>
+      <a routerLink="/modules" class="fo-nav__link" routerLinkActive="is-active" (click)="closeMenu()">Modules</a>
+      <a routerLink="/cours" class="fo-nav__link" routerLinkActive="is-active" (click)="closeMenu()">Cours</a>
+      <a routerLink="/quizzes" class="fo-nav__link" routerLinkActive="is-active" (click)="closeMenu()">Quiz</a>
+      <a routerLink="/" fragment="apropos" class="fo-nav__link" (click)="closeMenu()">À propos</a>
+      <a routerLink="/" fragment="contact" class="fo-nav__link" (click)="closeMenu()">Contact</a>
+    </nav>
+
+    <div class="fo-nav__actions">
+      <button type="button" mat-stroked-button class="fo-nav__btn-secondary" (click)="connexion()">Connexion</button>
+      <button type="button" mat-flat-button color="primary" class="fo-nav__btn-primary" (click)="demarrer()">Démarrer</button>
+    </div>
+  </div>
+</header>

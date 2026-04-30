@@ -1,0 +1,105 @@
+<div class="page">
+  <h1>{{ editId != null ? 'Modifier le cours' : 'Nouveau cours' }}</h1>
+
+  @if (loading()) {
+    <p class="muted">Chargement…</p>
+  } @else {
+    <mat-card appearance="outlined" class="form-card">
+      <form [formGroup]="form" (ngSubmit)="save()">
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Module</mat-label>
+          <mat-select formControlName="moduleId">
+            @for (m of modules(); track m.id) {
+              <mat-option [value]="m.id">{{ m.titre }}</mat-option>
+            }
+          </mat-select>
+          @if (form.controls.moduleId.touched && form.controls.moduleId.hasError('required')) {
+            <mat-error>Requis</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Titre</mat-label>
+          <input matInput formControlName="titre" />
+          @if (form.controls.titre.touched && form.controls.titre.hasError('required')) {
+            <mat-error>Requis</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Contenu</mat-label>
+          <textarea matInput rows="4" formControlName="contenu"></textarea>
+          @if (form.controls.contenu.touched && form.controls.contenu.hasError('required')) {
+            <mat-error>Requis</mat-error>
+          }
+        </mat-form-field>
+
+        <div class="row">
+          <mat-form-field appearance="outline" class="grow">
+            <mat-label>Ordre du cours</mat-label>
+            <input matInput type="number" formControlName="ordreCours" />
+            @if (form.controls.ordreCours.invalid && form.controls.ordreCours.touched) {
+              <mat-error>Numéro valide requis</mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="grow">
+            <mat-label>Durée (minutes)</mat-label>
+            <input matInput type="number" formControlName="duree" />
+            @if (form.controls.duree.invalid && form.controls.duree.touched) {
+              <mat-error>Numéro valide requis</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Type de contenu</mat-label>
+          <input matInput formControlName="typeContenu" />
+          @if (form.controls.typeContenu.touched && form.controls.typeContenu.hasError('required')) {
+            <mat-error>Requis</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>URL ressource</mat-label>
+          <input matInput type="url" formControlName="urlRessource" placeholder="https://…" />
+          <mat-hint>Laissez vide si vous joignez un PDF (création uniquement).</mat-hint>
+        </mat-form-field>
+
+        @if (editId == null) {
+          <div class="pdf-block">
+            <span class="pdf-block__label">Document PDF (optionnel)</span>
+            <p class="pdf-block__hint">
+              À la création, vous pouvez envoyer un PDF : le serveur reçoit les données du cours + le fichier
+              (<code>/cours/avec-pdf</code>).
+            </p>
+            <div class="pdf-block__row">
+              <input
+                #pdfInput
+                class="pdf-block__input"
+                type="file"
+                accept="application/pdf,.pdf"
+                (change)="onPdfSelected($event)"
+              />
+              @if (pdfFile) {
+                <span class="pdf-block__name">{{ pdfFile.name }}</span>
+                <button mat-button type="button" (click)="clearPdf(pdfInput)">Retirer</button>
+              }
+            </div>
+          </div>
+        }
+
+        <div class="check-row">
+          <mat-checkbox formControlName="gratuit">Gratuit</mat-checkbox>
+          <mat-checkbox formControlName="publie">Publié</mat-checkbox>
+        </div>
+
+        <div class="actions">
+          <button mat-stroked-button type="button" (click)="cancel()" [disabled]="saving()">Annuler</button>
+          <button mat-flat-button color="primary" type="submit" [disabled]="saving()">
+            {{ saving() ? 'Enregistrement…' : 'Enregistrer' }}
+          </button>
+        </div>
+      </form>
+    </mat-card>
+  }
+</div>

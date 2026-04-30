@@ -1,0 +1,70 @@
+<div class="page">
+  <nav class="subnav">
+    <a routerLink="/recherche/modules" routerLinkActive="active">Modules</a>
+    <a routerLink="/recherche/cours" routerLinkActive="active">Cours</a>
+  </nav>
+  <h1>Recherche — cours</h1>
+  <p class="lead">
+    Filtres query : <code>titre</code>, <code>typeContenu</code>, <code>publie</code> — ou recherche par type seul via le chemin dédié.
+  </p>
+
+  <mat-card appearance="outlined" class="filter-card">
+    <div class="fields">
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Titre</mat-label>
+        <input matInput [(ngModel)]="titre" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Type de contenu</mat-label>
+        <input matInput [(ngModel)]="typeContenu" placeholder="PDF, VIDEO, …" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Publié</mat-label>
+        <mat-select [(ngModel)]="publieFiltre">
+          <mat-option value="">Tous</mat-option>
+          <mat-option value="oui">Oui</mat-option>
+          <mat-option value="non">Non</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <button mat-flat-button color="primary" type="button" [disabled]="loading" (click)="rechercher()">
+      Rechercher
+    </button>
+  </mat-card>
+
+  <mat-card appearance="outlined" class="filter-card filter-card--secondary">
+    <h2 class="filter-card__h">Cours par type seul</h2>
+    <p class="hint">Équivalent à <code>GET .../recherche/cours/type/PDF</code></p>
+    <div class="row-type">
+      <mat-form-field appearance="outline" class="grow">
+        <mat-label>Type (ex. PDF, VIDEO)</mat-label>
+        <input matInput [(ngModel)]="typeSeul" placeholder="PDF" />
+      </mat-form-field>
+      <button mat-stroked-button color="primary" type="button" [disabled]="loading" (click)="rechercherParType()">
+        Par type
+      </button>
+    </div>
+  </mat-card>
+
+  @if (error) {
+    <p class="alert">{{ error }}</p>
+  }
+  @if (loading) {
+    <p class="muted">Recherche…</p>
+  }
+
+  <div class="grid">
+    @for (c of cours; track c.id) {
+      <mat-card class="item-card" appearance="outlined">
+        <h3>{{ c.titre }}</h3>
+        <p class="meta">{{ c.typeContenu }} · {{ c.publie ? 'Publié' : 'Brouillon' }}</p>
+        <p class="desc">{{ (c.contenu ?? '') | slice: 0 : 140 }}{{ (c.contenu ?? '').length > 140 ? '…' : '' }}</p>
+        <button mat-stroked-button type="button" (click)="voir(c)">Ouvrir</button>
+      </mat-card>
+    }
+  </div>
+
+  @if (!loading && cours.length === 0 && !error) {
+    <p class="muted">Lance une recherche pour afficher des résultats.</p>
+  }
+</div>

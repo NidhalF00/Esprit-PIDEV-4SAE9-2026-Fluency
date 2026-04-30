@@ -1,0 +1,61 @@
+<div class="page">
+  <h1>{{ editId != null ? 'Modifier le module' : 'Nouveau module' }}</h1>
+
+  @if (loading()) {
+    <p class="muted">Chargement…</p>
+  } @else {
+    <mat-card appearance="outlined" class="form-card">
+      <form [formGroup]="form" (ngSubmit)="save()">
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Titre</mat-label>
+          <input matInput formControlName="titre" />
+          @if (form.controls.titre.touched && form.controls.titre.hasError('required')) {
+            <mat-error>Requis</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Description</mat-label>
+          <textarea matInput rows="3" formControlName="description"></textarea>
+          @if (form.controls.description.touched && form.controls.description.hasError('required')) {
+            <mat-error>Requis</mat-error>
+          }
+        </mat-form-field>
+
+        <div class="row">
+          <mat-form-field appearance="outline" class="grow">
+            <mat-label>Niveau</mat-label>
+            <input matInput formControlName="niveau" />
+            @if (form.controls.niveau.touched && form.controls.niveau.hasError('required')) {
+              <mat-error>Requis</mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="grow">
+            <mat-label>Catégorie</mat-label>
+            <input matInput formControlName="categorie" />
+            @if (form.controls.categorie.touched && form.controls.categorie.hasError('required')) {
+              <mat-error>Requis</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="narrow">
+          <mat-label>Durée totale (heures)</mat-label>
+          <input matInput type="number" formControlName="dureeTotale" />
+          @if (form.controls.dureeTotale.touched && form.controls.dureeTotale.invalid) {
+            <mat-error>Valeur numérique valide requise</mat-error>
+          }
+        </mat-form-field>
+
+        <div class="check-row">
+          <mat-checkbox formControlName="actif">Actif</mat-checkbox>
+        </div>
+
+        <div class="actions">
+          <button mat-stroked-button type="button" (click)="cancel()">Annuler</button>
+          <button mat-flat-button color="primary" type="submit">Enregistrer</button>
+        </div>
+      </form>
+    </mat-card>
+  }
+</div>

@@ -1,0 +1,52 @@
+<div class="page">
+  <h1>{{ editId != null ? 'Modifier le quiz' : 'Nouveau quiz' }}</h1>
+
+  @if (loading()) {
+    <p class="muted">Chargement…</p>
+  } @else {
+    <mat-card appearance="outlined" class="form-card">
+      <form [formGroup]="form" (ngSubmit)="save()">
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Cours</mat-label>
+          <mat-select formControlName="coursId">
+            @for (c of coursList(); track c.id) {
+              <mat-option [value]="c.id">{{ c.titre }}</mat-option>
+            }
+          </mat-select>
+          @if (form.controls.coursId.touched && form.controls.coursId.hasError('required')) {
+            <mat-error>Requis</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Titre</mat-label>
+          <input matInput formControlName="titre" />
+          @if (form.controls.titre.touched && form.controls.titre.hasError('required')) {
+            <mat-error>Requis</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Description</mat-label>
+          <textarea matInput rows="3" formControlName="description"></textarea>
+          @if (form.controls.description.touched && form.controls.description.hasError('required')) {
+            <mat-error>Requis</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="narrow">
+          <mat-label>Score maximum</mat-label>
+          <input matInput type="number" formControlName="scoreMax" />
+          @if (form.controls.scoreMax.invalid && form.controls.scoreMax.touched) {
+            <mat-error>Valeur numérique valide requise</mat-error>
+          }
+        </mat-form-field>
+
+        <div class="actions">
+          <button mat-stroked-button type="button" (click)="cancel()">Annuler</button>
+          <button mat-flat-button color="primary" type="submit">Enregistrer</button>
+        </div>
+      </form>
+    </mat-card>
+  }
+</div>

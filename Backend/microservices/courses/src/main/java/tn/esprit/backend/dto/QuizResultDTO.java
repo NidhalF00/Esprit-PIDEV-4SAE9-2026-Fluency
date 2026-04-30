@@ -1,8 +1,5 @@
 package tn.esprit.backend.dto;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Résultat après soumission / correction d'un quiz.
  */
@@ -28,8 +25,6 @@ public class QuizResultDTO {
     private Boolean emailEnvoye;
     /** Indique si un PDF est disponible en téléchargement. */
     private Boolean pdfDisponible;
-    /** Inference details per submitted question. */
-    private List<QuizInferenceResultDTO> inferenceResults = new ArrayList<>();
 
     public QuizResultDTO() {
     }
@@ -172,13 +167,5 @@ public class QuizResultDTO {
 
     public void setPdfDisponible(Boolean pdfDisponible) {
         this.pdfDisponible = pdfDisponible;
-    }
-
-    public List<QuizInferenceResultDTO> getInferenceResults() {
-        return inferenceResults;
-    }
-
-    public void setInferenceResults(List<QuizInferenceResultDTO> inferenceResults) {
-        this.inferenceResults = inferenceResults != null ? inferenceResults : new ArrayList<>();
     }
 }

@@ -1,0 +1,62 @@
+<section class="sqr-head">
+  <h1 class="sqr-title">Résultat du quiz</h1>
+  <p class="sqr-lead">Affichage du dernier score soumis dans cette session.</p>
+</section>
+
+@if (!snapshot()) {
+  <mat-card class="sqr-empty" appearance="outlined">
+    <p>Aucun résultat récent. Passez un quiz depuis un cours pour voir votre score ici.</p>
+    <button mat-flat-button color="primary" type="button" (click)="backModules()">Vers les modules</button>
+  </mat-card>
+} @else {
+  @let s = snapshot()!;
+  <mat-card class="sqr-hero" appearance="outlined">
+    <div class="sqr-hero__top">
+      <div>
+        <p class="sqr-kicker">Quiz #{{ s.quizId }}</p>
+        <h2 class="sqr-quiz-title">{{ s.quizTitre || 'Évaluation' }}</h2>
+      </div>
+      <span class="sqr-badge" [class.sqr-badge--ok]="valide(s.result)" [class.sqr-badge--ko]="!valide(s.result)">
+        {{ valide(s.result) ? 'Validé' : 'Non validé' }}
+      </span>
+    </div>
+
+    <div class="sqr-stats">
+      <div class="sqr-stat">
+        <span class="sqr-stat__l">Score</span>
+        <strong class="sqr-stat__v">{{ scoreDisplay(s.result) }}</strong>
+      </div>
+      <div class="sqr-stat">
+        <span class="sqr-stat__l">Pourcentage</span>
+        <strong class="sqr-stat__v sqr-stat__v--pct">{{ pourcentageDisplay(s.result) }}</strong>
+      </div>
+      @if (bonnes(s.result) != null) {
+        <div class="sqr-stat">
+          <span class="sqr-stat__l">Bonnes réponses</span>
+          <strong class="sqr-stat__v">{{ bonnes(s.result) }}</strong>
+        </div>
+      }
+      @if (mauvaises(s.result) != null) {
+        <div class="sqr-stat">
+          <span class="sqr-stat__l">Mauvaises réponses</span>
+          <strong class="sqr-stat__v">{{ mauvaises(s.result) }}</strong>
+        </div>
+      }
+    </div>
+
+    @if (s.result.pourcentage != null) {
+      <mat-progress-bar mode="determinate" [value]="progressValue(s.result)"></mat-progress-bar>
+    }
+
+    @if (s.result.message) {
+      <p class="sqr-msg">{{ s.result.message }}</p>
+    }
+
+    <app-student-certificat-celebration [result]="s.result" />
+
+    <div class="sqr-actions">
+      <button mat-stroked-button type="button" (click)="backModules()">Retour aux modules</button>
+      <button mat-button type="button" color="warn" (click)="clear()">Effacer l’affichage</button>
+    </div>
+  </mat-card>
+}

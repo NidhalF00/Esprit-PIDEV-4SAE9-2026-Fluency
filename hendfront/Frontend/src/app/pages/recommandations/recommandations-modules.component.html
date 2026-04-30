@@ -1,0 +1,58 @@
+<div class="page">
+  <nav class="subnav">
+    <a routerLink="/recommandations/modules" routerLinkActive="active">Modules</a>
+    <a routerLink="/recommandations/cours" routerLinkActive="active">Cours suivants</a>
+  </nav>
+  <h1>Recommandations — modules</h1>
+  <p class="lead">Modules suggérés par niveau ou par catégorie (service backend).</p>
+
+  <div class="filters">
+    <mat-card appearance="outlined" class="filter-card">
+      <h2>Par niveau</h2>
+      <div class="row">
+        <mat-form-field appearance="outline" class="grow">
+          <mat-label>Niveau</mat-label>
+          <input matInput [(ngModel)]="niveau" placeholder="ex. Débutant" />
+        </mat-form-field>
+        <button mat-flat-button color="primary" type="button" [disabled]="loading" (click)="chargerParNiveau()">
+          Afficher
+        </button>
+      </div>
+    </mat-card>
+
+    <mat-card appearance="outlined" class="filter-card">
+      <h2>Par catégorie</h2>
+      <div class="row">
+        <mat-form-field appearance="outline" class="grow">
+          <mat-label>Catégorie</mat-label>
+          <input matInput [(ngModel)]="categorie" placeholder="ex. Programmation" />
+        </mat-form-field>
+        <button mat-flat-button color="primary" type="button" [disabled]="loading" (click)="chargerParCategorie()">
+          Afficher
+        </button>
+      </div>
+    </mat-card>
+  </div>
+
+  @if (error) {
+    <p class="alert">{{ error }}</p>
+  }
+  @if (loading) {
+    <p class="muted">Chargement…</p>
+  }
+
+  <div class="grid">
+    @for (m of modules; track m.id) {
+      <mat-card class="item-card" appearance="outlined">
+        <h3>{{ m.titre }}</h3>
+        <p class="meta">{{ m.niveau }} · {{ m.categorie }}</p>
+        <p class="desc">{{ m.description }}</p>
+        <button mat-stroked-button type="button" (click)="voirModule(m)">Voir le module</button>
+      </mat-card>
+    }
+  </div>
+
+  @if (!loading && modules.length === 0 && !error) {
+    <p class="muted">Aucun résultat pour l’instant — lance une recherche ci-dessus.</p>
+  }
+</div>

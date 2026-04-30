@@ -1,0 +1,36 @@
+@if (!hideGlobalHeader()) {
+  <header class="app-header">
+    <div class="app-header-inner">
+      <a routerLink="/" class="brand">Fluency</a>
+      <nav class="app-nav">
+        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Accueil</a>
+        @if (auth.isAuthenticated()) {
+          @if (auth.role() === 'student') {
+            <a routerLink="/student/modules" routerLinkActive="active">Étudiant</a>
+            <a routerLink="/student/recommandations" routerLinkActive="active">Recommandations</a>
+            <a routerLink="/student/recherche" routerLinkActive="active">Recherche</a>
+            <a routerLink="/student/statistiques" routerLinkActive="active">Stats</a>
+          }
+          @if (auth.role() === 'teacher') {
+            <a routerLink="/teacher/dashboard" routerLinkActive="active">Formateur</a>
+            <a routerLink="/teacher/modules" routerLinkActive="active">Modules</a>
+            <a routerLink="/teacher/cours" routerLinkActive="active">Cours</a>
+            <a routerLink="/teacher/quizzes" routerLinkActive="active">Quiz</a>
+          }
+          <button type="button" class="app-nav__btn" (click)="logout()">Déconnexion</button>
+        } @else {
+          <a routerLink="/login" routerLinkActive="active">Connexion</a>
+        }
+        <span class="app-nav__sep" aria-hidden="true">|</span>
+        <a routerLink="/modules" routerLinkActive="active">Modules (legacy)</a>
+        <a routerLink="/cours" routerLinkActive="active">Cours</a>
+        <a routerLink="/admin/dashboard" routerLinkActive="active">Admin</a>
+        <a routerLink="/courses" routerLinkActive="active">Courses legacy</a>
+      </nav>
+    </div>
+  </header>
+}
+
+<main class="app-main" [class.app-main--flush]="hideGlobalHeader()">
+  <router-outlet />
+</main>

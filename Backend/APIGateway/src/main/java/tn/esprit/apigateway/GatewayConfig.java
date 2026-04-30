@@ -15,13 +15,7 @@ public class GatewayConfig {
         return builder.routes()
                 .route("courses", r -> r.path("/courses/**")
                         .filters(f -> f.stripPrefix(1))
-                        .uri("lb://COURSES"))
-                .route("forum-service", r -> r.path("/forum/**")
-                        .filters(f -> f.stripPrefix(1))
-                        .uri("lb://ForumBackend"))
-                // Pas de stripPrefix : les contrôleurs users sont sous /user/... (ex. /user/auth/signin).
-                .route("user-service", r -> r.path("/user/**")
-                        .uri("lb://user"))
+                        .uri("http://localhost:8081"))
                 .build();
     }
 
@@ -32,7 +26,7 @@ public class GatewayConfig {
         corsConfig.addAllowedOrigin("*");
         corsConfig.addAllowedMethod("*");
         corsConfig.addAllowedHeader("*");
-        corsConfig.setAllowCredentials(false);
+        corsConfig.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source =
                 new UrlBasedCorsConfigurationSource();

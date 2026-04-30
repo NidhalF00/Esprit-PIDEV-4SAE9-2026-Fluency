@@ -1,0 +1,24 @@
+<div class="page">
+  @if (loading()) {
+    <p class="muted">Chargement…</p>
+  } @else if (reponse) {
+    <div class="page-head">
+      <h1>Réponse</h1>
+      <div class="head-actions">
+        <button mat-stroked-button type="button" (click)="back()">Retour</button>
+        <button mat-flat-button color="primary" type="button" (click)="edit()">Modifier</button>
+      </div>
+    </div>
+
+    <mat-card appearance="outlined" class="detail-card">
+      <dl class="detail-grid">
+        <dt>Question</dt>
+        <dd class="multiline">{{ reponse.question?.enonce ?? '—' }}</dd>
+        <dt>Texte</dt>
+        <dd class="multiline">{{ reponse.texte }}</dd>
+        <dt>Correcte</dt>
+        <dd>{{ reponse.correcte ? 'Oui' : 'Non' }}</dd>
+      </dl>
+    </mat-card>
+  }
+</div>

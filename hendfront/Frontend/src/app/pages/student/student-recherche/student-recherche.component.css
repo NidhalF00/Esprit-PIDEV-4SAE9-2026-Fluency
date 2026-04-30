@@ -1,0 +1,105 @@
+.srec-head {
+  margin-bottom: 1rem;
+}
+
+.srec-title {
+  margin: 0 0 0.35rem;
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.srec-lead {
+  margin: 0;
+  color: #64748b;
+}
+
+.srec-tabs {
+  background: #fff;
+  border-radius: 16px;
+  padding: 0.5rem 0.5rem 1rem;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 8px 30px rgba(15, 23, 42, 0.06);
+}
+
+.srec-panel {
+  padding: 1rem 0.25rem 0;
+}
+
+.srec-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.srec-row {
+  margin-bottom: 1rem;
+}
+
+.srec-typeonly {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.srec-grow {
+  flex: 1 1 220px;
+  min-width: 0;
+}
+
+.srec-alert {
+  color: #b91c1c;
+  background: #fef2f2;
+  padding: 0.65rem 0.85rem;
+  border-radius: 10px;
+}
+
+.srec-muted {
+  color: #64748b;
+}
+
+.srec-results {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.srec-card {
+  padding: 1rem 1.1rem !important;
+  border-radius: 14px !important;
+  cursor: pointer;
+  transition: box-shadow 0.15s ease;
+}
+
+.srec-card:hover {
+  box-shadow: 0 12px 28px rgba(99, 102, 241, 0.12) !important;
+}
+
+.srec-card h3 {
+  margin: 0 0 0.35rem;
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.srec-card p {
+  margin: 0 0 0.5rem;
+  font-size: 0.88rem;
+  color: #64748b;
+}
+
+.srec-meta {
+  font-size: 0.8rem;
+  color: #475569;
+}
+
+.srec-card--cours {
+  cursor: default;
+}
+
+.srec-card--cours:hover {
+  box-shadow: none !important;
+}

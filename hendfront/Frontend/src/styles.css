@@ -1,0 +1,41 @@
+/* You can add global styles to this file, and also import other style files */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family:
+    'Plus Jakarta Sans',
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    sans-serif;
+  color: #0f172a;
+  background: #f8fafc;
+}
+
+:root {
+  --fluency-primary: #4f46e5;
+  --fluency-primary-dark: #3730a3;
+  --fluency-accent: #10b981;
+  --fluency-surface: #ffffff;
+  --fluency-muted: #64748b;
+  --fluency-radius: 14px;
+  --fluency-shadow: 0 10px 40px -12px rgba(15, 23, 42, 0.12);
+}
+
+.app-alert-error {
+  color: #b91c1c;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin: 0 0 1rem;
+}

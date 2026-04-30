@@ -1,0 +1,49 @@
+<section class="sst-head">
+  <h1 class="sst-title">Statistiques</h1>
+  <p class="sst-lead">Vue d’ensemble de la plateforme (API) et indicateurs de démonstration.</p>
+</section>
+
+@if (loading()) {
+  <p class="sst-muted">Chargement…</p>
+}
+@if (error()) {
+  <p class="sst-alert">{{ error() }}</p>
+}
+
+<div class="sst-grid">
+  <mat-card class="sst-card sst-card--accent" appearance="outlined">
+    <span class="sst-ico" aria-hidden="true">📈</span>
+    <h2>Progression (démo)</h2>
+    <p class="sst-big">{{ progression }}%</p>
+    <mat-progress-bar mode="determinate" [value]="progression"></mat-progress-bar>
+    <p class="sst-hint">Valeur illustrative — à relier à ton suivi réel plus tard.</p>
+  </mat-card>
+
+  <mat-card class="sst-card" appearance="outlined">
+    <span class="sst-ico" aria-hidden="true">🎯</span>
+    <h2>Dernier score (démo)</h2>
+    <p class="sst-big">{{ dernierScore }}%</p>
+    <p class="sst-hint">Synchronisé visuellement avec ton dernier quiz soumis.</p>
+  </mat-card>
+</div>
+
+@if (global() && !loading()) {
+  <h2 class="sst-h2">Chiffres plateforme</h2>
+  <div class="sst-kpis">
+    <mat-card class="kpi" appearance="outlined">
+      <span class="kpi__label">Modules</span>
+      <strong class="kpi__val">{{ nModules() }}</strong>
+      <mat-progress-bar mode="determinate" [value]="barPct(nModules())"></mat-progress-bar>
+    </mat-card>
+    <mat-card class="kpi" appearance="outlined">
+      <span class="kpi__label">Cours</span>
+      <strong class="kpi__val">{{ nCours() }}</strong>
+      <mat-progress-bar mode="determinate" [value]="barPct(nCours())"></mat-progress-bar>
+    </mat-card>
+    <mat-card class="kpi" appearance="outlined">
+      <span class="kpi__label">Quiz</span>
+      <strong class="kpi__val">{{ nQuizzes() }}</strong>
+      <mat-progress-bar mode="determinate" [value]="barPct(nQuizzes())"></mat-progress-bar>
+    </mat-card>
+  </div>
+}

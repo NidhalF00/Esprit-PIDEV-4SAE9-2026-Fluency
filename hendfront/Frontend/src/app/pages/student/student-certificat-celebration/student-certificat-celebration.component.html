@@ -1,0 +1,62 @@
+@if (visible()) {
+  <mat-card class="scc" appearance="outlined">
+    <div class="scc__glow" aria-hidden="true"></div>
+    <div class="scc__head">
+      <div class="scc__icon-wrap" aria-hidden="true">
+        <mat-icon class="scc__icon">workspace_premium</mat-icon>
+      </div>
+      <div>
+        <p class="scc__kicker">Félicitations</p>
+        <h3 class="scc__title">Certificat de réussite</h3>
+        <p class="scc__lead">Votre réussite au quiz a été enregistrée. Conservez votre code certificat.</p>
+      </div>
+    </div>
+
+    <div class="scc__grid">
+      @if (result.codeCertificat) {
+        <div class="scc__field">
+          <span class="scc__label">Code certificat</span>
+          <strong class="scc__code">{{ result.codeCertificat }}</strong>
+        </div>
+      }
+      @if (result.dateObtention) {
+        <div class="scc__field">
+          <span class="scc__label">Date d’obtention</span>
+          <strong>{{ result.dateObtention }}</strong>
+        </div>
+      }
+      <div class="scc__field">
+        <span class="scc__label">E-mail de notification</span>
+        <span class="scc__badge" [class.scc__badge--ok]="result.emailEnvoye" [class.scc__badge--muted]="!result.emailEnvoye">
+          <mat-icon class="scc__mi">{{ result.emailEnvoye ? 'mark_email_read' : 'mail_outline' }}</mat-icon>
+          {{ result.emailEnvoye ? 'Envoyé' : 'Non envoyé' }}
+        </span>
+        @if (!result.emailEnvoye && result.message) {
+          <p class="scc__hint">{{ result.message }}</p>
+        }
+      </div>
+      <div class="scc__field">
+        <span class="scc__label">Document PDF</span>
+        <span class="scc__badge" [class.scc__badge--gold]="pdfDisponible()" [class.scc__badge--muted]="!pdfDisponible()">
+          <mat-icon class="scc__mi">picture_as_pdf</mat-icon>
+          {{ pdfDisponible() ? 'Disponible' : 'En cours ou indisponible' }}
+        </span>
+      </div>
+    </div>
+
+    <div class="scc__actions">
+      @if (result.certificatId != null) {
+        <a mat-flat-button color="primary" [routerLink]="['/student/certificats', result.certificatId]">
+          <mat-icon>visibility</mat-icon>
+          Voir mon certificat
+        </a>
+      }
+      @if (pdfDisponible()) {
+        <button mat-stroked-button color="primary" type="button" (click)="downloadPdf()">
+          <mat-icon>download</mat-icon>
+          Télécharger le PDF
+        </button>
+      }
+    </div>
+  </mat-card>
+}

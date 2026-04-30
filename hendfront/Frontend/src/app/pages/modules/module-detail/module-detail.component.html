@@ -1,0 +1,28 @@
+<div class="page">
+  @if (loading()) {
+    <p class="muted">Chargement…</p>
+  } @else if (module) {
+    <div class="page-head">
+      <h1>{{ module.titre }}</h1>
+      <div class="head-actions">
+        <button mat-stroked-button type="button" (click)="back()">Retour</button>
+        <button mat-flat-button color="primary" type="button" (click)="edit()">Modifier</button>
+      </div>
+    </div>
+
+    <mat-card appearance="outlined" class="detail-card">
+      <dl class="detail-grid">
+        <dt>Description</dt>
+        <dd>{{ module.description }}</dd>
+        <dt>Niveau</dt>
+        <dd>{{ module.niveau }}</dd>
+        <dt>Catégorie</dt>
+        <dd>{{ module.categorie }}</dd>
+        <dt>Durée totale</dt>
+        <dd>{{ module.dureeTotale }} h</dd>
+        <dt>Actif</dt>
+        <dd>{{ module.actif ? 'Oui' : 'Non' }}</dd>
+      </dl>
+    </mat-card>
+  }
+</div>

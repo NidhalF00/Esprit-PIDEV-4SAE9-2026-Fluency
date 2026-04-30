@@ -1,0 +1,80 @@
+@if (loading()) {
+  <p class="scd-muted">Chargement du certificat…</p>
+} @else if (error()) {
+  <mat-card class="scd-error" appearance="outlined">
+    <p>{{ error() }}</p>
+    <button mat-stroked-button type="button" (click)="back()">Retour à la liste</button>
+  </mat-card>
+} @else if (cert(); as c) {
+  <button mat-stroked-button type="button" class="scd-back" (click)="back()">
+    <mat-icon>arrow_back</mat-icon>
+    Mes certificats
+  </button>
+
+  @if (ownerMismatch()) {
+    <p class="scd-warn">Ce certificat est associé à un autre utilisateur côté serveur.</p>
+  }
+
+  <article class="scd-diploma">
+    <div class="scd-diploma__seal" aria-hidden="true">
+      <mat-icon>workspace_premium</mat-icon>
+    </div>
+    <p class="scd-diploma__kicker">Fluency · E-learning</p>
+    <h1 class="scd-diploma__title">Certificat de réussite</h1>
+    @if (c.etudiantNom) {
+      <p class="scd-diploma__name">{{ c.etudiantNom }}</p>
+    }
+    <p class="scd-diploma__sub">a obtenu ce certificat suite à la réussite de l’évaluation suivante.</p>
+
+    <div class="scd-body">
+      @if (c.quizTitre) {
+        <div class="scd-row">
+          <span class="scd-label">Quiz</span>
+          <strong>{{ c.quizTitre }}</strong>
+        </div>
+      }
+      @if (c.moduleTitre) {
+        <div class="scd-row">
+          <span class="scd-label">Module</span>
+          <strong>{{ c.moduleTitre }}</strong>
+        </div>
+      }
+      <div class="scd-metrics">
+        <div>
+          <span class="scd-label">Score</span>
+          <strong>{{ c.score != null ? c.score : '—' }}</strong>
+        </div>
+        <div>
+          <span class="scd-label">Pourcentage</span>
+          <strong>{{ formatPct(c) }}</strong>
+        </div>
+        <div>
+          <span class="scd-label">Code certificat</span>
+          <strong class="scd-code">{{ c.codeCertificat }}</strong>
+        </div>
+        <div>
+          <span class="scd-label">Date d’obtention</span>
+          <strong>{{ c.dateObtention }}</strong>
+        </div>
+      </div>
+
+      <div class="scd-status">
+        <span class="scd-pill" [class.scd-pill--ok]="c.emailEnvoye">
+          <mat-icon>email</mat-icon>
+          {{ c.emailEnvoye ? 'E-mail de notification envoyé' : 'E-mail non envoyé' }}
+        </span>
+        <span class="scd-pill" [class.scd-pill--gold]="c.pdfDisponible || c.certificatPdfUrl">
+          <mat-icon>picture_as_pdf</mat-icon>
+          {{ c.pdfDisponible || c.certificatPdfUrl ? 'PDF disponible' : 'PDF indisponible' }}
+        </span>
+      </div>
+
+      <div class="scd-actions">
+        <button mat-stroked-button color="primary" type="button" (click)="downloadPdf()" [disabled]="c.id == null">
+          <mat-icon>download</mat-icon>
+          Télécharger le PDF
+        </button>
+      </div>
+    </div>
+  </article>
+}

@@ -1,0 +1,33 @@
+<h2 mat-dialog-title>ADD DATA</h2>
+
+<mat-dialog-content>
+  <div [formGroup]="dataForm" class="form-container">
+    <mat-form-field appearance="outline">
+      <mat-label>Title</mat-label>
+      <input matInput formControlName="title" placeholder="Ex: Math">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Coefficient</mat-label>
+      <input matInput type="number" formControlName="coefficient">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>hoursNumber</mat-label>
+      <input matInput type="number" formControlName="hoursNumber">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Content</mat-label>
+      <textarea matInput formControlName="content"></textarea>
+    </mat-form-field>
+
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-button="outlined" mat-raised-button color="primary" [mat-dialog-close]="dataForm.value" [disabled]="dataForm.invalid">
+    Save
+  </button>
+</mat-dialog-actions>

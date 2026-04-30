@@ -1,0 +1,138 @@
+.smc-loading {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: #64748b;
+}
+
+.smc-back {
+  margin-bottom: 1rem;
+}
+
+.smc-muted {
+  color: #64748b;
+}
+
+.smc-alert {
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.smc-head {
+  margin-bottom: 1.75rem;
+}
+
+.smc-kicker {
+  margin: 0 0 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #6366f1;
+}
+
+.smc-title {
+  margin: 0 0 0.5rem;
+  font-size: clamp(1.5rem, 2.5vw, 1.85rem);
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.03em;
+}
+
+.smc-desc {
+  margin: 0;
+  max-width: 70ch;
+  color: #64748b;
+  line-height: 1.55;
+}
+
+.smc-h2 {
+  margin: 0 0 1rem;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.smc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
+}
+
+.smc-card {
+  padding: 1.15rem 1.2rem 1.25rem !important;
+  border-radius: 16px !important;
+  border-color: #e2e8f0 !important;
+  background: #fff !important;
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.smc-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 32px -12px rgba(15, 23, 42, 0.15) !important;
+}
+
+.smc-card__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.65rem;
+}
+
+.smc-ordre {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #6366f1;
+  background: #eef2ff;
+  padding: 0.2rem 0.5rem;
+  border-radius: 8px;
+}
+
+.smc-type {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #047857;
+  background: #ecfdf5;
+  padding: 0.2rem 0.5rem;
+  border-radius: 8px;
+}
+
+.smc-card__title {
+  margin: 0 0 0.5rem;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.smc-card__excerpt {
+  margin: 0 0 0.75rem;
+  font-size: 0.9rem;
+  color: #64748b;
+  line-height: 1.45;
+}
+
+.smc-facts {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  font-size: 0.82rem;
+  color: #475569;
+}
+
+.smc-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.smc-actions button {
+  border-radius: 10px !important;
+  font-weight: 700 !important;
+}

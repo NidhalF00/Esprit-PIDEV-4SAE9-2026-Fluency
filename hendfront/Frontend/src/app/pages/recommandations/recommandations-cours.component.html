@@ -1,0 +1,48 @@
+<div class="page">
+  <nav class="subnav">
+    <a routerLink="/recommandations/modules" routerLinkActive="active">Modules</a>
+    <a routerLink="/recommandations/cours" routerLinkActive="active">Cours suivants</a>
+  </nav>
+  <h1>Recommandations — cours suivants</h1>
+  <p class="lead">Cours suggérés dans un module après un ordre donné (paramètre optionnel <code>apresOrdre</code>).</p>
+
+  <mat-card appearance="outlined" class="filter-card">
+    <div class="row">
+      <mat-form-field appearance="outline" class="grow">
+        <mat-label>ID module</mat-label>
+        <input matInput type="number" min="1" [(ngModel)]="moduleIdInput" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="sm">
+        <mat-label>Ordre min. (optionnel)</mat-label>
+        <input matInput type="number" min="0" [(ngModel)]="apresOrdre" />
+      </mat-form-field>
+      <button mat-flat-button color="primary" type="button" [disabled]="loading" (click)="charger()">
+        Charger
+      </button>
+    </div>
+  </mat-card>
+
+  @if (error) {
+    <p class="alert">{{ error }}</p>
+  }
+  @if (loading) {
+    <p class="muted">Chargement…</p>
+  }
+
+  <div class="grid">
+    @for (c of cours; track c.id) {
+      <mat-card class="item-card" appearance="outlined">
+        <h3>{{ c.titre }}</h3>
+        <p class="meta">Ordre {{ c.ordreCours }} · {{ c.typeContenu }}</p>
+        <p class="desc">
+          {{ (c.contenu ?? '') | slice: 0 : 160 }}{{ (c.contenu ?? '').length > 160 ? '…' : '' }}
+        </p>
+        <button mat-stroked-button type="button" (click)="voirCours(c)">Voir le cours</button>
+      </mat-card>
+    }
+  </div>
+
+  @if (!loading && cours.length === 0 && !error) {
+    <p class="muted">Indique un id de module et clique sur « Charger ».</p>
+  }
+</div>

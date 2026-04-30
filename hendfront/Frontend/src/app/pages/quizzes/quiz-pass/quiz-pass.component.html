@@ -1,0 +1,100 @@
+<div class="quiz-pass">
+  @if (loading) {
+    <p class="muted">Chargement du quiz…</p>
+  } @else if (quiz) {
+    <div class="quiz-pass__head">
+      <button mat-stroked-button type="button" (click)="back()">← Retour</button>
+      <h1>{{ quiz.titre }}</h1>
+      <p class="muted">{{ quiz.description }}</p>
+    </div>
+
+    @if (result) {
+      <mat-card class="result-card" appearance="outlined">
+        <div class="result-card__header">
+          <h2>Résultat</h2>
+          <span class="badge" [class.badge--ok]="valide()" [class.badge--ko]="!valide()">
+            {{ valide() ? 'Validé' : 'Non validé' }}
+          </span>
+        </div>
+        <div class="result-grid">
+          <div class="stat">
+            <span class="stat__label">Score</span>
+            <strong class="stat__value">{{ scoreDisplay() }}</strong>
+          </div>
+          <div class="stat">
+            <span class="stat__label">Pourcentage</span>
+            <strong class="stat__value">{{ pourcentageDisplay() }}</strong>
+          </div>
+          @if (bonnes() != null) {
+            <div class="stat">
+              <span class="stat__label">Bonnes réponses</span>
+              <strong class="stat__value">{{ bonnes() }}</strong>
+            </div>
+          }
+          @if (mauvaises() != null) {
+            <div class="stat">
+              <span class="stat__label">Mauvaises réponses</span>
+              <strong class="stat__value">{{ mauvaises() }}</strong>
+            </div>
+          }
+        </div>
+        @if (result.pourcentage != null) {
+          <mat-progress-bar mode="determinate" [value]="progressValue()"></mat-progress-bar>
+        }
+        @if (result.message) {
+          <p class="result-msg">{{ result.message }}</p>
+        }
+      </mat-card>
+      <app-student-certificat-celebration [result]="result" />
+    }
+
+    @if (errorMsg) {
+      <p class="alert">{{ errorMsg }}</p>
+    }
+
+    @if (!result && totalQuestions() === 0) {
+      <p class="muted">Ce quiz ne contient aucune question.</p>
+    }
+
+    @if (!result && totalQuestions() > 0) {
+      <p class="quiz-pass__hint">Réponds à toutes les questions, puis soumets le quiz.</p>
+      <div class="questions">
+        @for (q of quiz.questions; track q.id ?? $index; let i = $index) {
+          <mat-card class="q-card" appearance="outlined">
+            <h3 class="q-card__title">
+              <span class="q-card__n">{{ i + 1 }}.</span>
+              {{ q.enonce }}
+              <span class="q-card__pts">({{ q.points }} pt{{ q.points > 1 ? 's' : '' }})</span>
+            </h3>
+            @if (q.reponses?.length && q.id != null) {
+              <mat-radio-group
+                class="q-card__group"
+                [disabled]="!!result"
+                [value]="selection[q.id]"
+                (change)="choose(q.id, $event.value)"
+              >
+                @for (r of q.reponses; track r.id) {
+                  <mat-radio-button [value]="r.id">{{ r.texte }}</mat-radio-button>
+                }
+              </mat-radio-group>
+            } @else {
+              <p class="muted">Aucune réponse pour cette question.</p>
+            }
+          </mat-card>
+        }
+      </div>
+
+      <div class="quiz-pass__actions">
+        <button
+          mat-flat-button
+          color="primary"
+          type="button"
+          [disabled]="!canSubmit() || submitting"
+          (click)="submit()"
+        >
+          {{ submitting ? 'Correction…' : 'Soumettre le quiz' }}
+        </button>
+      </div>
+    }
+  }
+</div>

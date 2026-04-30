@@ -1,0 +1,89 @@
+<section class="scl-head">
+  <button mat-stroked-button type="button" class="scl-back" (click)="back()">
+    <mat-icon>arrow_back</mat-icon>
+    Retour
+  </button>
+  <h1 class="scl-title">Mes certificats</h1>
+  <p class="scl-lead">Retrouvez ici tous vos certificats de réussite et téléchargez vos PDF.</p>
+</section>
+
+@if (auth.userId() == null) {
+  <mat-card class="scl-hint" appearance="outlined">
+    <mat-icon class="scl-hint__icon">info</mat-icon>
+    <div>
+      <h2 class="scl-hint__title">Identifiant utilisateur requis</h2>
+      <p class="scl-hint__text">
+        Pour lier vos quiz et certificats au backend Spring, renseignez votre <strong>ID utilisateur</strong> (nombre)
+        sur la page de connexion, puis reconnectez-vous.
+      </p>
+      <a mat-flat-button color="primary" routerLink="/login">Aller à la connexion</a>
+    </div>
+  </mat-card>
+} @else {
+  @if (loading()) {
+    <p class="scl-muted">Chargement de vos certificats…</p>
+  }
+  @if (error()) {
+    <p class="scl-alert">{{ error() }}</p>
+  }
+
+  <div class="scl-grid">
+    @for (c of items(); track c.id ?? $index) {
+      <mat-card class="scl-card" appearance="outlined">
+        <div class="scl-card__ribbon" aria-hidden="true">
+          <mat-icon>workspace_premium</mat-icon>
+        </div>
+        <div class="scl-card__top">
+          <span class="scl-chip">{{ c.codeCertificat || '—' }}</span>
+          @if (c.quizTitre) {
+            <h2 class="scl-card__quiz">{{ c.quizTitre }}</h2>
+          }
+        </div>
+        <dl class="scl-dl">
+          <div>
+            <dt>Date</dt>
+            <dd>{{ c.dateObtention || '—' }}</dd>
+          </div>
+          <div>
+            <dt>Score</dt>
+            <dd>{{ c.score != null ? c.score : '—' }}</dd>
+          </div>
+          <div>
+            <dt>Pourcentage</dt>
+            <dd>{{ formatPct(c) }}</dd>
+          </div>
+          @if (c.moduleTitre) {
+            <div class="scl-span">
+              <dt>Module</dt>
+              <dd>{{ c.moduleTitre }}</dd>
+            </div>
+          }
+        </dl>
+        <div class="scl-tags">
+          <span class="scl-tag" [class.scl-tag--ok]="c.emailEnvoye">{{ c.emailEnvoye ? 'E-mail envoyé' : 'E-mail non envoyé' }}</span>
+          <span class="scl-tag" [class.scl-tag--pdf]="c.pdfDisponible !== false && (c.pdfDisponible || c.certificatPdfUrl || c.id != null)">
+            {{ c.pdfDisponible || c.certificatPdfUrl ? 'PDF disponible' : 'PDF —' }}
+          </span>
+        </div>
+        <div class="scl-actions">
+          <button mat-stroked-button type="button" color="primary" (click)="openDetail(c)" [disabled]="c.id == null">
+            <mat-icon>visibility</mat-icon>
+            Voir détail
+          </button>
+          <button mat-flat-button color="primary" type="button" (click)="downloadPdf(c)" [disabled]="c.id == null">
+            <mat-icon>download</mat-icon>
+            Télécharger
+          </button>
+        </div>
+      </mat-card>
+    }
+  </div>
+
+  @if (!loading() && !error() && !items().length) {
+    <mat-card class="scl-empty" appearance="outlined">
+      <mat-icon>inbox</mat-icon>
+      <p>Aucun certificat pour l’instant. Réussissez un quiz pour en générer un.</p>
+      <button mat-flat-button color="primary" type="button" (click)="back()">Explorer les modules</button>
+    </mat-card>
+  }
+}

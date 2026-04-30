@@ -1,0 +1,50 @@
+<div class="page">
+  <nav class="subnav">
+    <a routerLink="/recherche/modules" routerLinkActive="active">Modules</a>
+    <a routerLink="/recherche/cours" routerLinkActive="active">Cours</a>
+  </nav>
+  <h1>Recherche — modules</h1>
+  <p class="lead">Filtres optionnels : <code>motCle</code>, <code>niveau</code>, <code>categorie</code> (query).</p>
+
+  <mat-card appearance="outlined" class="filter-card">
+    <div class="fields">
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Mot-clé</mat-label>
+        <input matInput [(ngModel)]="motCle" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Niveau</mat-label>
+        <input matInput [(ngModel)]="niveau" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Catégorie</mat-label>
+        <input matInput [(ngModel)]="categorie" />
+      </mat-form-field>
+    </div>
+    <button mat-flat-button color="primary" type="button" [disabled]="loading" (click)="rechercher()">
+      Rechercher
+    </button>
+  </mat-card>
+
+  @if (error) {
+    <p class="alert">{{ error }}</p>
+  }
+  @if (loading) {
+    <p class="muted">Recherche…</p>
+  }
+
+  <div class="grid">
+    @for (m of modules; track m.id) {
+      <mat-card class="item-card" appearance="outlined">
+        <h3>{{ m.titre }}</h3>
+        <p class="meta">{{ m.niveau }} · {{ m.categorie }}</p>
+        <p class="desc">{{ m.description }}</p>
+        <button mat-stroked-button type="button" (click)="voir(m)">Ouvrir</button>
+      </mat-card>
+    }
+  </div>
+
+  @if (!loading && modules.length === 0 && !error) {
+    <p class="muted">Lance une recherche pour afficher des résultats.</p>
+  }
+</div>

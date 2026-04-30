@@ -1,0 +1,36 @@
+<div class="page">
+  @if (loading()) {
+    <p class="muted">Chargement…</p>
+  } @else if (cours) {
+    <div class="page-head">
+      <h1>{{ cours.titre }}</h1>
+      <div class="head-actions">
+        <button mat-stroked-button type="button" (click)="back()">Retour</button>
+        <button mat-flat-button color="primary" type="button" (click)="edit()">Modifier</button>
+      </div>
+    </div>
+
+    <mat-card appearance="outlined" class="detail-card">
+      <dl class="detail-grid">
+        <dt>Module</dt>
+        <dd>{{ cours.module?.titre ?? '—' }}</dd>
+        <dt>Contenu</dt>
+        <dd class="multiline">{{ cours.contenu }}</dd>
+        <dt>Ordre</dt>
+        <dd>{{ cours.ordreCours }}</dd>
+        <dt>Durée</dt>
+        <dd>{{ cours.duree }} min</dd>
+        <dt>Type de contenu</dt>
+        <dd>{{ cours.typeContenu }}</dd>
+        <dt>URL ressource</dt>
+        <dd>
+          <a [href]="cours.urlRessource" target="_blank" rel="noopener">{{ cours.urlRessource }}</a>
+        </dd>
+        <dt>Gratuit</dt>
+        <dd>{{ cours.gratuit ? 'Oui' : 'Non' }}</dd>
+        <dt>Publié</dt>
+        <dd>{{ cours.publie ? 'Oui' : 'Non' }}</dd>
+      </dl>
+    </mat-card>
+  }
+</div>

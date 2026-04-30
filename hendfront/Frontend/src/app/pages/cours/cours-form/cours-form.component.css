@@ -1,0 +1,98 @@
+.page {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 2rem;
+}
+
+.page h1 {
+  margin: 0 0 1.25rem;
+  font-size: 1.5rem;
+  color: #0f172a;
+}
+
+.form-card {
+  padding: 0.5rem 0.25rem 1rem;
+  border-radius: 12px !important;
+}
+
+.full {
+  width: 100%;
+  display: block;
+}
+
+.row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.grow {
+  flex: 1;
+  min-width: 140px;
+}
+
+.check-row {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin: 0.5rem 0 1rem;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.muted {
+  color: #64748b;
+}
+
+.pdf-block {
+  margin: 0.5rem 0 1.25rem;
+  padding: 1rem;
+  border-radius: 10px;
+  border: 1px dashed #cbd5e1;
+  background: #f8fafc;
+}
+
+.pdf-block__label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #0f172a;
+  margin-bottom: 0.35rem;
+}
+
+.pdf-block__hint {
+  margin: 0 0 0.75rem;
+  font-size: 0.82rem;
+  color: #64748b;
+  line-height: 1.45;
+}
+
+.pdf-block__hint code {
+  font-size: 0.78rem;
+  background: #e2e8f0;
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+}
+
+.pdf-block__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+}
+
+.pdf-block__input {
+  font-size: 0.9rem;
+  max-width: 100%;
+}
+
+.pdf-block__name {
+  font-size: 0.85rem;
+  color: #334155;
+  word-break: break-all;
+}

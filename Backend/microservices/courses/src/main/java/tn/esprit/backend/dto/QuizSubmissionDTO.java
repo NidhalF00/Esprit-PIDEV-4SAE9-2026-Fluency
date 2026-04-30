@@ -13,7 +13,6 @@ public class QuizSubmissionDTO {
     private Long userId;
 
     private Map<String, Long> reponsesEtudiant = new HashMap<>();
-    private Map<String, AnswerSubmissionMetaDTO> reponsesMeta = new HashMap<>();
 
     public Long getUserId() {
         return userId;
@@ -29,13 +28,5 @@ public class QuizSubmissionDTO {
 
     public void setReponsesEtudiant(Map<String, Long> reponsesEtudiant) {
         this.reponsesEtudiant = reponsesEtudiant != null ? reponsesEtudiant : new HashMap<>();
-    }
-
-    public Map<String, AnswerSubmissionMetaDTO> getReponsesMeta() {
-        return reponsesMeta;
-    }
-
-    public void setReponsesMeta(Map<String, AnswerSubmissionMetaDTO> reponsesMeta) {
-        this.reponsesMeta = reponsesMeta != null ? reponsesMeta : new HashMap<>();
     }
 }

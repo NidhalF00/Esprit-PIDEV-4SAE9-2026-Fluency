@@ -1,0 +1,11 @@
+<h1 mat-dialog-title>
+  {{ data.title }}
+</h1>
+<mat-dialog-content>
+  <p>{{ data.message }}</p>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button matButton="elevated" (click)="onDismiss()">No, Cancel</button>
+  <!-- Pass 'true' when closing the dialog to indicate confirmation -->
+  <button matButton="elevated" color="primary" [mat-dialog-close]="true" cdkFocusInitial>Yes, Proceed</button>
+</mat-dialog-actions>

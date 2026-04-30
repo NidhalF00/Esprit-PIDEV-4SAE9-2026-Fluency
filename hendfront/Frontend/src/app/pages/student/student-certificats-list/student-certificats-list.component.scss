@@ -1,0 +1,199 @@
+.scl-head {
+  margin-bottom: 1.75rem;
+}
+
+.scl-back {
+  margin-bottom: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.scl-title {
+  margin: 0 0 0.4rem;
+  font-size: clamp(1.6rem, 3vw, 2rem);
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.scl-lead {
+  margin: 0;
+  max-width: 60ch;
+  color: #64748b;
+  line-height: 1.55;
+}
+
+.scl-muted {
+  color: #64748b;
+}
+
+.scl-alert {
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  background: #fef2f2;
+  color: #b91c1c;
+  margin-bottom: 1rem;
+}
+
+.scl-hint {
+  display: flex;
+  gap: 1rem;
+  padding: 1.5rem !important;
+  border-radius: 18px !important;
+  align-items: flex-start;
+  background: linear-gradient(180deg, #fffbeb, #fff) !important;
+  border-color: #fde68a !important;
+}
+
+.scl-hint__icon {
+  color: #d97706;
+  flex-shrink: 0;
+}
+
+.scl-hint__title {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+}
+
+.scl-hint__text {
+  margin: 0 0 1rem;
+  color: #57534e;
+  line-height: 1.55;
+}
+
+.scl-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.25rem;
+}
+
+.scl-card {
+  position: relative;
+  padding: 1.35rem 1.25rem 1.25rem !important;
+  border-radius: 20px !important;
+  overflow: hidden;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.06) !important;
+}
+
+.scl-card__ribbon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 72px;
+  height: 72px;
+  background: linear-gradient(135deg, transparent 50%, rgba(99, 102, 241, 0.12) 50%);
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 0.5rem;
+  color: #6366f1;
+}
+
+.scl-card__top {
+  padding-right: 2rem;
+  margin-bottom: 1rem;
+}
+
+.scl-chip {
+  display: inline-block;
+  font-family: ui-monospace, monospace;
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 0.25rem 0.6rem;
+  border-radius: 8px;
+  background: #eef2ff;
+  color: #4338ca;
+}
+
+.scl-card__quiz {
+  margin: 0.65rem 0 0;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.scl-dl {
+  margin: 0 0 1rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.65rem 1rem;
+}
+
+.scl-dl dt {
+  margin: 0;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+.scl-dl dd {
+  margin: 0.15rem 0 0;
+  font-weight: 700;
+  color: #334155;
+}
+
+.scl-span {
+  grid-column: 1 / -1;
+}
+
+.scl-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.scl-tag {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.scl-tag--ok {
+  background: #ecfdf5;
+  color: #047857;
+}
+
+.scl-tag--pdf {
+  background: #fffbeb;
+  color: #b45309;
+}
+
+.scl-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.scl-actions button mat-icon,
+.scl-back mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.scl-empty {
+  margin-top: 1.5rem;
+  text-align: center;
+  padding: 2rem 1.5rem !important;
+  border-radius: 18px !important;
+}
+
+.scl-empty mat-icon {
+  font-size: 40px;
+  width: 40px;
+  height: 40px;
+  color: #cbd5e1;
+  margin-bottom: 0.5rem;
+}
+
+.scl-empty p {
+  margin: 0 0 1rem;
+  color: #64748b;
+}

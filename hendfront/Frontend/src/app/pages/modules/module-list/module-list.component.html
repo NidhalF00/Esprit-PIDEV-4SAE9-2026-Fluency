@@ -1,0 +1,51 @@
+<div class="page">
+  <div class="page-head">
+    <h1>Modules</h1>
+    <button mat-flat-button color="primary" type="button" (click)="add()">Ajouter</button>
+  </div>
+
+  @if (loadError()) {
+    <p class="app-alert-error">{{ loadError() }}</p>
+  }
+  @if (loading()) {
+    <p class="muted">Chargement…</p>
+  } @else {
+    <div class="table-wrap mat-elevation-z1">
+      <table mat-table [dataSource]="dataSource" class="data-table">
+        <ng-container matColumnDef="titre">
+          <th mat-header-cell *matHeaderCellDef>Titre</th>
+          <td mat-cell *matCellDef="let row">{{ row.titre }}</td>
+        </ng-container>
+        <ng-container matColumnDef="niveau">
+          <th mat-header-cell *matHeaderCellDef>Niveau</th>
+          <td mat-cell *matCellDef="let row">{{ row.niveau }}</td>
+        </ng-container>
+        <ng-container matColumnDef="categorie">
+          <th mat-header-cell *matHeaderCellDef>Catégorie</th>
+          <td mat-cell *matCellDef="let row">{{ row.categorie }}</td>
+        </ng-container>
+        <ng-container matColumnDef="dureeTotale">
+          <th mat-header-cell *matHeaderCellDef>Durée (h)</th>
+          <td mat-cell *matCellDef="let row">{{ row.dureeTotale }}</td>
+        </ng-container>
+        <ng-container matColumnDef="actif">
+          <th mat-header-cell *matHeaderCellDef>Actif</th>
+          <td mat-cell *matCellDef="let row">{{ row.actif ? 'Oui' : 'Non' }}</td>
+        </ng-container>
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef class="col-actions">Actions</th>
+          <td mat-cell *matCellDef="let row" class="col-actions">
+            <button mat-stroked-button type="button" (click)="view(row)">Voir</button>
+            <button mat-stroked-button type="button" color="primary" (click)="edit(row)">Modifier</button>
+            <button mat-stroked-button type="button" color="warn" (click)="delete(row)">Supprimer</button>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+      @if (dataSource.data.length === 0) {
+        <p class="empty muted">Aucun module pour le moment.</p>
+      }
+    </div>
+  }
+</div>

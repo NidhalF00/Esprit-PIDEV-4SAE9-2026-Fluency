@@ -1,0 +1,59 @@
+<div class="td-head">
+  <div>
+    <h1 class="td-title">Tableau de bord</h1>
+    <p class="td-lead">Pilotage pédagogique — statistiques globales et accès rapides.</p>
+  </div>
+  <button mat-stroked-button type="button" color="primary" [disabled]="loading()" (click)="load()">Actualiser</button>
+</div>
+
+@if (loading()) {
+  <p class="td-muted">Chargement…</p>
+}
+@if (error()) {
+  <p class="td-alert">{{ error() }}</p>
+}
+
+<section class="td-shortcuts">
+  @for (s of shortcuts; track s.route) {
+    <button type="button" class="td-shortcut" (click)="go(s.route)">
+      <span class="td-shortcut__ico" aria-hidden="true">{{ s.icon }}</span>
+      <span class="td-shortcut__label">{{ s.label }}</span>
+      <span class="td-shortcut__desc">{{ s.desc }}</span>
+    </button>
+  }
+</section>
+
+@if (stats() && !loading()) {
+  <div class="td-grid">
+    <mat-card class="td-stat" appearance="outlined">
+      <span class="td-stat__ico">📚</span>
+      <span class="td-stat__k">Modules</span>
+      <strong class="td-stat__v">{{ nModules() }}</strong>
+      <mat-progress-bar mode="determinate" [value]="barPct(nModules())"></mat-progress-bar>
+    </mat-card>
+    <mat-card class="td-stat" appearance="outlined">
+      <span class="td-stat__ico">📖</span>
+      <span class="td-stat__k">Cours</span>
+      <strong class="td-stat__v">{{ nCours() }}</strong>
+      <mat-progress-bar mode="determinate" [value]="barPct(nCours())"></mat-progress-bar>
+    </mat-card>
+    <mat-card class="td-stat" appearance="outlined">
+      <span class="td-stat__ico">📝</span>
+      <span class="td-stat__k">Quiz</span>
+      <strong class="td-stat__v">{{ nQuizzes() }}</strong>
+      <mat-progress-bar mode="determinate" [value]="barPct(nQuizzes())"></mat-progress-bar>
+    </mat-card>
+    <mat-card class="td-stat" appearance="outlined">
+      <span class="td-stat__ico">❓</span>
+      <span class="td-stat__k">Questions</span>
+      <strong class="td-stat__v">{{ nQuestions() }}</strong>
+      <mat-progress-bar mode="determinate" [value]="barPct(nQuestions())"></mat-progress-bar>
+    </mat-card>
+    <mat-card class="td-stat" appearance="outlined">
+      <span class="td-stat__ico">💬</span>
+      <span class="td-stat__k">Réponses</span>
+      <strong class="td-stat__v">{{ nReponses() }}</strong>
+      <mat-progress-bar mode="determinate" [value]="barPct(nReponses())"></mat-progress-bar>
+    </mat-card>
+  </div>
+}

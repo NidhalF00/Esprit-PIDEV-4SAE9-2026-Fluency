@@ -1,0 +1,26 @@
+<div class="page">
+  @if (loading()) {
+    <p class="muted">Chargement…</p>
+  } @else if (question) {
+    <div class="page-head">
+      <h1>Question</h1>
+      <div class="head-actions">
+        <button mat-stroked-button type="button" (click)="back()">Retour</button>
+        <button mat-flat-button color="primary" type="button" (click)="edit()">Modifier</button>
+      </div>
+    </div>
+
+    <mat-card appearance="outlined" class="detail-card">
+      <dl class="detail-grid">
+        <dt>Quiz</dt>
+        <dd>{{ question.quiz?.titre ?? '—' }}</dd>
+        <dt>Énoncé</dt>
+        <dd class="multiline">{{ question.enonce }}</dd>
+        <dt>Type</dt>
+        <dd>{{ question.typeQuestion }}</dd>
+        <dt>Points</dt>
+        <dd>{{ question.points }}</dd>
+      </dl>
+    </mat-card>
+  }
+</div>

@@ -1,0 +1,59 @@
+<div class="dash">
+  <div class="dash__head">
+    <h1>Tableau de bord</h1>
+    <p class="lead">Statistiques globales de la plateforme</p>
+    <button mat-stroked-button type="button" [disabled]="loading" (click)="load()">Actualiser</button>
+  </div>
+
+  @if (loading) {
+    <p class="muted">Chargement…</p>
+  }
+  @if (error) {
+    <p class="alert">{{ error }}</p>
+  }
+
+  @if (stats && !loading) {
+    <div class="stat-grid">
+      <mat-card class="stat-card stat-card--m" appearance="outlined">
+        <span class="stat-card__icon" aria-hidden="true">📚</span>
+        <div class="stat-card__body">
+          <span class="stat-card__label">Modules</span>
+          <strong class="stat-card__value">{{ nModules() }}</strong>
+          <mat-progress-bar mode="determinate" [value]="barPct(nModules())"></mat-progress-bar>
+        </div>
+      </mat-card>
+      <mat-card class="stat-card stat-card--c" appearance="outlined">
+        <span class="stat-card__icon" aria-hidden="true">📖</span>
+        <div class="stat-card__body">
+          <span class="stat-card__label">Cours</span>
+          <strong class="stat-card__value">{{ nCours() }}</strong>
+          <mat-progress-bar mode="determinate" [value]="barPct(nCours())"></mat-progress-bar>
+        </div>
+      </mat-card>
+      <mat-card class="stat-card stat-card--q" appearance="outlined">
+        <span class="stat-card__icon" aria-hidden="true">📝</span>
+        <div class="stat-card__body">
+          <span class="stat-card__label">Quiz</span>
+          <strong class="stat-card__value">{{ nQuizzes() }}</strong>
+          <mat-progress-bar mode="determinate" [value]="barPct(nQuizzes())"></mat-progress-bar>
+        </div>
+      </mat-card>
+      <mat-card class="stat-card stat-card--t" appearance="outlined">
+        <span class="stat-card__icon" aria-hidden="true">❓</span>
+        <div class="stat-card__body">
+          <span class="stat-card__label">Questions</span>
+          <strong class="stat-card__value">{{ nQuestions() }}</strong>
+          <mat-progress-bar mode="determinate" [value]="barPct(nQuestions())"></mat-progress-bar>
+        </div>
+      </mat-card>
+      <mat-card class="stat-card stat-card--r" appearance="outlined">
+        <span class="stat-card__icon" aria-hidden="true">💬</span>
+        <div class="stat-card__body">
+          <span class="stat-card__label">Réponses</span>
+          <strong class="stat-card__value">{{ nReponses() }}</strong>
+          <mat-progress-bar mode="determinate" [value]="barPct(nReponses())"></mat-progress-bar>
+        </div>
+      </mat-card>
+    </div>
+  }
+</div>

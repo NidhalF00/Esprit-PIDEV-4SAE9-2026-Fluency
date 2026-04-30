@@ -1,0 +1,161 @@
+.sqpd-body {
+  min-width: min(100%, 300px);
+  max-height: min(78vh, 720px);
+  overflow: auto;
+  padding-top: 0.25rem;
+}
+
+.sqpd-loading {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.5rem 0;
+}
+
+.sqpd-muted {
+  color: #64748b;
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.sqpd-alert {
+  color: #b91c1c;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin: 0 0 0.75rem;
+}
+
+.sqpd-head {
+  margin-bottom: 1rem;
+}
+
+.sqpd-title {
+  margin: 0.65rem 0 0.3rem;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.sqpd-result {
+  margin-bottom: 1rem;
+  padding: 1rem 1.15rem !important;
+  border-radius: 12px !important;
+  background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
+}
+
+.sqpd-result__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.85rem;
+}
+
+.sqpd-result__header h4 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.sqpd-badge {
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+}
+
+.sqpd-badge--ok {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.sqpd-badge--ko {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.sqpd-result-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.85rem;
+  margin-bottom: 0.85rem;
+}
+
+.sqpd-stat__label {
+  display: block;
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.sqpd-stat__value {
+  font-size: 1.1rem;
+  color: #1e293b;
+}
+
+.sqpd-result-msg {
+  margin: 0.65rem 0 0;
+  font-size: 0.9rem;
+  color: #475569;
+}
+
+mat-progress-bar {
+  height: 8px;
+  border-radius: 6px;
+}
+
+.sqpd-hint {
+  margin: 0 0 1rem;
+  font-size: 0.88rem;
+  color: #475569;
+  line-height: 1.45;
+}
+
+.sqpd-questions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.sqpd-actions {
+  margin-top: 1.25rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.sqpd-actions button {
+  border-radius: 10px !important;
+  font-weight: 700 !important;
+}
+
+.sqpd-q {
+  margin-bottom: 0;
+  padding: 0.9rem 1.1rem !important;
+  border-radius: 12px !important;
+}
+
+.sqpd-q__title {
+  margin: 0 0 0.65rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.sqpd-q__n {
+  color: #6366f1;
+  margin-right: 0.2rem;
+}
+
+.sqpd-q__pts {
+  font-weight: 500;
+  color: #64748b;
+  font-size: 0.8rem;
+}
+
+.sqpd-q__group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  align-items: flex-start;
+}

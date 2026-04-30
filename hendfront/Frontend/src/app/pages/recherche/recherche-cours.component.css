@@ -1,0 +1,118 @@
+.subnav {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.subnav a {
+  color: #4f46e5;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding-bottom: 0.2rem;
+  border-bottom: 2px solid transparent;
+}
+
+.subnav a.active {
+  border-bottom-color: #4f46e5;
+}
+
+.page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 2rem;
+}
+
+.page h1 {
+  margin: 0 0 0.5rem;
+  font-size: 1.5rem;
+}
+
+.lead {
+  color: #64748b;
+  margin: 0 0 1.25rem;
+}
+
+.filter-card {
+  padding: 1rem 1.25rem !important;
+  border-radius: 12px !important;
+  margin-bottom: 1.25rem;
+}
+
+.filter-card--secondary {
+  background: #f8fafc;
+}
+
+.filter-card__h {
+  margin: 0 0 0.35rem;
+  font-size: 1.05rem;
+}
+
+.hint {
+  margin: 0 0 0.75rem;
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.row-type {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.row-type .grow {
+  flex: 1 1 200px;
+  min-width: 0;
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.full {
+  width: 100%;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.item-card {
+  padding: 1rem 1.25rem !important;
+  border-radius: 12px !important;
+}
+
+.item-card h3 {
+  margin: 0 0 0.35rem;
+  font-size: 1.05rem;
+}
+
+.meta {
+  margin: 0 0 0.5rem;
+  font-size: 0.85rem;
+  color: #6366f1;
+}
+
+.desc {
+  margin: 0 0 0.75rem;
+  font-size: 0.9rem;
+  color: #475569;
+  line-height: 1.45;
+}
+
+.muted {
+  color: #64748b;
+}
+
+.alert {
+  color: #b91c1c;
+  background: #fef2f2;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+}

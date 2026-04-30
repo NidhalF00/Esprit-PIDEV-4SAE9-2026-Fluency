@@ -1,0 +1,37 @@
+<button mat-stroked-button type="button" class="sac-back" (click)="goModules()">← Retour aux modules</button>
+
+<section class="sac-head">
+  <h1 class="sac-title">Tous les cours</h1>
+  <p class="sac-lead">Parcourez les cours publiés sur la plateforme, ouvrez une fiche ou lancez un quiz associé.</p>
+</section>
+
+@if (loading()) {
+  <div class="sac-loading">
+    <mat-spinner diameter="40" />
+    <span>Chargement des cours…</span>
+  </div>
+} @else if (error()) {
+  <p class="sac-alert" role="alert">{{ error() }}</p>
+} @else {
+  <h2 id="passer-quiz" class="sac-h2">Passer un quiz</h2>
+  <p class="sac-hint">Choisis un cours qui propose un quiz, puis clique sur « Passer le quiz ».</p>
+
+  <div class="sac-grid">
+    @for (c of cours(); track c.id ?? $index) {
+      <mat-card class="sac-card" appearance="outlined">
+        <h2 class="sac-card__title">{{ c.titre }}</h2>
+        <p class="sac-card__meta">{{ moduleLabel(c) }} · ordre {{ c.ordreCours }} · {{ c.typeContenu }}</p>
+        <p class="sac-card__excerpt">{{ (c.contenu || '').slice(0, 140) }}{{ (c.contenu || '').length > 140 ? '…' : '' }}</p>
+        <div class="sac-card__actions">
+          <button mat-stroked-button color="primary" type="button" (click)="open(c)">Voir le cours</button>
+          @if (firstQuizId(c) != null) {
+            <button mat-flat-button color="primary" type="button" (click)="passQuiz(c)">Passer le quiz</button>
+          }
+        </div>
+      </mat-card>
+    }
+  </div>
+  @if (!cours().length) {
+    <p class="sac-muted">Aucun cours disponible.</p>
+  }
+}

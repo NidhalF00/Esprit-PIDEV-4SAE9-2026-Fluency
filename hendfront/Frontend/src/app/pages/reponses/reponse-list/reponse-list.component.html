@@ -1,0 +1,43 @@
+<div class="page">
+  <div class="page-head">
+    <h1>Réponses</h1>
+    <button mat-flat-button color="primary" type="button" (click)="add()">Ajouter</button>
+  </div>
+
+  @if (loadError()) {
+    <p class="app-alert-error">{{ loadError() }}</p>
+  }
+  @if (loading()) {
+    <p class="muted">Chargement…</p>
+  } @else {
+    <div class="table-wrap mat-elevation-z1">
+      <table mat-table [dataSource]="dataSource" class="data-table">
+        <ng-container matColumnDef="texte">
+          <th mat-header-cell *matHeaderCellDef>Texte</th>
+          <td mat-cell *matCellDef="let row" class="cell-texte">{{ row.texte }}</td>
+        </ng-container>
+        <ng-container matColumnDef="correcte">
+          <th mat-header-cell *matHeaderCellDef>Correcte</th>
+          <td mat-cell *matCellDef="let row">{{ row.correcte ? 'Oui' : 'Non' }}</td>
+        </ng-container>
+        <ng-container matColumnDef="question">
+          <th mat-header-cell *matHeaderCellDef>Question</th>
+          <td mat-cell *matCellDef="let row">{{ questionLabel(row) }}</td>
+        </ng-container>
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef class="col-actions">Actions</th>
+          <td mat-cell *matCellDef="let row" class="col-actions">
+            <button mat-stroked-button type="button" (click)="view(row)">Voir</button>
+            <button mat-stroked-button type="button" color="primary" (click)="edit(row)">Modifier</button>
+            <button mat-stroked-button type="button" color="warn" (click)="delete(row)">Supprimer</button>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+      @if (dataSource.data.length === 0) {
+        <p class="empty muted">Aucune réponse pour le moment.</p>
+      }
+    </div>
+  }
+</div>

@@ -1,0 +1,58 @@
+<div class="tc" [class.tc--sidebar-open]="sidebarOpen">
+  <aside class="tc-sidebar" (click)="closeSidebar()">
+    <div class="tc-sidebar__head" (click)="$event.stopPropagation()">
+      <a routerLink="/teacher/dashboard" class="tc-brand" (click)="closeSidebar()">
+        <span class="tc-brand__mark">◆</span>
+        <div>
+          <span class="tc-brand__title">Fluency</span>
+          <span class="tc-brand__sub">Espace formateur</span>
+        </div>
+      </a>
+    </div>
+
+    <nav class="tc-menu" (click)="$event.stopPropagation()">
+      <a routerLink="/teacher/dashboard" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeSidebar()">
+        <span class="tc-ico" aria-hidden="true">▣</span> Tableau de bord
+      </a>
+      <a routerLink="/teacher/modules" routerLinkActive="is-active" (click)="closeSidebar()">
+        <span class="tc-ico" aria-hidden="true">📚</span> Modules
+      </a>
+      <a routerLink="/teacher/cours" routerLinkActive="is-active" (click)="closeSidebar()">
+        <span class="tc-ico" aria-hidden="true">📖</span> Cours
+      </a>
+      <a routerLink="/teacher/quizzes" routerLinkActive="is-active" (click)="closeSidebar()">
+        <span class="tc-ico" aria-hidden="true">📝</span> Quiz
+      </a>
+      <a routerLink="/teacher/questions" routerLinkActive="is-active" (click)="closeSidebar()">
+        <span class="tc-ico" aria-hidden="true">❓</span> Questions
+      </a>
+      <a routerLink="/teacher/reponses" routerLinkActive="is-active" (click)="closeSidebar()">
+        <span class="tc-ico" aria-hidden="true">💬</span> Réponses
+      </a>
+    </nav>
+
+    <div class="tc-sidebar__foot">
+      <p class="tc-user">{{ auth.email() }}</p>
+      <button mat-stroked-button type="button" color="primary" class="tc-logout" (click)="logout()">Déconnexion</button>
+    </div>
+  </aside>
+
+  <div
+    class="tc-backdrop"
+    [class.tc-backdrop--on]="sidebarOpen"
+    (click)="closeSidebar()"
+    aria-hidden="true"
+  ></div>
+
+  <div class="tc-main-wrap">
+    <header class="tc-topbar">
+      <button type="button" class="tc-burger" aria-label="Menu" (click)="toggleSidebar()">
+        <span></span><span></span><span></span>
+      </button>
+      <span class="tc-topbar__title">Administration pédagogique</span>
+    </header>
+    <main class="tc-main">
+      <router-outlet />
+    </main>
+  </div>
+</div>

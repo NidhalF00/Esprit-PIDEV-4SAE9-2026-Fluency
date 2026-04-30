@@ -1,0 +1,48 @@
+<button mat-stroked-button type="button" class="smc-back" (click)="back()">← Retour aux modules</button>
+
+@if (loading()) {
+  <div class="smc-loading">
+    <mat-spinner diameter="40" />
+    <span>Chargement…</span>
+  </div>
+} @else if (error()) {
+  <p class="smc-alert">{{ error() }}</p>
+} @else if (currentModule(); as module) {
+  <header class="smc-head">
+    <p class="smc-kicker">{{ module.categorie }} · {{ module.niveau }}</p>
+    <h1 class="smc-title">{{ module.titre }}</h1>
+    <p class="smc-desc">{{ module.description }}</p>
+  </header>
+
+  <h2 class="smc-h2">Cours du module</h2>
+
+  <div class="smc-grid">
+    @for (c of cours(); track c.id ?? $index) {
+      <mat-card class="smc-card" appearance="outlined">
+        <div class="smc-card__top">
+          <span class="smc-ordre">#{{ c.ordreCours }}</span>
+          <span class="smc-type">{{ c.typeContenu }}</span>
+        </div>
+        <h3 class="smc-card__title">{{ c.titre }}</h3>
+        <p class="smc-card__excerpt">{{ (c.contenu || '').slice(0, 160) }}{{ (c.contenu || '').length > 160 ? '…' : '' }}</p>
+        <ul class="smc-facts">
+          <li>⏱ {{ c.duree }} min</li>
+          <li>{{ c.gratuit ? 'Gratuit' : 'Payant' }}</li>
+          <li>{{ c.publie ? 'Publié' : 'Brouillon' }}</li>
+        </ul>
+        <div class="smc-actions">
+          <button mat-flat-button color="primary" type="button" (click)="commencer(c)">Commencer</button>
+          @if (firstQuizId(c); as qid) {
+            <button mat-stroked-button color="primary" type="button" (click)="lancerQuiz(c)">Lancer le quiz</button>
+          } @else {
+            <button mat-stroked-button type="button" disabled title="Aucun quiz lié">Quiz indisponible</button>
+          }
+        </div>
+      </mat-card>
+    }
+  </div>
+
+  @if (!cours().length) {
+    <p class="smc-muted">Aucun cours listé pour ce module.</p>
+  }
+}
