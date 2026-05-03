@@ -159,6 +159,7 @@ jobs:
             -Dspring.profiles.active=test \
             -Dsonar.projectKey=platform-education-claim-service \
             -Dsonar.projectName="Claim Service" \
+            -Dsonar.branch.name=main \
             -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
             -Dsonar.java.coveragePlugin=jacoco \
             --no-transfer-progress
