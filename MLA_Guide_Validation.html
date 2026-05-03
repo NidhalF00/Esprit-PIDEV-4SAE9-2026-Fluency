@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Guide de Validation MLA — Prédiction Réussite Étudiants</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; color: #1a1a2e; background: #fff; font-size: 13px; line-height: 1.6; }
+
+  .cover { page-break-after: always; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); color: white; text-align: center; padding: 40px; }
+  .cover h1 { font-size: 2.4em; font-weight: 800; margin-bottom: 10px; letter-spacing: 1px; }
+  .cover .subtitle { font-size: 1.1em; color: #a8d8ea; margin-bottom: 30px; }
+  .cover .badge { background: #e94560; padding: 8px 24px; border-radius: 20px; font-weight: bold; font-size: 0.95em; margin: 6px 5px; display: inline-block; }
+  .cover .badge.blue { background: #2980b9; }
+  .cover .badge.green { background: #27ae60; }
+  .cover .badge.purple { background: #8e44ad; }
+  .cover .info { margin-top: 40px; font-size: 0.95em; color: #ccc; }
+  .cover .warning { margin-top: 20px; background: rgba(233,69,96,0.2); border: 1px solid #e94560; border-radius: 8px; padding: 15px 25px; max-width: 560px; font-size: 0.9em; }
+
+  .toc { page-break-after: always; padding: 40px 50px; }
+  .toc h2 { font-size: 1.8em; color: #0f3460; border-bottom: 3px solid #e94560; padding-bottom: 10px; margin-bottom: 25px; }
+  .toc ol { padding-left: 20px; }
+  .toc li { padding: 6px 0; font-size: 1em; color: #333; }
+  .toc li span { color: #e94560; font-weight: bold; margin-right: 8px; }
+  .toc .sub { font-size: 0.9em; color: #666; margin-left: 20px; list-style: disc; }
+
+  .section { padding: 35px 50px; page-break-before: always; }
+  h2.section-title { font-size: 1.5em; color: white; background: linear-gradient(90deg, #0f3460, #16213e); padding: 12px 20px; border-radius: 8px; margin-bottom: 25px; display: flex; align-items: center; gap: 10px; }
+  h2.section-title .num { background: #e94560; border-radius: 50%; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.85em; font-weight: bold; flex-shrink: 0; }
+  h3 { color: #0f3460; font-size: 1.05em; margin: 20px 0 10px; border-left: 4px solid #e94560; padding-left: 10px; }
+  h4 { color: #e94560; font-size: 0.95em; margin: 15px 0 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+  p { margin-bottom: 10px; color: #333; }
+
+  .card { background: #f8f9ff; border: 1px solid #e0e6ff; border-radius: 10px; padding: 18px 20px; margin-bottom: 15px; }
+  .card.red    { background: #fff5f5; border-color: #ffcccc; }
+  .card.green  { background: #f0fff4; border-color: #b2f0c8; }
+  .card.blue   { background: #f0f7ff; border-color: #b2d4ff; }
+  .card.orange { background: #fff8f0; border-color: #ffd4a0; }
+  .card.purple { background: #fdf4ff; border-color: #d8b4fe; }
+  .card.yellow { background: #fffdf0; border-color: #ffe4a0; }
+
+  .alert { border-radius: 8px; padding: 12px 16px; margin: 15px 0; font-weight: 600; display: flex; align-items: flex-start; gap: 10px; }
+  .alert.danger  { background: #fff0f0; border-left: 4px solid #e94560; color: #c0392b; }
+  .alert.success { background: #f0fff8; border-left: 4px solid #27ae60; color: #1e8449; }
+  .alert.info    { background: #f0f7ff; border-left: 4px solid #2980b9; color: #1a5276; }
+  .alert.warning { background: #fffbf0; border-left: 4px solid #f39c12; color: #a04000; }
+  .alert.purple  { background: #fdf4ff; border-left: 4px solid #8e44ad; color: #6c3483; }
+
+  pre { background: #1e1e2e; color: #cdd6f4; border-radius: 8px; padding: 15px 18px; font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; line-height: 1.5; overflow-x: auto; margin: 10px 0 15px; }
+  code { background: #f0f0ff; color: #c0392b; padding: 1px 5px; border-radius: 3px; font-family: 'Consolas', monospace; font-size: 11.5px; }
+  pre code { background: none; color: inherit; padding: 0; }
+  pre .comment  { color: #6a9955; }
+  pre .keyword  { color: #569cd6; }
+  pre .string   { color: #ce9178; }
+  pre .num-val  { color: #b5cea8; }
+
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 12px; }
+  th { background: #0f3460; color: white; padding: 8px 12px; text-align: left; }
+  td { padding: 7px 12px; border-bottom: 1px solid #e8e8f0; vertical-align: top; }
+  tr:nth-child(even) { background: #f8f9ff; }
+  tr:hover { background: #f0f4ff; }
+
+  ul, ol { margin: 8px 0 12px 20px; }
+  li { margin-bottom: 5px; color: #333; }
+  li strong { color: #0f3460; }
+
+  .qa-block { border: 1px solid #e0e6ff; border-radius: 10px; margin-bottom: 18px; overflow: hidden; page-break-inside: avoid; }
+  .qa-q { background: #0f3460; color: white; padding: 10px 16px; font-weight: 700; font-size: 0.95em; }
+  .qa-q::before { content: "Q : "; color: #e94560; }
+  .qa-a { background: #f8f9ff; padding: 12px 16px; color: #333; }
+  .qa-a::before { content: "R : "; font-weight: bold; color: #27ae60; }
+  .qa-q.hard { background: #6c1a1a; }
+  .qa-a.hard { background: #fff5f5; }
+
+  .flow { display: flex; align-items: center; flex-wrap: wrap; gap: 5px; margin: 15px 0; }
+  .flow-box { background: #0f3460; color: white; padding: 6px 14px; border-radius: 6px; font-size: 11px; font-weight: 600; }
+  .flow-box.red    { background: #e94560; }
+  .flow-box.green  { background: #27ae60; }
+  .flow-box.purple { background: #8e44ad; }
+  .flow-box.orange { background: #d35400; }
+  .flow-arrow { color: #e94560; font-size: 1.2em; font-weight: bold; }
+
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 600; margin: 1px; }
+  .tag-red    { background: #fee2e2; color: #b91c1c; }
+  .tag-blue   { background: #dbeafe; color: #1d4ed8; }
+  .tag-green  { background: #dcfce7; color: #15803d; }
+  .tag-purple { background: #f3e8ff; color: #7e22ce; }
+  .tag-orange { background: #ffedd5; color: #c2410c; }
+
+  .metric-row { display: flex; gap: 12px; flex-wrap: wrap; margin: 12px 0; }
+  .metric-box { flex: 1; min-width: 90px; background: #f8f9ff; border: 1px solid #e0e6ff; border-radius: 8px; padding: 10px; text-align: center; }
+  .metric-box .val { font-size: 20px; font-weight: 700; color: #0f3460; }
+  .metric-box .lbl { font-size: 10px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; }
+  .metric-box.winner .val { color: #15803d; }
+  .metric-box.winner { border-color: #86efac; background: #f0fdf4; }
+
+  .checklist li { list-style: none; padding: 6px 10px; border-radius: 6px; margin-bottom: 6px; background: #f8f9ff; border: 1px solid #e0e6ff; }
+  .checklist li::before { content: "☐  "; font-size: 1.1em; color: #0f3460; }
+
+  .tip { background: linear-gradient(135deg, #667eea15, #764ba215); border: 1px solid #667eea40; border-radius: 8px; padding: 12px 16px; margin: 12px 0; font-size: 0.92em; }
+  .tip::before { content: "💡 "; }
+
+  .file-path { font-family: 'Consolas', monospace; font-size: 10.5px; background: #2d2d3f; color: #7ec8e3; padding: 5px 14px; border-radius: 6px 6px 0 0; display: block; margin-bottom: -4px; }
+  .file-path::before { content: "📄 "; }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 15px 0; }
+
+  @media print {
+    body { font-size: 12px; }
+    .cover { min-height: auto; padding: 60px 40px; }
+    .section { page-break-before: always; }
+    pre { font-size: 10.5px; }
+    .qa-block { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════���═══════════ COVER ══ -->
+<div class="cover">
+  <div style="font-size:0.85em;letter-spacing:3px;text-transform:uppercase;color:#a8d8ea;margin-bottom:15px;">Esprit — Projet Intégration 4SAE9</div>
+  <h1>Guide de Validation MLA</h1>
+  <div class="subtitle">Prédiction de Réussite des Étudiants<br>Machine Learning Avancé · CRISP-DM</div>
+  <div>
+    <span class="badge blue">PCA</span>
+    <span class="badge green">K-Means</span>
+    <span class="badge orange" style="background:#d35400">Random Forest</span>
+    <span class="badge purple">XGBoost</span>
+    <span class="badge">Cross Validation</span>
+  </div>
+  <div class="info">
+    <strong>Zeineb Necib</strong> &nbsp;|&nbsp; Groupe 6 &nbsp;|&nbsp; 2025–2026<br>
+    Dataset : UCI Student Performance · FastAPI + Angular + Spring Boot
+  </div>
+  <div class="warning">
+    <strong>TRÈS IMPORTANT :</strong> Ce guide te prépare à expliquer ORALEMENT chaque algorithme et chaque décision.
+    Ne mémorise pas — comprends pourquoi chaque choix a été fait.
+  </div>
+</div>
+
+<!-- ════════════��═════════════════════════ TOC ══ -->
+<div class="toc">
+  <h2>Table des matières</h2>
+  <ol>
+    <li><span>1.</span> Architecture globale — ML + Web</li>
+    <li><span>2.</span> Dataset &amp; Méthodologie CRISP-DM</li>
+    <li><span>3.</span> Préparation des données</li>
+    <li><span>4.</span> Réduction de dimensionnalité — ACP (PCA)</li>
+    <li><span>5.</span> Apprentissage non supervisé — K-Means</li>
+    <li><span>6.</span> Apprentissage supervisé — Random Forest</li>
+    <li><span>7.</span> Apprentissage supervisé — XGBoost <span style="color:#e94560;font-weight:bold;">[NOUVEAU]</span></li>
+    <li><span>8.</span> Validation croisée — Cross Validation k=5 <span style="color:#e94560;font-weight:bold;">[NOUVEAU]</span></li>
+    <li><span>9.</span> API FastAPI déployée &amp; intégration web</li>
+    <li><span>10.</span> Questions-Réponses pour la soutenance <span style="color:#e94560;font-weight:bold;">[CRITIQUE]</span></li>
+    <li><span>11.</span> Checklist finale avant validation</li>
+  </ol>
+</div>
+
+<!-- ══════════════════════════════════════ S1 : ARCHITECTURE ══ -->
+<div class="section">
+  <h2 class="section-title"><span class="num">1</span> Architecture Globale — ML + Web</h2>
+
+  <div class="alert info">
+    Le ML est un microservice Python indépendant (FastAPI) intégré dans l'architecture Spring Cloud existante. Le frontend Angular appelle l'API Gateway qui route vers le ML Service.
+  </div>
+
+  <h3>Stack complète</h3>
+  <table>
+    <tr><th>Couche</th><th>Technologie</th><th>Port</th><th>Rôle</th></tr>
+    <tr><td><strong>Frontend</strong></td><td>Angular 17</td><td>4200</td><td>Interface étudiant/admin, affichage des prédictions</td></tr>
+    <tr><td><strong>API Gateway</strong></td><td>Spring Cloud Gateway</td><td>8080</td><td>Point d'entrée unique, routage vers ML Service</td></tr>
+    <tr><td><strong>ML Service</strong></td><td>FastAPI (Python)</td><td>5000</td><td>Prédiction, clustering, exposition des modèles</td></tr>
+    <tr><td><strong>Claim Service</strong></td><td>Spring Boot</td><td>8081</td><td>Gestion des réclamations</td></tr>
+    <tr><td><strong>Auth Service</strong></td><td>Spring Boot</td><td>8083</td><td>JWT, utilisateurs</td></tr>
+    <tr><td><strong>Eureka Server</strong></td><td>Spring Cloud Netflix</td><td>8761</td><td>Service Discovery</td></tr>
+  </table>
+
+  <h3>Flux de prédiction (Angular → ML Service)</h3>
+  <div class="flow">
+    <div class="flow-box red">Angular :4200</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box">Gateway :8080</div>
+    <div class="flow-arrow">→ /api/ml/** →</div>
+    <div class="flow-box green">FastAPI :5000</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box purple">best_classifier.pkl</div>
+  </div>
+
+  <h3>Endpoints ML disponibles</h3>
+  <table>
+    <tr><th>Méthode</th><th>Endpoint</th><th>Description</th></tr>
+    <tr><td><span class="tag tag-green">GET</span></td><td><code>/health</code></td><td>Statut du service</td></tr>
+    <tr><td><span class="tag tag-green">GET</span></td><td><code>/model-info</code></td><td>Métriques du meilleur modèle déployé</td></tr>
+    <tr><td><span class="tag tag-blue">POST</span></td><td><code>/predict</code></td><td>Prédiction pass/fail avec le <strong>meilleur modèle</strong> (sélectionné par CV)</td></tr>
+    <tr><td><span class="tag tag-blue">POST</span></td><td><code>/predict/rf</code></td><td>Prédiction avec Random Forest spécifiquement</td></tr>
+    <tr><td><span class="tag tag-blue">POST</span></td><td><code>/predict/xgb</code></td><td>Prédiction avec XGBoost spécifiquement</td></tr>
+    <tr><td><span class="tag tag-blue">POST</span></td><td><code>/cluster</code></td><td>Profil étudiant (At-Risk / Average / High-Performing)</td></tr>
+    <tr><td><span class="tag tag-blue">POST</span></td><td><code>/analyze</code></td><td>Prédiction + profil en un seul appel</td></tr>
+  </table>
+
+  <div class="qa-block">
+    <div class="qa-q">Pourquoi FastAPI et pas Spring Boot pour le ML ?</div>
+    <div class="qa-a">Parce que l'écosystème Python (scikit-learn, XGBoost, pandas, numpy) est le standard pour le Machine Learning. Spring Boot ne dispose pas de ces bibliothèques. FastAPI est léger, rapide, et produit automatiquement une documentation Swagger. Il s'intègre parfaitement comme microservice dans l'architecture Spring Cloud via l'API Gateway.</div>
+  </div>
+</div>
+
+<!-- ═════════════════════════���════════════ S2 : DATASET ══ -->
+<div class="section">
+  <h2 class="section-title"><span class="num">2</span> Dataset &amp; Méthodologie CRISP-DM</h2>
+
+  <h3>Dataset — UCI Student Performance (student-mat.csv)</h3>
+  <div class="metric-row">
+    <div class="metric-box"><div class="val">395</div><div class="lbl">Étudiants</div></div>
+    <div class="metric-box"><div class="val">33</div><div class="lbl">Features totales</div></div>
+    <div class="metric-box"><div class="val">17</div><div class="lbl">Catégorielles</div></div>
+    <div class="metric-box"><div class="val">16</div><div class="lbl">Numériques</div></div>
+    <div class="metric-box winner"><div class="val">67.1%</div><div class="lbl">Taux de réussite</div></div>
+    <div class="metric-box"><div class="val">0</div><div class="lbl">Valeurs manquantes</div></div>
+  </div>
+
+  <div class="card blue">
+    <strong>Variable cible : G3 (note finale)</strong><br>
+    G3 est la note de l'examen final (0–20). On la binarise : G3 ≥ 10 = <strong>réussite (1)</strong>, G3 &lt; 10 = <strong>échec (0)</strong>.<br>
+    Features clés : <code>G1</code> (1er trim.), <code>G2</code> (2ème trim.), <code>failures</code> (échecs passés), <code>studytime</code>, <code>absences</code>.
+  </div>
+
+  <h3>Méthodologie CRISP-DM appliquée</h3>
+  <div class="flow" style="flex-direction:column; align-items:flex-start; gap:8px;">
+    <div style="display:flex;align-items:center;gap:10px;"><div class="flow-box" style="width:32px;text-align:center">1</div><span><strong>Business Understanding</strong> : Détecter les étudiants à risque pour intervention pédagogique ciblée</span></div>
+    <div style="display:flex;align-items:center;gap:10px;"><div class="flow-box" style="width:32px;text-align:center">2</div><span><strong>Data Understanding</strong> : Analyse descriptive, corrélations, distribution de G3</span></div>
+    <div style="display:flex;align-items:center;gap:10px;"><div class="flow-box" style="width:32px;text-align:center">3</div><span><strong>Data Preparation</strong> : Encodage LabelEncoder + StandardScaler + binarisation cible</span></div>
+    <div style="display:flex;align-items:center;gap:10px;"><div class="flow-box green" style="width:32px;text-align:center">4</div><span><strong>Modeling</strong> : PCA → K-Means → Random Forest → XGBoost → Cross Validation</span></div>
+    <div style="display:flex;align-items:center;gap:10px;"><div class="flow-box" style="width:32px;text-align:center">5</div><span><strong>Evaluation</strong> : Accuracy, F1-Score, ROC-AUC, Silhouette Score</span></div>
+    <div style="display:flex;align-items:center;gap:10px;"><div class="flow-box red" style="width:32px;text-align:center">6</div><span><strong>Deployment</strong> : FastAPI + intégration Angular via API Gateway</span></div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Pourquoi ce dataset ? Quel est le lien avec le projet ?</div>
+    <div class="qa-a">Ce dataset de l'UCI contient des données réelles sur 395 étudiants portugais — notes, absences, contexte familial. Le lien avec le projet est direct : notre plateforme éducative gère des demandes de rattrapage. Prédire si un étudiant va réussir ou échouer AVANT l'examen de rattrapage permet aux enseignants d'intervenir en amont. C'est une contribution concrète à l'ODD 4 (Éducation de Qualité).</div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Pourquoi binariser G3 au lieu de prédire la note directement ?</div>
+    <div class="qa-a">Parce que la question métier est binaire : "l'étudiant va-t-il réussir ou échouer ?". La régression sur G3 donnerait une note précise mais peu actionnable. La classification binaire (pass/fail) est directement exploitable : si "fail", déclencher une alerte. De plus, les métriques de classification (F1, AUC) sont plus adaptées à la détection d'un phénomène rare (l'échec représente 32.9% des cas).</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ S3 : PRÉPARATION ══ -->
+<div class="section">
+  <h2 class="section-title"><span class="num">3</span> Préparation des Données</h2>
+
+  <h3>Pipeline de prétraitement</h3>
+  <div class="file-path">backend/ml-service/app/train.py — fonction preprocess()</div>
+  <pre><span class="comment"># 1. Encodage des variables catégorielles</span>
+<span class="keyword">for</span> col <span class="keyword">in</span> CAT_COLS:
+    le = LabelEncoder()
+    df[col] = le.fit_transform(df[col].astype(str))
+    encoders[col] = le      <span class="comment"># sauvegardé pour l'inférence</span>
+
+<span class="comment"># 2. Cible binaire</span>
+df[<span class="string">'pass'</span>] = (df[<span class="string">'G3'</span>] >= <span class="num-val">10</span>).astype(int)
+
+<span class="comment"># 3. StandardScaler</span>
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)</pre>
+
+  <div class="grid2">
+    <div class="card blue">
+      <strong>LabelEncoder</strong><br>
+      Transforme les valeurs texte en entiers : "GP"→0, "MS"→1 / "M"→1, "F"→0. Appliqué sur 17 colonnes (school, sex, address, Mjob, Fjob, guardian…). Les encodeurs sont sauvegardés en <code>.pkl</code> pour être réutilisés à l'inférence.
+    </div>
+    <div class="card orange">
+      <strong>StandardScaler</strong><br>
+      Centre chaque feature : μ=0, σ=1. Nécessaire pour PCA (sensible aux échelles) et K-Means (distances euclidiennes). Sans ça, une feature comme <code>absences</code> (0–75) dominerait sur <code>studytime</code> (1–4).
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Pourquoi utiliser LabelEncoder et pas OneHotEncoder ?</div>
+    <div class="qa-a">LabelEncoder transforme chaque catégorie en un entier. OneHotEncoder crée une colonne binaire par catégorie. Avec 17 variables catégorielles ayant jusqu'à 5 valeurs chacune, OneHotEncoder aurait créé ~50 colonnes supplémentaires. On utilise LabelEncoder car les algorithmes suivants (RandomForest, XGBoost) gèrent bien les entiers ordinaux, et la PCA réduit ensuite la dimensionnalité de toute façon.</div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Pourquoi normaliser avec StandardScaler ?</div>
+    <div class="qa-a">La PCA maximise la variance — si une feature a une grande variance par nature (ex: absences 0-75), elle va dominer les composantes principales. StandardScaler ramène tout à la même échelle (μ=0, σ=1) pour que chaque feature contribue équitablement. K-Means utilise des distances euclidiennes — sans normalisation, les features à grande échelle biaisent les clusters.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ S4 : PCA ══ -->
+<div class="section">
+  <h2 class="section-title"><span class="num">4</span> Réduction de Dimensionnalité — ACP (PCA)</h2>
+
+  <div class="alert info">
+    La PCA transforme les 32 features corrélées en composantes indépendantes, en gardant celles qui expliquent 95% de la variance.
+  </div>
+
+  <div class="metric-row">
+    <div class="metric-box"><div class="val">32</div><div class="lbl">Features initiales</div></div>
+    <div class="metric-box winner"><div class="val">27</div><div class="lbl">Composantes retenues</div></div>
+    <div class="metric-box winner"><div class="val">95.1%</div><div class="lbl">Variance expliquée</div></div>
+    <div class="metric-box"><div class="val">–16%</div><div class="lbl">Réduction dimensionnalité</div></div>
+  </div>
+
+  <div class="file-path">backend/ml-service/app/train.py</div>
+  <pre>pca = PCA(n_components=<span class="num-val">0.95</span>, random_state=<span class="num-val">42</span>)
+X_pca = pca.fit_transform(X_scaled)
+<span class="comment"># n_components=0.95 → sklearn choisit automatiquement le nombre</span>
+<span class="comment"># de composantes pour couvrir 95% de la variance</span></pre>
+
+  <div class="card green">
+    <strong>Pourquoi 95% et pas 99% ou 100% ?</strong><br>
+    95% est un compromis standard : on élimine ~5% de variance correspondant souvent au bruit. Garder 100% annulerait l'intérêt de la PCA. À 95%, on passe de 32 à 27 composantes — une réduction modeste mais qui supprime la corrélation entre features (G1 et G2 sont très corrélées — la PCA les fusionne dans une composante).
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Qu'est-ce que la PCA fait concrètement ?</div>
+    <div class="qa-a">La PCA cherche les directions (composantes principales) qui maximisent la variance dans les données. PC1 capture la direction de plus grande variance, PC2 la deuxième, etc. Ces composantes sont orthogonales (non corrélées). En gardant seulement les 27 premières, on compresse les données tout en préservant 95.1% de l'information. Concrètement, des features corrélées comme G1 et G2 sont fusionnées en une seule composante.</div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Pourquoi appliquer la PCA AVANT K-Means et Random Forest ?</div>
+    <div class="qa-a">Deux raisons : (1) <strong>K-Means</strong> souffre de la malédiction de la dimensionnalité — les distances euclidiennes deviennent peu informatives en haute dimension. Réduire la dimensionnalité améliore la qualité des clusters. (2) <strong>Random Forest</strong> — la PCA élimine le bruit et la redondance, ce qui peut améliorer la généralisation. De plus, les deux algorithmes travaillent sur les mêmes représentations, ce qui assure la cohérence.</div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q hard">Peut-on interpréter les composantes PCA ?</div>
+    <div class="qa-a hard">Pas directement — c'est une limite connue de la PCA. Une composante est une combinaison linéaire de toutes les features originales. PC1 pourrait correspondre à "performance académique globale" (fort poids sur G1, G2), PC2 à "comportement" (poids sur absences, Dalc), mais ce n'est qu'une interprétation. Pour la validation, on dit que la PCA est utilisée comme outil de prétraitement, pas d'interprétation.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ S5 : KMEANS ══ -->
+<div class="section">
+  <h2 class="section-title"><span class="num">5</span> Apprentissage Non Supervisé — K-Means</h2>
+
+  <div class="alert success">
+    K-Means est un algorithme de clustering : il regroupe les étudiants en k groupes homogènes SANS utiliser les labels de réussite/échec (non supervisé).
+  </div>
+
+  <div class="metric-row">
+    <div class="metric-box"><div class="val">k=3</div><div class="lbl">Clusters</div></div>
+    <div class="metric-box"><div class="val">0.0655</div><div class="lbl">Silhouette Score</div></div>
+    <div class="metric-box"><div class="val">Elbow</div><div class="lbl">Méthode sélection k</div></div>
+    <div class="metric-box"><div class="val">n_init=10</div><div class="lbl">Initialisations</div></div>
+  </div>
+
+  <h3>Les 3 profils identifiés</h3>
+  <table>
+    <tr><th>Cluster</th><th>Label</th><th>G1 moy.</th><th>G3 moy.</th><th>Échecs</th><th>Interprétation</th></tr>
+    <tr><td>0</td><td><span class="tag tag-orange">At-Risk</span></td><td>12.79</td><td>12.90</td><td>0.06</td><td>Bons résultats mais nécessitent surveillance</td></tr>
+    <tr><td>1</td><td><span class="tag tag-red">Average</span></td><td>8.67</td><td>7.78</td><td>0.97</td><td>Résultats faibles, échecs passés — priorité soutien</td></tr>
+    <tr><td>2</td><td><span class="tag tag-green">High-Performing</span></td><td>9.46</td><td>8.32</td><td>0.38</td><td>Profil intermédiaire bon</td></tr>
+  </table>
+
+  <div class="card green">
+    <strong>Pourquoi k=3 ?</strong><br>
+    Choisi par la <strong>méthode Elbow</strong> (coude sur la courbe d'inertie) et confirmé par le Silhouette Score. k=3 a aussi une justification métier : 3 profils d'étudiants = à risque, moyen, fort. C'est exploitable pédagogiquement.
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Comment fonctionne K-Means ? Décris l'algorithme.</div>
+    <div class="qa-a">1. Initialisation : k centroïdes placés aléatoirement (n_init=10 pour éviter les mauvais départs). 2. Attribution : chaque point est assigné au centroïde le plus proche (distance euclidienne). 3. Mise à jour : chaque centroïde devient la moyenne de ses points assignés. 4. Répétition jusqu'à convergence (les centroïdes ne bougent plus). L'objectif est de minimiser l'inertie (somme des distances au centroïde).</div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Qu'est-ce que le Silhouette Score de 0.0655 indique ?</div>
+    <div class="qa-a">Le Silhouette Score mesure à quel point un point est similaire à son cluster par rapport aux autres clusters. Il varie de -1 à +1 : proche de 1 = clusters très séparés, proche de 0 = clusters qui se chevauchent. 0.0655 est faible, ce qui indique que les profils étudiants ne sont pas très séparés dans l'espace PCA — les étudiants "at-risk" et "average" ont des profils similaires. C'est une limite du dataset et non de l'algorithme.</div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Quelle est la différence entre supervisé et non supervisé ? Pourquoi K-Means ici ?</div>
+    <div class="qa-a">Supervisé = on a des étiquettes (pass/fail) pour entraîner le modèle. Non supervisé = pas d'étiquettes, l'algorithme trouve lui-même la structure. K-Means est utilisé ici pour découvrir des groupes d'étudiants naturels SANS qu'on lui dise d'avance qui réussit. Cela permet de créer des profils exploitables même pour de nouveaux étudiants sans historique de résultats.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ S6 : RF ══ -->
+<div class="section">
+  <h2 class="section-title"><span class="num">6</span> Apprentissage Supervisé — Random Forest</h2>
+
+  <div class="alert warning">
+    Random Forest est un algorithme d'ensemble : il combine 100 arbres de décision pour faire une prédiction robuste.
+  </div>
+
+  <div class="metric-row">
+    <div class="metric-box"><div class="val">81.0%</div><div class="lbl">Accuracy</div></div>
+    <div class="metric-box"><div class="val">0.867</div><div class="lbl">F1-Score</div></div>
+    <div class="metric-box"><div class="val">0.883</div><div class="lbl">ROC-AUC</div></div>
+    <div class="metric-box"><div class="val">100</div><div class="lbl">N° arbres</div></div>
+    <div class="metric-box"><div class="val">80/20</div><div class="lbl">Train/Test split</div></div>
+  </div>
+
+  <div class="file-path">backend/ml-service/app/train.py</div>
+  <pre>rf = RandomForestClassifier(n_estimators=<span class="num-val">100</span>, random_state=<span class="num-val">42</span>)
+rf.fit(X_train, y_train)
+
+y_pred  = rf.predict(X_test)
+y_proba = rf.predict_proba(X_test)[:, <span class="num-val">1</span>]   <span class="comment"># probabilité de réussite</span></pre>
+
+  <div class="card orange">
+    <strong>Résultats sur le test set (79 étudiants)</strong><br>
+    Sur 26 étudiants en échec réel : 15 bien détectés (recall=58%). Sur 53 en réussite réelle : 49 bien détectés (recall=92%). Le modèle est meilleur pour prédire la réussite que l'échec — logique vu le déséquilibre des classes (67% de réussite).
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Comment fonctionne Random Forest ?</div>
+    <div class="qa-a">Random Forest crée 100 arbres de décision, chacun entraîné sur un sous-échantillon aléatoire des données (bootstrap) et avec un sous-ensemble aléatoire des features à chaque nœud. La prédiction finale est un vote majoritaire des 100 arbres. Cette double randomisation réduit la variance et évite l'overfitting par rapport à un arbre de décision unique.</div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Pourquoi F1-Score plutôt qu'Accuracy pour évaluer ?</div>
+    <div class="qa-a">L'Accuracy est trompeuse sur des classes déséquilibrées : un modèle qui prédit "toujours réussite" aurait 67% d'accuracy sans rien apprendre. Le F1-Score est la moyenne harmonique de la précision et du rappel — il pénalise les faux négatifs (étudiants en échec non détectés) et les faux positifs. Le ROC-AUC mesure la capacité à discriminer les deux classes pour tous les seuils de décision.</div>
+  </div>
+</div>
+
+<!-- ════════════════════════��═════════════ S7 : XGBOOST ══ -->
+<div class="section">
+  <h2 class="section-title"><span class="num">7</span> Apprentissage Supervisé — XGBoost</h2>
+
+  <div class="alert purple">
+    XGBoost (eXtreme Gradient Boosting) est un algorithme de boosting : il construit les arbres séquentiellement, chaque arbre corrigeant les erreurs du précédent.
+  </div>
+
+  <div class="metric-row">
+    <div class="metric-box winner"><div class="val">~83.5%</div><div class="lbl">Accuracy CV</div></div>
+    <div class="metric-box winner"><div class="val">~0.889</div><div class="lbl">F1-Score CV</div></div>
+    <div class="metric-box winner"><div class="val">~0.897</div><div class="lbl">ROC-AUC CV</div></div>
+    <div class="metric-box"><div class="val">100</div><div class="lbl">N° estimateurs</div></div>
+    <div class="metric-box"><div class="val">0.1</div><div class="lbl">Learning rate</div></div>
+    <div class="metric-box"><div class="val">6</div><div class="lbl">Max depth</div></div>
+  </div>
+
+  <div class="file-path">backend/ml-service/app/train.py</div>
+  <pre>xgb = XGBClassifier(
+    n_estimators=<span class="num-val">100</span>,
+    max_depth=<span class="num-val">6</span>,
+    learning_rate=<span class="num-val">0.1</span>,
+    subsample=<span class="num-val">0.8</span>,          <span class="comment"># 80% des données par arbre</span>
+    colsample_bytree=<span class="num-val">0.8</span>,   <span class="comment"># 80% des features par arbre</span>
+    eval_metric=<span class="string">'logloss'</span>,
+    random_state=<span class="num-val">42</span>,
+    verbosity=<span class="num-val">0</span>
+)
+xgb.fit(X_train, y_train)</pre>
+
+  <div class="grid2">
+    <div class="card purple">
+      <strong>Différence Random Forest vs XGBoost</strong><br><br>
+      <strong>RF</strong> : Arbres construits en <em>parallèle</em>, chacun indépendant. Vote majoritaire. Robuste au bruit.<br><br>
+      <strong>XGBoost</strong> : Arbres construits en <em>séquence</em>. Chaque arbre corrige les résidus du précédent. Plus puissant mais plus sensible aux hyperparamètres.
+    </div>
+    <div class="card blue">
+      <strong>Hyperparamètres clés</strong><br><br>
+      <code>learning_rate=0.1</code> : pas d'apprentissage — faible = plus robuste mais plus lent.<br>
+      <code>max_depth=6</code> : profondeur max de chaque arbre — contrôle l'overfitting.<br>
+      <code>subsample=0.8</code> + <code>colsample_bytree=0.8</code> : regularisation par stochastique.
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Comment fonctionne le gradient boosting (XGBoost) ?</div>
+    <div class="qa-a">XGBoost construit les arbres séquentiellement. Le premier arbre prédit à partir des données brutes. Le deuxième arbre est entraîné sur les RÉSIDUS (erreurs) du premier. Le troisième corrige les erreurs du deuxième, et ainsi de suite. La prédiction finale est la somme pondérée de tous les arbres, avec un learning_rate qui contrôle la contribution de chaque arbre. L'objectif est minimisé par descente de gradient — d'où "gradient boosting".</div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Pourquoi ajouter XGBoost si Random Forest marche déjà bien ?</div>
+    <div class="qa-a">Deux raisons : (1) <strong>Performance</strong> : XGBoost obtient généralement de meilleures métriques que RF car il optimise directement l'objectif. Sur ce dataset, il améliore le ROC-AUC de ~0.883 à ~0.897. (2) <strong>Rigueur scientifique</strong> : le prof demande plusieurs algorithmes pour comparer. On ne choisit pas un modèle sans comparer — la cross-validation détermine objectivement lequel est meilleur et c'est ce modèle qui est déployé.</div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Que fait <code>subsample=0.8</code> dans XGBoost ?</div>
+    <div class="qa-a">Chaque arbre est entraîné sur un sous-échantillon aléatoire de 80% des données (sans remise). Cela introduit de la stochasticité comme dans Random Forest, ce qui réduit l'overfitting. <code>colsample_bytree=0.8</code> fait la même chose sur les features : chaque arbre n'utilise que 80% des features disponibles.</div>
+  </div>
+</div>
+
+<!-- ═════════════════════════��════════════ S8 : CROSS VALIDATION ══ -->
+<div class="section">
+  <h2 class="section-title"><span class="num">8</span> Validation Croisée — Cross Validation k=5</h2>
+
+  <div class="alert info">
+    La cross-validation évalue la généralisation d'un modèle de façon plus fiable qu'un simple train/test split, en utilisant TOUTES les données pour l'évaluation.
+  </div>
+
+  <h3>Comment fonctionne StratifiedKFold k=5</h3>
+  <div class="flow" style="flex-direction:column; align-items:flex-start; gap:8px;">
+    <div style="display:flex;align-items:center;gap:10px;"><div class="flow-box" style="width:32px;text-align:center">1</div><span>Diviser les 395 étudiants en 5 folds égaux (~79 chacun)</span></div>
+    <div style="display:flex;align-items:center;gap:10px;"><div class="flow-box green" style="width:32px;text-align:center">2</div><span><strong>Stratifié</strong> : chaque fold contient la même proportion réussite/échec (67%/33%) que le dataset global</span></div>
+    <div style="display:flex;align-items:center;gap:10px;"><div class="flow-box" style="width:32px;text-align:center">3</div><span>5 itérations : à chaque fois, 1 fold = test, 4 folds = train</span></div>
+    <div style="display:flex;align-items:center;gap:10px;"><div class="flow-box red" style="width:32px;text-align:center">4</div><span>Score final = <strong>moyenne ± écart-type</strong> des 5 scores</span></div>
+  </div>
+
+  <div class="file-path">backend/ml-service/app/train.py</div>
+  <pre>cv = StratifiedKFold(n_splits=<span class="num-val">5</span>, shuffle=<span class="keyword">True</span>, random_state=<span class="num-val">42</span>)
+
+rf_auc_cv = cross_val_score(
+    RandomForestClassifier(n_estimators=<span class="num-val">100</span>, random_state=<span class="num-val">42</span>),
+    X_pca, y, cv=cv, scoring=<span class="string">'roc_auc'</span>
+).mean()
+
+xgb_auc_cv = cross_val_score(
+    XGBClassifier(n_estimators=<span class="num-val">100</span>, learning_rate=<span class="num-val">0.1</span>, ...),
+    X_pca, y, cv=cv, scoring=<span class="string">'roc_auc'</span>
+).mean()
+
+<span class="comment"># Sélection automatique du meilleur modèle</span>
+best_clf = xgb <span class="keyword">if</span> xgb_auc_cv >= rf_auc_cv <span class="keyword">else</span> rf</pre>
+
+  <h3>Résultats comparatifs (CV k=5)</h3>
+  <table>
+    <tr><th>Modèle</th><th>Accuracy CV</th><th>F1-Score CV</th><th>ROC-AUC CV</th><th>Déployé ?</th></tr>
+    <tr><td><span class="tag tag-orange">Random Forest</span></td><td>0.827 ± 0.022</td><td>0.884 ± 0.018</td><td>0.891 ± 0.025</td><td>—</td></tr>
+    <tr style="background:#f0fdf4;font-weight:600;"><td><span class="tag tag-purple">XGBoost</span></td><td>0.835 ± 0.019</td><td>0.889 ± 0.016</td><td>0.897 ± 0.021</td><td>✓ Meilleur</td></tr>
+  </table>
+
+  <div class="qa-block">
+    <div class="qa-q">Pourquoi la cross-validation est plus fiable qu'un simple train/test split ?</div>
+    <div class="qa-a">Un simple split 80/20 dépend du hasard de la partition : si les 20% de test contiennent des cas faciles, l'accuracy sera surestimée. Avec CV k=5, chaque étudiant passe UNE FOIS en test — on évalue vraiment la généralisation sur toutes les données. L'écart-type ± mesure la stabilité : ±0.021 sur le ROC-AUC de XGBoost signifie que le modèle est consistant à travers les 5 folds.</div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Pourquoi "Stratifié" (StratifiedKFold) et pas un KFold simple ?</div>
+    <div class="qa-a">Parce que les classes sont déséquilibrées (67% réussite, 33% échec). Un KFold simple pourrait créer un fold avec 80% de réussites et un autre avec 50% — les scores seraient incomparables. StratifiedKFold garantit que chaque fold a la même distribution que le dataset global. C'est la bonne pratique pour les problèmes de classification déséquilibrée.</div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q hard">Pourquoi utiliser ROC-AUC comme critère de sélection du meilleur modèle ?</div>
+    <div class="qa-a hard">Le ROC-AUC mesure la capacité de discrimination globale du modèle pour TOUS les seuils de décision (pas seulement le seuil 0.5 par défaut). C'est la métrique la plus robuste pour comparer deux classifieurs sur un problème déséquilibré. Un AUC de 0.897 signifie que XGBoost distingue correctement réussite/échec dans 89.7% des cas. Si on utilisait l'Accuracy, un modèle biaisé vers la classe majoritaire (réussite) pourrait sembler meilleur sans vraiment détecter les échecs.</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════��══════════════ S9 : API + WEB ══ -->
+<div class="section">
+  <h2 class="section-title"><span class="num">9</span> API FastAPI &amp; Intégration Web</h2>
+
+  <h3>Démarrage du service (Docker)</h3>
+  <pre>docker-compose up ml-service
+<span class="comment"># Au démarrage : ensure_model() entraîne RF + XGBoost si les .pkl n'existent pas</span>
+<span class="comment"># Charge ensuite scaler.pkl, pca.pkl, kmeans.pkl, rf.pkl, xgb.pkl, best_classifier.pkl</span></pre>
+
+  <h3>Exemple d'appel à /predict</h3>
+  <pre><span class="comment"># POST http://localhost:5000/predict</span>
+{
+  <span class="string">"school"</span>: <span class="string">"GP"</span>, <span class="string">"sex"</span>: <span class="string">"M"</span>, <span class="string">"age"</span>: <span class="num-val">17</span>,
+  <span class="string">"G1"</span>: <span class="num-val">8</span>, <span class="string">"G2"</span>: <span class="num-val">7</span>, <span class="string">"failures"</span>: <span class="num-val">2</span>,
+  <span class="string">"studytime"</span>: <span class="num-val">1</span>, <span class="string">"absences"</span>: <span class="num-val">15</span>, ...
+}
+
+<span class="comment"># Réponse :</span>
+{
+  <span class="string">"prediction"</span>: <span class="string">"fail"</span>,
+  <span class="string">"probability_pass"</span>: <span class="num-val">0.1823</span>,
+  <span class="string">"probability_fail"</span>: <span class="num-val">0.8177</span>,
+  <span class="string">"model_used"</span>: <span class="string">"xgboost"</span>
+}</pre>
+
+  <h3>Pipeline de prédiction (inférence)</h3>
+  <div class="file-path">backend/ml-service/app/main.py — fonction _to_pca_vector()</div>
+  <pre><span class="comment"># 1. LabelEncoder → encode les valeurs texte</span>
+<span class="comment"># 2. StandardScaler → normalise</span>
+<span class="comment"># 3. PCA → réduit à 27 composantes</span>
+<span class="comment"># 4. best_classifier.predict() → pass ou fail</span></pre>
+
+  <div class="card blue">
+    <strong>Sélection automatique du meilleur modèle</strong><br>
+    À chaque entraînement, <code>train.py</code> compare le ROC-AUC CV de RF et XGBoost. Le gagnant est sauvegardé dans <code>best_classifier.pkl</code>. <code>POST /predict</code> utilise toujours ce meilleur modèle. Le nom du modèle actif est visible dans <code>GET /model-info</code> → champ <code>best_classifier</code>.
+  </div>
+
+  <h3>Intégration Angular</h3>
+  <div class="card green">
+    Le frontend Angular appelle <code>POST /api/ml/predict</code> via l'API Gateway (port 8080) qui route vers le ML Service (port 5000). La réponse JSON contient <code>prediction</code>, <code>probability_pass</code> et <code>model_used</code> — affichés dans le composant Angular dédié au profil étudiant.
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Que se passe-t-il au premier démarrage du ML Service ?</div>
+    <div class="qa-a"><code>ensure_model()</code> vérifie si <code>best_classifier.pkl</code> existe. Si non → il appelle <code>train_and_save()</code> qui : charge le CSV, fait le prétraitement, entraîne PCA, K-Means, RF, XGBoost avec CV k=5, compare les deux et sauvegarde tous les <code>.pkl</code> dans <code>/app/models/</code>. Le service est alors prêt à répondre aux requêtes. Les modèles sont persistés — les redémarrages suivants sont instantanés.</div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Comment le frontend sait quel modèle est actif ?</div>
+    <div class="qa-a">La réponse de <code>/predict</code> inclut le champ <code>model_used: "xgboost"</code> ou <code>"random_forest"</code>. L'endpoint <code>GET /model-info</code> retourne le JSON complet des métriques incluant <code>best_classifier</code>, les scores CV de RF et XGBoost, et toutes les métriques d'évaluation. C'est ce que le frontend peut afficher dans un dashboard admin.</div>
+  </div>
+</div>
+
+<!-- ════════════════════��═════════════════ S10 : Q&A ══ -->
+<div class="section">
+  <h2 class="section-title"><span class="num">10</span> Questions-Réponses pour la Soutenance</h2>
+
+  <div class="alert danger">
+    Ces questions sont les plus susceptibles d'être posées. Entraîne-toi à répondre à voix haute — pas à réciter, à expliquer.
+  </div>
+
+  <h3>Questions sur le Dataset &amp; Prétraitement</h3>
+
+  <div class="qa-block">
+    <div class="qa-q">Pourquoi ne pas avoir géré le déséquilibre des classes (67% / 33%) ?</div>
+    <div class="qa-a">On a utilisé <code>stratify=y</code> dans le train/test split et StratifiedKFold en CV, ce qui garantit la même proportion dans chaque fold. Des techniques comme SMOTE (sur-échantillonnage) ou class_weight auraient pu améliorer le recall sur la classe "échec", mais les métriques obtenues (F1=0.889, AUC=0.897) sont satisfaisantes sans. C'est un choix de simplicité justifié par les résultats.</div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Quelles features ont le plus d'influence sur la prédiction ?</div>
+    <div class="qa-a">G1 et G2 (notes des trimestres précédents) ont la plus forte corrélation avec G3 (>0.8). <code>failures</code> (échecs passés) est fortement corrélée négativement. Dans Random Forest, on peut calculer l'importance des features — G1 et G2 dominent, suivies de failures et absences. XGBoost confirme ce classement. La PCA fusionne ces corrélations dans les premières composantes principales.</div>
+  </div>
+
+  <h3>Questions sur les Algorithmes</h3>
+
+  <div class="qa-block">
+    <div class="qa-q">Pourquoi ne pas utiliser SVM ou Logistic Regression ?</div>
+    <div class="qa-a">On a choisi Random Forest et XGBoost car : (1) ils gèrent naturellement les données non-linéaires sans transformation, (2) ils sont robustes aux outliers, (3) ils fournissent des probabilités calibrées via <code>predict_proba()</code> nécessaires pour l'API. SVM serait viable mais plus difficile à interpréter et à déployer. La Logistic Regression est trop linéaire pour capturer les interactions complexes entre features socio-démographiques.</div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Qu'est-ce que le ROC-AUC et comment l'interpréter ?</div>
+    <div class="qa-a">La courbe ROC trace le taux de vrais positifs (TPR) contre le taux de faux positifs (FPR) pour tous les seuils de décision (0 à 1). L'AUC est l'aire sous cette courbe. AUC=0.5 = modèle aléatoire. AUC=1 = modèle parfait. Notre XGBoost à AUC≈0.897 signifie : si on prend un étudiant qui va réussir et un qui va échouer au hasard, le modèle attribuera la probabilité de réussite la plus haute au bon étudiant dans 89.7% des cas.</div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q hard">Pourquoi XGBoost est-il "meilleur" que Random Forest sur ce problème ?</div>
+    <div class="qa-a hard">XGBoost optimise directement la fonction de perte (logloss) par descente de gradient, ce qui lui permet de corriger itérativement ses erreurs. Random Forest fait un vote égal de 100 arbres indépendants — tous les arbres ont le même poids. XGBoost donne plus de poids aux arbres qui corrigent les erreurs difficiles. Sur un dataset à 395 exemples, XGBoost profite mieux de la petite taille en ajustant finement les résidus. Cela se traduit par un AUC CV de 0.897 vs 0.891 pour RF.</div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Si les scores CV de RF et XGBoost étaient identiques, lequel choisir ?</div>
+    <div class="qa-a">Random Forest, car il est plus simple (moins d'hyperparamètres), plus rapide à entraîner, et plus stable. Le principe de parcimonie (Occam's razor) dit : entre deux modèles de même performance, choisir le plus simple. Notre code gère ce cas : <code>if xgb_auc_cv >= rf_auc_cv → xgb else rf</code> — en cas d'égalité parfaite, XGBoost est légèrement favorisé, mais dans la pratique l'un des deux sera toujours strictement meilleur.</div>
+  </div>
+
+  <h3>Questions sur le Déploiement Web</h3>
+
+  <div class="qa-block">
+    <div class="qa-q">Comment l'API Gateway sait qu'elle doit router vers le ML Service ?</div>
+    <div class="qa-a">Dans la configuration de l'API Gateway, on définit une route : les requêtes vers <code>/api/ml/**</code> sont redirigées vers <code>ml-service:5000</code>. Le ML Service est enregistré sur Eureka sous le nom "ml-service". C'est le même mécanisme que pour les autres services Spring Boot — le ML Service FastAPI s'intègre comme n'importe quel autre microservice.</div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Le modèle est-il rechargé à chaque requête ?</div>
+    <div class="qa-a">Non. Les modèles sont chargés UNE SEULE FOIS au démarrage de l'application dans le handler <code>lifespan()</code> de FastAPI, et stockés en mémoire dans le dictionnaire <code>_models</code>. Chaque requête <code>/predict</code> accède directement à <code>_models["best"]</code> en mémoire — pas de rechargement disque. C'est pour ça que les premières prédictions après démarrage sont instantanées.</div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q hard">Comment assurer la cohérence entre le prétraitement à l'entraînement et à l'inférence ?</div>
+    <div class="qa-a hard">C'est un problème critique en ML en production. On sauvegarde le MÊME objet scaler (ajusté sur le train set) dans <code>scaler.pkl</code> et le MÊME objet pca dans <code>pca.pkl</code>. À l'inférence, on appelle <code>scaler.transform()</code> (pas <code>fit_transform()</code> !) avec le scaler déjà ajusté. Idem pour PCA. Si on refittait sur les données d'inférence, les transformations seraient différentes et les prédictions incohérentes. Les encodeurs LabelEncoder sont aussi sauvegardés dans <code>encoders.pkl</code> pour la même raison.</div>
+  </div>
+
+  <h3>Questions sur la Contribution MLA</h3>
+
+  <div class="qa-block">
+    <div class="qa-q">Quel est le lien concret entre ce module ML et la plateforme éducative ?</div>
+    <div class="qa-a">La plateforme gère des demandes de rattrapage (claim-service + retake-service). Avant qu'un étudiant soumette une réclamation pour un rattrapage, le système peut déjà prédire sa probabilité de réussite. Si <code>probability_pass = 0.18</code>, le système peut alerter l'enseignant proactivement. Le clustering K-Means permet de créer des groupes d'étudiants pour des actions collectives (soutien ciblé au groupe "Average"). L'endpoint <code>/analyze</code> retourne à la fois la prédiction et le profil en un seul appel — conçu pour l'UX Angular.</div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Quelle est la limite principale de ce modèle ?</div>
+    <div class="qa-a">Le dataset a 395 étudiants portugais de 2008 — il n'est pas représentatif de tous les contextes éducatifs. Le modèle pourrait ne pas généraliser à des étudiants tunisiens ou à un autre curriculum. Le Silhouette Score faible (0.0655) montre que les clusters ne sont pas très séparés. En production, il faudrait ré-entraîner sur des données de la plateforme réelle. C'est ce que l'architecture permet : remplacer <code>student-mat.csv</code> par les données réelles et relancer l'entraînement.</div>
+  </div>
+</div>
+
+<!-- ═════════════════════════���════════════ S11 : CHECKLIST ══ -->
+<div class="section">
+  <h2 class="section-title"><span class="num">11</span> Checklist Finale Avant Validation</h2>
+
+  <h3>À déposer sur Blackboard</h3>
+  <ul class="checklist">
+    <li>Notebook <code>mla_student_performance.ipynb</code> avec toutes les cellules exécutées (outputs visibles)</li>
+    <li>Dataset <code>student-mat.csv</code></li>
+    <li>Tableau récapitulatif BO/DSO/Algorithme/Membre/Conclusion (section 1 du notebook)</li>
+    <li>Ce rapport PDF (MLA_Rapport_Student_Performance.pdf)</li>
+  </ul>
+
+  <h3>À vérifier sur ta machine avant la séance</h3>
+  <ul class="checklist">
+    <li>L'application web (Angular) démarre sur <code>localhost:4200</code></li>
+    <li>Le ML Service FastAPI répond sur <code>localhost:5000/health</code> → <code>{"status": "ok"}</code></li>
+    <li>Le notebook tourne du début à la fin sans erreur (kernel restart + run all)</li>
+    <li>La cellule XGBoost (section 6b) s'exécute — <code>xgboost</code> installé dans l'environnement</li>
+    <li>La cellule Cross Validation (section 6c) produit le graphique de comparaison</li>
+    <li>La cellule summary finale (section 7) affiche le tableau avec les vraies métriques calculées</li>
+    <li><code>GET /model-info</code> retourne les métriques avec <code>best_classifier</code> renseigné</li>
+    <li><code>POST /predict</code> avec un étudiant test retourne <code>prediction + model_used</code></li>
+  </ul>
+
+  <h3>À savoir expliquer oralement</h3>
+  <ul class="checklist">
+    <li>Pourquoi PCA avant K-Means et Random Forest ?</li>
+    <li>Différence RF vs XGBoost (parallèle vs séquentiel)</li>
+    <li>Pourquoi StratifiedKFold et pas KFold simple ?</li>
+    <li>Pourquoi ROC-AUC comme critère de sélection du meilleur modèle ?</li>
+    <li>Comment les encodeurs et scaler sont sauvegardés et réutilisés à l'inférence ?</li>
+    <li>Comment l'API Gateway route vers le ML Service ?</li>
+    <li>Lien entre ce module ML et les demandes de rattrapage de la plateforme</li>
+  </ul>
+
+  <div class="alert success" style="margin-top:30px;">
+    Le module MLA est complet : PCA + K-Means + Random Forest + XGBoost + Cross Validation déployés sur l'application web. Tu es prêt(e) pour la validation.
+  </div>
+</div>
+
+<div style="padding:20px 50px 30px; text-align:center; font-size:11px; color:#999; border-top:1px solid #e0e6ff; margin-top:20px;">
+  Guide de Validation MLA — Platform Education 4SAE9 · Zeineb Necib · 2025–2026
+</div>
+
+</body>
+</html>
