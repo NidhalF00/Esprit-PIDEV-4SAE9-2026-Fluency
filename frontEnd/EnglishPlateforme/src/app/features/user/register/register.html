@@ -78,33 +78,12 @@
 
         </div>
 
-        <!-- Role -->
-        <div class="space-y-2">
-          <label class="text-sm font-semibold text-slate-700 ml-1">I am a</label>
-
-          <div class="grid grid-cols-2 gap-3">
-            <button type="button" (click)="setRole('STUDENT')"
-              [class]="selectedRole === 'STUDENT'
-                ? 'border-[#7c3aed] bg-violet-50 text-[#7c3aed]'
-                : 'border-slate-200 text-slate-500'"
-              class="flex h-12 items-center justify-center rounded-xl border-2 font-semibold transition-all hover:border-violet-300">
-              Student
-            </button>
-
-            <button type="button" (click)="setRole('ADMIN')"
-              [class]="selectedRole === 'ADMIN'
-                ? 'border-[#7c3aed] bg-violet-50 text-[#7c3aed]'
-                : 'border-slate-200 text-slate-500'"
-              class="flex h-12 items-center justify-center rounded-xl border-2 font-semibold transition-all hover:border-violet-300">
-              ADMIN
-            </button>
-          </div>
+        <div class="rounded-2xl border border-violet-100 bg-violet-50/70 px-4 py-3">
+          <p class="text-sm font-semibold text-[#6d28d9]">Student registration</p>
+          <p class="mt-1 text-xs text-slate-600">
+            Public account creation is available for students only.
+          </p>
         </div>
-  <!-- <button type="button" (click)="setRole('TUTOR')"
-          [class]="selectedRole === 'TUTOR' ? 'border-[#0066FF] bg-blue-50 text-[#0066FF]' : 'border-slate-200 text-slate-500'"
-          class="flex h-12 items-center justify-center rounded-xl border-2 font-medium transition-all">
-    Teacher
-  </button> -->
         <!-- Terms -->
         <div class="flex items-start gap-2 ml-1">
           <input type="checkbox" id="terms" formControlName="agreeTerms"
@@ -116,6 +95,10 @@
             <a href="#" class="text-[#7c3aed] font-semibold hover:underline">Privacy Policy</a>
           </label>
         </div>
+
+        <p *ngIf="errorMessage" class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+          {{ errorMessage }}
+        </p>
 
         <!-- Button -->
         <button type="submit" [disabled]="registerForm.invalid"

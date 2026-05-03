@@ -21,8 +21,9 @@
 
       <button *ngIf="isEditMode"
               (click)="saveQuiz()"
+              [disabled]="isSaving"
               class="bg-green-600 text-white px-4 py-2 rounded-xl">
-        Update
+        {{ isSaving ? 'Saving...' : 'Update' }}
       </button>
 
       <button *ngIf="isEditMode"
@@ -41,8 +42,23 @@
       Edit your quiz, then click Update to save all changes.
     </p>
 
+    <div *ngIf="isEditMode" class="mb-6 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
+      <div class="flex flex-wrap gap-2 text-xs font-semibold">
+        <span class="rounded-full bg-slate-200 px-3 py-1 text-slate-700">Existing items keep their saved IDs</span>
+        <span class="rounded-full bg-emerald-100 px-3 py-1 text-emerald-700">New items are local until Update</span>
+        <span *ngIf="pendingDeletedQuestionIds.length"
+              class="rounded-full bg-red-100 px-3 py-1 text-red-700">
+          {{ pendingDeletedQuestionIds.length }} question(s) pending delete
+        </span>
+        <span *ngIf="pendingDeletedAnswerIds.length"
+              class="rounded-full bg-red-100 px-3 py-1 text-red-700">
+          {{ pendingDeletedAnswerIds.length }} answer(s) pending delete
+        </span>
+      </div>
+    </div>
+
     <!-- QUESTIONS -->
-    <div *ngFor="let question of (isEditMode ? editedQuiz.questions : quiz.questions); let i = index"
+    <div *ngFor="let question of displayedQuestions; let i = index; trackBy: trackByQuestion"
          class="mb-8 border-b pb-6">
 
       <div class="flex items-center gap-3 mb-3">
@@ -56,26 +72,40 @@
                [(ngModel)]="editedQuiz.questions[i].text"
                class="border p-2 rounded w-full"/>
 
+        <span *ngIf="isEditMode"
+              class="rounded-full px-3 py-1 text-xs font-semibold"
+              [ngClass]="editedQuiz.questions[i].isNew
+                ? 'bg-emerald-100 text-emerald-700'
+                : 'bg-slate-200 text-slate-700'">
+          {{ editedQuiz.questions[i].isNew ? 'New question' : 'Existing question' }}
+        </span>
+
+        <button *ngIf="isEditMode"
+                (click)="deleteQuestion(i)"
+                class="bg-red-500 text-white px-3 py-2 rounded-lg text-sm">
+          Delete Question
+        </button>
+
         <!-- Show correct answer -->
-        <button (click)="toggleShowCorrectAnswer(question.id)"
+        <button (click)="toggleShowCorrectAnswer(question.id!)"
                 *ngIf="(userRole === 'ADMIN' || userRole === 'TUTOR') && !isEditMode"
                 class="bg-blue-500 text-white px-3 py-1 rounded-lg text-sm">
-          {{ showCorrectAnswerMap[question.id] ? 'Hide Answer' : 'Show Answer' }}
+          {{ showCorrectAnswerMap[question.id!] ? 'Hide Answer' : 'Show Answer' }}
         </button>
       </div>
 
       <!-- ANSWERS -->
       <div class="mt-3">
 
-        <div *ngFor="let answer of question.answers || []; let j = index"
+        <div *ngFor="let answer of answersForDisplay(question); let j = index; trackBy: trackByAnswer"
              class="mb-2 flex items-center gap-2">
 
           <!-- STUDENT MODE -->
           <ng-container *ngIf="!isEditMode">
             <input type="radio"
                    name="{{question.id}}"
-                   [disabled]="showCorrectAnswerMap[question.id]"
-                   (change)="selectAnswer(question.id, answer.id)">
+                   [disabled]="showCorrectAnswerMap[question.id!]"
+                   (change)="selectAnswer(question.id!, answer.id!)">
             <span>{{ answer.text }}</span>
           </ng-container>
 
@@ -85,6 +115,13 @@
             <!-- Text -->
             <input [(ngModel)]="editedQuiz.questions[i].answers[j].text"
                    class="border p-1 rounded w-full"/>
+
+            <span class="rounded-full px-3 py-1 text-xs font-semibold"
+                  [ngClass]="editedQuiz.questions[i].answers[j].isNew
+                    ? 'bg-emerald-100 text-emerald-700'
+                    : 'bg-slate-200 text-slate-700'">
+              {{ editedQuiz.questions[i].answers[j].isNew ? 'New answer' : 'Existing answer' }}
+            </span>
 
             <!-- Correct answer selector -->
             <input
@@ -96,7 +133,7 @@
             <!-- Delete Answer -->
             <button (click)="deleteAnswer(i, j)"
                     class="bg-red-500 text-white px-2 py-1 rounded-full text-sm">
-              Delete
+              Delete Answer
             </button>
 
           </ng-container>
@@ -113,11 +150,11 @@
       </div>
 
       <!-- Correct Answer Display -->
-      <div *ngIf="showCorrectAnswerMap[question.id] && correctAnswersMap[question.id]?.length
+      <div *ngIf="showCorrectAnswerMap[question.id!] && correctAnswersMap[question.id!]?.length
                   && (userRole === 'ADMIN' || userRole === 'TUTOR')
                   && !isEditMode"
            class="mt-2 text-green-600 font-semibold">
-        <li *ngFor="let answer of correctAnswersMap[question.id]">
+        <li *ngFor="let answer of correctAnswersMap[question.id!]">
           {{ answer.text }}
         </li>
       </div>

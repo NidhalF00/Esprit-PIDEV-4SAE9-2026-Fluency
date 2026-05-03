@@ -1,0 +1,16 @@
+.env
+
+AI_HANDOFF_SUMMARY.md
+DEVOPS_HISTORY.md
+DEVOPS_REPORT.md
+PROJECT_MASTER_REPORT.md
+SPRINT2_SIMPLE_TRACKER.md
+
+run-logs/
+*.log
+.idea/
+.vscode/
+
+backEnd/uploads/
+frontEnd/EnglishPlateforme/frontend-dev.log
+frontEnd/EnglishPlateforme/frontend-dev.err.log

@@ -2,6 +2,7 @@ package tn.spring.quiz.Controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import tn.spring.quiz.DTO.CertificateRequest;
 import tn.spring.quiz.Models.Certificate;
@@ -26,6 +27,7 @@ public class CertificateController {
 
 
     @PostMapping("/generate-and-send")
+    @PreAuthorize("hasAuthority('STUDENT')")
     public ResponseEntity<byte[]> generateAndSend(@RequestBody CertificateRequest request) throws Exception {
 
         // ✅ Créer un certificat directement au moment de la demande
@@ -64,6 +66,7 @@ public class CertificateController {
         }
     }
     @GetMapping("/by-course/{courseId}/student/{studentId}")
+    @PreAuthorize("hasAnyAuthority('STUDENT', 'ADMIN', 'TUTOR')")
     public Certificate getCertificateByCourseAndStudent(
             @PathVariable Long courseId,
             @PathVariable UUID studentId) {

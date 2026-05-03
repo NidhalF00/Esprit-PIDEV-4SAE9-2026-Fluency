@@ -46,8 +46,6 @@ onSubmit() {
     this.authService.signup(this.registerForm.value).subscribe({
       next: (response: any) => {
         console.log('TUTOR registered successfully!', response);
-        localStorage.setItem('token', response.token);
-        localStorage.setItem('user', JSON.stringify(response.user));
         this.router.navigate(['/admin/dashboard']);
       },
       error: (err: any) => {

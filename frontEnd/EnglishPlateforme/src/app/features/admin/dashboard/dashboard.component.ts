@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ApplicationService, Application } from 'src/app/services/application.service';
 import { saveAs } from 'file-saver'; // npm install file-saver
@@ -14,7 +13,7 @@ export class DashboardComponent implements OnInit {
   pending = 0;
   scheduled = 0; // par exemple, status INTERVIEW_SCHEDULED
 
-  constructor(private appService: ApplicationService, private http: HttpClient) {}
+  constructor(private appService: ApplicationService) {}
 
   ngOnInit(): void {
     this.loadApplications();
@@ -75,7 +74,7 @@ export class DashboardComponent implements OnInit {
   downloadCv(appId: number) {
     if (!appId) return;
 
-    this.http.get(`http://localhost:8056/api/applications/download/${appId}`, { responseType: 'blob' })
+    this.appService.downloadCv(appId)
       .subscribe({
         next: (blob) => {
           const app = this.applications.find(a => a.id === appId);

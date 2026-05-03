@@ -8,4 +8,7 @@ public interface AnswerRepository  extends JpaRepository<Answer, Long> {
 
     @Transactional
     void deleteAllByQuestionId(Long questionId);
+
+    @Transactional
+    void deleteAllByQuestion_Quiz_Id(Long quizId);
 }

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AuthService } from '../../../services/auth.service'; // Adjust path
 import { Router } from '@angular/router';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -14,7 +14,7 @@ export class RegisterComponent {
   errorMessage = '';
 
   constructor(
-    private fb: FormBuilder, 
+    private fb: FormBuilder,
     private authService: AuthService,
     private router: Router
   ) {
@@ -24,9 +24,7 @@ export class RegisterComponent {
       phone: ['', Validators.required],
       role: ['STUDENT', Validators.required],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      //  zedna hedhom khater la validation to93ed ghalta tant que mehomch mentionné fel
-      //  .ts w enty aatehom esm tcontroli fehom bih fel html
-      confirmPassword: ['', [Validators.required]],       
+      confirmPassword: ['', [Validators.required]],
       agreeTerms: [false, [Validators.requiredTrue]]
     });
   }
@@ -35,26 +33,43 @@ export class RegisterComponent {
     this.selectedRole = role.toUpperCase();
     this.registerForm.patchValue({ role: this.selectedRole });
   }
-onSubmit() {
-  if (this.registerForm.valid) {
+
+  onSubmit() {
+    if (this.registerForm.invalid) {
+      this.registerForm.markAllAsTouched();
+      return;
+    }
+
+    const { fullName, email, phone, password, confirmPassword } = this.registerForm.value;
+
+    if (password !== confirmPassword) {
+      this.errorMessage = 'Passwords do not match.';
+      return;
+    }
+
     this.loading = true;
     this.errorMessage = '';
-    
-    console.log('Role sent to backend:', this.registerForm.value.role); // <-- vérification
 
-    this.authService.signup(this.registerForm.value).subscribe({
-      next: (response: any) => {
-        console.log('User registered successfully!', response);
-        localStorage.setItem('token', response.token);
-        localStorage.setItem('user', JSON.stringify(response.user));
+    const registrationPayload = {
+      name: fullName.trim(),
+      lastName: '',
+      prefix: '',
+      email,
+      phone,
+      password,
+      role: 'STUDENT'
+    };
+
+    this.authService.signup(registrationPayload).subscribe({
+      next: () => {
+        this.loading = false;
         this.router.navigate(['/login']);
       },
       error: (err: any) => {
         this.loading = false;
-        this.errorMessage = err.error?.message || "Registration failed. Please try again.";
+        this.errorMessage = err.error?.message || 'Registration failed. Please try again.';
         console.error('Signup failed', err);
       }
     });
   }
 }
-  }

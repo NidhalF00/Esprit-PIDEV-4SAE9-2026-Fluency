@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface CertificateRequest {
   courseId: number;    
+  studentId: string;
   userName: string;   
   userEmail: string;     
   finalScore: number;  
@@ -13,14 +14,20 @@ export interface CertificateRequest {
 })
 export class CertificateService {
 
-  private apiUrl = 'http://localhost:8056/api/certificates';
+  private apiUrl = 'http://localhost:8090/api/certificates';
 
   constructor(private http: HttpClient) {}
+
+  private getAuthHeaders(): HttpHeaders {
+    const token = localStorage.getItem('token');
+    return new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  }
 
   // ✅ récupérer certificat
   getCertificate(courseId: number, studentId: string) {
     return this.http.get<any>(
-      `${this.apiUrl}/by-course/${courseId}/student/${studentId}`
+      `${this.apiUrl}/by-course/${courseId}/student/${studentId}`,
+      { headers: this.getAuthHeaders() }
     );
   }
 
@@ -29,7 +36,7 @@ export class CertificateService {
     return this.http.post(
       `${this.apiUrl}/generate-and-send`,
       request,
-      { responseType: 'blob' }
+      { headers: this.getAuthHeaders(), responseType: 'blob' }
     );
   }
 }

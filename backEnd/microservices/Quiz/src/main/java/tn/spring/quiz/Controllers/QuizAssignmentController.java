@@ -2,6 +2,7 @@ package tn.spring.quiz.Controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import tn.spring.quiz.DTO.AssignQuizRequest;
 import tn.spring.quiz.DTO.AssignedQuizResponse;
@@ -20,11 +21,13 @@ public class QuizAssignmentController {
     private final QuizAssignmentService quizAssignmentService;
 
     @PostMapping
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'TUTOR')")
     public ResponseEntity<QuizAssignment> assignQuiz(@RequestBody AssignQuizRequest request) {
         return ResponseEntity.ok(quizAssignmentService.assignQuiz(request));
     }
 
     @GetMapping("/student/{studentId}/quizzes")
+    @PreAuthorize("hasAnyAuthority('STUDENT', 'ADMIN', 'TUTOR')")
     public ResponseEntity<List<AssignedQuizResponse>> getAssignedQuizzesByStudent(@PathVariable UUID studentId) {
         return ResponseEntity.ok(quizAssignmentService.getAssignedQuizzesByStudent(studentId));
     }

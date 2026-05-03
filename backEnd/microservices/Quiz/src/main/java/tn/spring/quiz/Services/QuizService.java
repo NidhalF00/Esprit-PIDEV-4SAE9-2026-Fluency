@@ -11,6 +11,8 @@ import tn.spring.quiz.Models.Quiz;
 import tn.spring.quiz.Repositories.AnswerRepository;
 import tn.spring.quiz.Repositories.CourseRepository;
 import tn.spring.quiz.Repositories.QuestionRepository;
+import tn.spring.quiz.Repositories.QuizAssignmentRepository;
+import tn.spring.quiz.Repositories.QuizAttemptRepository;
 import tn.spring.quiz.Repositories.QuizRepository;
 
 import java.util.ArrayList;
@@ -24,6 +26,8 @@ public class QuizService {
     private final CourseRepository courseRepository;
     private final QuestionRepository questionRepository;
     private final AnswerRepository answerRepository;
+    private final QuizAssignmentRepository quizAssignmentRepository;
+    private final QuizAttemptRepository quizAttemptRepository;
 
     // Create
     public Quiz createQuiz(Long courseId, Quiz quiz) {
@@ -48,10 +52,13 @@ public class QuizService {
             existingQuiz.setTitle(quizDetails.getTitle());
         }
 
+        // Title-only updates should not rewrite or delete existing questions.
+        if (quizDetails.getQuestions() == null) {
+            return quizRepository.save(existingQuiz);
+        }
+
         // Préparer les questions entrantes
-        List<Question> incomingQuestions = quizDetails.getQuestions() != null
-                ? quizDetails.getQuestions()
-                : new ArrayList<>();
+        List<Question> incomingQuestions = quizDetails.getQuestions();
 
         // S'assurer que la liste des questions existante est initialisée
         List<Question> existingQuestions = existingQuiz.getQuestions() != null
@@ -138,9 +145,15 @@ public class QuizService {
     }
 
     // Delete
+    @Transactional
     public void deleteQuiz(Long id) {
         Quiz quiz = quizRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Quiz not found"));
+
+        answerRepository.deleteAllByQuestion_Quiz_Id(id);
+        questionRepository.deleteAllByQuiz_Id(id);
+        quizAttemptRepository.deleteByQuizId(id);
+        quizAssignmentRepository.deleteByQuiz_Id(id);
         quizRepository.delete(quiz);
     }
 

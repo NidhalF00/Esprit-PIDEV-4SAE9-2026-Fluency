@@ -11,6 +11,7 @@ import java.util.UUID;
 public interface QuizAttemptRepository extends JpaRepository<QuizAttempt, Long> {
 
     boolean existsByQuizIdAndStudentIdAndPassedTrue(Long quizId, UUID studentId);
+    void deleteByQuizId(Long quizId);
 
     @Query("""
         SELECT qa FROM QuizAttempt qa

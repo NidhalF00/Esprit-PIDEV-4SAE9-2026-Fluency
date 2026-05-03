@@ -1,9 +1,35 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { forkJoin } from 'rxjs';
+import { firstValueFrom, forkJoin } from 'rxjs';
 import { CertificateService } from 'src/app/services/certificate.service';
 import { QuizService, Quiz, Question, Answer } from 'src/app/services/quiz.service';
 import { AuthService } from 'src/app/services/auth.service';
+
+interface EditableAnswer {
+  id?: number;
+  text: string;
+  correct: boolean;
+  clientKey: string;
+  isNew: boolean;
+  originalText: string;
+  originalCorrect: boolean;
+}
+
+interface EditableQuestion {
+  id?: number;
+  text: string;
+  answers: EditableAnswer[];
+  clientKey: string;
+  isNew: boolean;
+  originalText: string;
+}
+
+interface EditableQuiz {
+  id: number;
+  title: string;
+  passingScore: number;
+  questions: EditableQuestion[];
+}
 
 @Component({
   selector: 'app-quiz-details',
@@ -15,125 +41,232 @@ export class QuizDetailsComponent implements OnInit {
   selectedAnswers: { [questionId: number]: number } = {};
   showCorrectAnswerMap: { [questionId: number]: boolean } = {};
   correctAnswersMap: { [questionId: number]: Answer[] } = {};
-  userRole : string='' ;
-  passedQuiz: boolean = false; 
+  userRole = '';
+  passedQuiz = false;
   quizScore!: number;
-  attemptCount: number = 0;
-  submitDisabled: boolean = false;
-  cooldownRemaining: number = 0;
+  attemptCount = 0;
+  submitDisabled = false;
+  cooldownRemaining = 0;
   private cooldownInterval: any;
   isEditMode = false;
-  editedQuiz!: Quiz;
+  editedQuiz!: EditableQuiz;
+  pendingDeletedQuestionIds: number[] = [];
+  pendingDeletedAnswerIds: number[] = [];
+  isSaving = false;
   studentId: string | null = null;
   assignedCourseId: number | null = null;
-showCertPopup = false;
-certUserName = '';
-certUserEmail = '';
-certificateId!: number;
-isSending = false; // 🔥 loading
+  showCertPopup = false;
+  certUserName = '';
+  certUserEmail = '';
+  certificateId!: number;
+  isSending = false;
+  toastMessage = '';
+  showToastFlag = false;
+
+  private quizId: number | null = null;
+  private tempKeyCounter = 0;
+
   constructor(
     private route: ActivatedRoute,
     private quizService: QuizService,
     private router: Router,
-      private certificateService: CertificateService,
-      private authService: AuthService
-
+    private certificateService: CertificateService,
+    private authService: AuthService
   ) {}
 
-ngOnInit(): void {
+  ngOnInit(): void {
+    const storedRole = localStorage.getItem('ROLE');
+    this.userRole = storedRole ? storedRole.replace(/"/g, '') : '';
+    this.studentId = this.authService.getUser()?.id || localStorage.getItem('USER_ID');
 
-  // 🔹 Récupérer le rôle
-  const storedRole = localStorage.getItem('ROLE');
-  this.userRole = storedRole ? storedRole.replace(/"/g, '') : '';
-  this.studentId = this.authService.getUser()?.id || localStorage.getItem('USER_ID');
-  const id = this.route.snapshot.paramMap.get('id');
-  if (!id) return;
+    const id = this.route.snapshot.paramMap.get('id');
+    if (!id) return;
 
-  const quizId = +id;
-  this.resolveAssignedCourseId(quizId);
+    this.quizId = +id;
+    this.resolveAssignedCourseId(this.quizId);
+    void this.loadQuizDetails(this.quizId);
+  }
 
-  // Récupérer le quiz
-  this.quizService.getQuizById(quizId).subscribe(data => {
-    this.quiz = data;
+  async saveQuiz() {
+    if (!this.editedQuiz || !this.quizId || this.isSaving) {
+      return;
+    }
 
-    // Récupérer les questions
-    this.quizService.getQuizQuestions(quizId).subscribe(questions => {
-      this.quiz.questions = questions;
+    const existingQuestions = this.editedQuiz.questions.filter((question) => !!question.id && !question.isNew);
+    const titleChanged = this.editedQuiz.title.trim() !== this.quiz.title;
+    const changedExistingQuestions = existingQuestions.filter(
+      (question) => !!question.id && !question.isNew && this.isQuestionChanged(question)
+    );
+    const newQuestions = this.editedQuiz.questions.filter(
+      (question) => (!question.id || question.isNew) && question.text.trim().length > 0
+    );
+    const changedExistingAnswers = existingQuestions.flatMap((question) =>
+      question.answers.filter((answer) => !!answer.id && !answer.isNew && this.isAnswerChanged(answer))
+    );
+    const newAnswersByQuestion = existingQuestions.flatMap((question) =>
+      question.answers
+        .filter((answer) => (!answer.id || answer.isNew) && answer.text.trim().length > 0)
+        .map((answer) => ({ questionId: question.id!, answer }))
+    );
+    const deletedQuestionIds = [...new Set(this.pendingDeletedQuestionIds)];
+    const deletedAnswerIds = [...new Set(this.pendingDeletedAnswerIds)];
 
-      // Charger les réponses
-      this.quiz.questions.forEach(q => {
-        this.showCorrectAnswerMap[q.id] = false;
+    const hasChanges =
+      titleChanged ||
+      deletedQuestionIds.length > 0 ||
+      deletedAnswerIds.length > 0 ||
+      changedExistingQuestions.length > 0 ||
+      changedExistingAnswers.length > 0 ||
+      newAnswersByQuestion.length > 0 ||
+      newQuestions.length > 0;
 
-        this.quizService.getAnswersByQuestion(q.id).subscribe(answers => {
-          q.answers = answers;
+    if (!hasChanges) {
+      this.resetEditState();
+      this.showToast('No changes to save.');
+      return;
+    }
 
-        const correctAnswers = answers.filter(a => a.correct);
+    this.isSaving = true;
 
-        if (correctAnswers.length > 0) {
-          this.correctAnswersMap[q.id] = correctAnswers;
+    try {
+      if (titleChanged) {
+        await firstValueFrom(
+          this.quizService.updateQuiz(this.quizId, {
+            id: this.quiz.id,
+            title: this.editedQuiz.title.trim(),
+            passingScore: this.quiz.passingScore
+          } as Quiz)
+        );
+      }
+
+      for (const answerId of deletedAnswerIds) {
+        await firstValueFrom(this.quizService.deleteAnswer(answerId));
+      }
+
+      for (const questionId of deletedQuestionIds) {
+        await firstValueFrom(this.quizService.deleteQuestion(questionId));
+      }
+
+      for (const question of changedExistingQuestions) {
+        await firstValueFrom(
+          this.quizService.updateQuestion(question.id!, {
+            id: question.id!,
+            text: question.text.trim(),
+            answers: []
+          } as unknown as Question)
+        );
+      }
+
+      for (const answer of changedExistingAnswers) {
+        await firstValueFrom(
+          this.quizService.updateAnswer(answer.id!, {
+            id: answer.id!,
+            text: answer.text.trim(),
+            correct: answer.correct
+          } as Answer)
+        );
+      }
+
+      for (const { questionId, answer } of newAnswersByQuestion) {
+        await firstValueFrom(
+          this.quizService.addAnswer(questionId, {
+            text: answer.text.trim(),
+            correct: answer.correct
+          } as Answer)
+        );
+      }
+
+      for (const question of newQuestions) {
+        const createdQuestion = await firstValueFrom(
+          this.quizService.addQuestion(this.quizId, {
+            text: question.text.trim(),
+            answers: []
+          } as unknown as Question)
+        );
+
+        for (const answer of question.answers) {
+          await firstValueFrom(
+            this.quizService.addAnswer(createdQuestion.id, {
+              text: answer.text.trim(),
+              correct: answer.correct
+            } as Answer)
+          );
         }
-        });
+      }
+
+      await this.loadQuizDetails(this.quizId);
+      this.resetEditState();
+      this.showToast('Quiz updated');
+    } catch (err) {
+      console.error('Error updating quiz', {
+        quizId: this.quizId,
+        deletedQuestionIds,
+        deletedAnswerIds,
+        changedQuestionIds: changedExistingQuestions.map((question) => question.id),
+        changedAnswerIds: changedExistingAnswers.map((answer) => answer.id),
+        newQuestionCount: newQuestions.length,
+        newAnswerCount: newAnswersByQuestion.length,
+        err
       });
-
-      this.checkQuizStatus(quizId);
-
-    });
-  });
-}
-resolveAssignedCourseId(quizId: number) {
-  const studentId = this.studentId;
-  if (!studentId) return;
-
-  this.quizService.getAssignedQuizzesByStudent(studentId).subscribe({
-    next: (assignedQuizzes) => {
-      const assignedQuiz = assignedQuizzes.find(a => a.quizId === quizId);
-      this.assignedCourseId = assignedQuiz?.courseId ?? null;
+      this.showToast('Error updating quiz.');
+    } finally {
+      this.isSaving = false;
     }
-  });
-}
-checkQuizStatus(quizId: number) {
-  const studentId = this.studentId;
-  if (!studentId) return;
+  }
 
-  this.quizService.getQuizStatus(quizId, studentId)
-    .subscribe(status => {
+  resolveAssignedCourseId(quizId: number) {
+    const studentId = this.studentId;
+    if (!studentId) return;
 
-      this.attemptCount = status.totalAttempts;
-      const hasPassed = status.passed;
-
-      if (hasPassed) {
-        this.submitDisabled = true;
-        this.passedQuiz = true;
-
-       
-        this.quiz.questions.forEach(q => {
-          this.showCorrectAnswerMap[q.id] = true;
-        });
-
-        return;
+    this.quizService.getAssignedQuizzesByStudent(studentId).subscribe({
+      next: (assignedQuizzes) => {
+        const assignedQuiz = assignedQuizzes.find(a => a.quizId === quizId);
+        this.assignedCourseId = assignedQuiz?.courseId ?? null;
       }
-
-      
-      if (this.attemptCount >= 3) {
-        this.startCooldown(30);
-      }
-
     });
-}
-startCooldown(seconds: number) {
-  this.submitDisabled = true;
-  this.cooldownRemaining = seconds;
+  }
 
-  this.cooldownInterval = setInterval(() => {
-    this.cooldownRemaining--;
+  checkQuizStatus(quizId: number) {
+    const studentId = this.studentId;
+    if (!studentId) return;
 
-    if (this.cooldownRemaining <= 0) {
-      clearInterval(this.cooldownInterval);
-      this.submitDisabled = false;
-      this.attemptCount = 0; 
-    }
-  }, 1000);
-}
+    this.quizService.getQuizStatus(quizId, studentId)
+      .subscribe(status => {
+        this.attemptCount = status.totalAttempts;
+        const hasPassed = status.passed;
+
+        if (hasPassed) {
+          this.submitDisabled = true;
+          this.passedQuiz = true;
+
+          this.quiz.questions.forEach(q => {
+            this.showCorrectAnswerMap[q.id] = true;
+          });
+
+          return;
+        }
+
+        if (this.attemptCount >= 3) {
+          this.startCooldown(30);
+        }
+      });
+  }
+
+  startCooldown(seconds: number) {
+    this.submitDisabled = true;
+    this.cooldownRemaining = seconds;
+
+    this.cooldownInterval = setInterval(() => {
+      this.cooldownRemaining--;
+
+      if (this.cooldownRemaining <= 0) {
+        clearInterval(this.cooldownInterval);
+        this.submitDisabled = false;
+        this.attemptCount = 0;
+      }
+    }, 1000);
+  }
+
   selectAnswer(questionId: number, answerId: number) {
     this.selectedAnswers[questionId] = answerId;
   }
@@ -161,253 +294,285 @@ startCooldown(seconds: number) {
       if (this.passedQuiz) {
         alert('Welcome, you can generate your membership');
       } else {
-        alert("Quiz submitted! Score: " + res.score);
+        alert('Quiz submitted! Score: ' + res.score);
       }
     });
   }
-generateCertificate() {
-  this.showCertPopup = true;
-}
-confirmGenerateCertificate() {
 
-  if (!this.certUserName.trim() || !this.certUserEmail.trim()) {
-    alert('Please fill all fields');
-    return;
-  }
-  if (!this.studentId) {
-    alert('Student identity is missing. Please log in again.');
-    return;
-  }
-  if (this.assignedCourseId == null) {
-    alert('Course information is missing for this assigned quiz.');
-    return;
-  }
-  if (this.quizScore == null) {
-    alert('Please submit the quiz first to generate your membership.');
-    return;
+  generateCertificate() {
+    this.showCertPopup = true;
   }
 
-  this.isSending = true;
-
-  // ⚡ Payload pour créer le certificat directement
-  const payload = {
-    courseId: this.assignedCourseId,
-    studentId:this.studentId,   // UUID de l'étudiant
-    userName: this.certUserName,  // nom saisi pour le certificat
-    userEmail: this.certUserEmail,// email de l'étudiant
-    finalScore: this.quizScore  // score obtenu au quiz
-  };
-
-  // Appel au service pour générer le PDF + envoyer l'email
-  this.certificateService.generateAndSend(payload).subscribe({
-    next: (blob) => {
-      // 📥 Téléchargement automatique du PDF
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'membership.pdf';
-      a.click();
-      window.URL.revokeObjectURL(url);
-
-      this.isSending = false;
-      this.showCertPopup = false;
-
-      // ✅ Message de succès
-      this.showToast('Membership sent successfully 🎉');
-    },
-    error: (err) => {
-      console.error(err); // pour debug
-      this.isSending = false;
-      this.showToast('Error sending membership ❌');
+  confirmGenerateCertificate() {
+    if (!this.certUserName.trim() || !this.certUserEmail.trim()) {
+      alert('Please fill all fields');
+      return;
     }
-  });
-}
-toastMessage = '';
-showToastFlag = false;
+    if (!this.studentId) {
+      alert('Student identity is missing. Please log in again.');
+      return;
+    }
+    if (this.assignedCourseId == null) {
+      alert('Course information is missing for this assigned quiz.');
+      return;
+    }
+    if (this.quizScore == null) {
+      alert('Please submit the quiz first to generate your membership.');
+      return;
+    }
 
-showToast(msg: string) {
-  this.toastMessage = msg;
-  this.showToastFlag = true;
+    this.isSending = true;
 
-  setTimeout(() => {
-    this.showToastFlag = false;
-  }, 3000);
-}
+    const payload = {
+      courseId: this.assignedCourseId,
+      studentId: this.studentId,
+      userName: this.certUserName,
+      userEmail: this.certUserEmail,
+      finalScore: this.quizScore
+    };
+
+    this.certificateService.generateAndSend(payload).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'membership.pdf';
+        a.click();
+        window.URL.revokeObjectURL(url);
+
+        this.isSending = false;
+        this.showCertPopup = false;
+        this.showToast('Membership sent successfully ðŸŽ‰');
+      },
+      error: (err) => {
+        console.error(err);
+        this.isSending = false;
+        this.showToast('Error sending membership âŒ');
+      }
+    });
+  }
+
+  showToast(msg: string) {
+    this.toastMessage = msg;
+    this.showToastFlag = true;
+
+    setTimeout(() => {
+      this.showToastFlag = false;
+    }, 3000);
+  }
+
   deleteQuiz() {
     if (!window.confirm('Are you sure?')) {
       return;
     }
 
     if (this.quiz?.id) {
-      this.quizService.deleteQuiz(this.quiz.id).subscribe(() => {
-        const courseId = this.getDeleteRedirectCourseId();
+      this.quizService.deleteQuiz(this.quiz.id).subscribe({
+        next: () => {
+          const courseId = this.getDeleteRedirectCourseId();
 
-        if (courseId !== null) {
-          this.router.navigate(['/quiz', courseId]);
-          return;
+          if (courseId !== null) {
+            this.router.navigate(['/quiz', courseId]);
+            return;
+          }
+
+          this.router.navigate(['/tutor/courses']);
+        },
+        error: (err) => {
+          console.error('Error deleting quiz', { quizId: this.quiz.id, err });
+          this.showToast('Error deleting quiz.');
         }
-
-        this.router.navigate(['/tutor/courses']);
       });
     }
   }
+
   enableEditMode() {
-  this.isEditMode = true;
-
-  // Deep copy pour éviter modifier directement l’original
-  this.editedQuiz = JSON.parse(JSON.stringify(this.quiz));
-}
-saveQuiz() {
-  if (!this.editedQuiz) return;
-
-  const titleOnlyPayload: Quiz = {
-    id: this.quiz.id,
-    title: this.editedQuiz.title,
-    passingScore: this.quiz.passingScore,
-    questions: []
-  };
-
-  const requests = [
-    this.quizService.updateQuiz(this.quiz.id, titleOnlyPayload),
-    ...this.editedQuiz.questions
-      .filter(question => !!question.id)
-      .map(question => this.quizService.updateQuestion(question.id, question)),
-    ...this.editedQuiz.questions.flatMap(question =>
-      (question.answers || [])
-        .filter(answer => !!answer.id)
-        .map(answer => this.quizService.updateAnswer(answer.id, answer))
-    )
-  ];
-
-  forkJoin(requests).subscribe({
-    next: () => {
-      this.quiz = JSON.parse(JSON.stringify(this.editedQuiz));
-      this.rebuildCorrectAnswerState();
-      this.isEditMode = false;
-      this.showToast('Quiz updated');
-    },
-    error: () => {
-      this.showToast('Error updating quiz.');
-    }
-  });
-}
-saveQuestion(question: Question) {
-  this.quizService.updateQuestion(question.id, question).subscribe(
-    updated => {
-      console.log("Question mise à jour :", updated);
-    },
-    err => console.error("Erreur lors de la mise à jour de la question", err)
-  );
-}
-cancelEdit() {
-  this.isEditMode = false;
-}
-
-saveAnswer(answer: Answer) {
-  if (!answer.id) return;
-
-  this.quizService.updateAnswer(answer.id, answer).subscribe({
-    next: (updated) => {
-      console.log("Answer updated ", updated);
-    },
-    error: (err) => {
-      console.error("Erreur update answer ", err);
-    }
-  });
-}
-
-setCorrectAnswer(questionIndex: number, answerIndex: number) {
-  const answers = this.editedQuiz.questions[questionIndex]?.answers || [];
-
-  answers.forEach((answer, index) => {
-    answer.correct = index === answerIndex;
-  });
-}
-
-deleteAnswer(questionIndex: number, answerIndex: number) {
-  const answer = this.editedQuiz.questions[questionIndex].answers[answerIndex];
-
-  if (!answer.id) return;
-
-  this.quizService.deleteAnswer(answer.id).subscribe({
-    next: () => {
-      // supprimer du tableau frontend
-      this.editedQuiz.questions[questionIndex].answers.splice(answerIndex, 1);
-      console.log("Answer deleted");
-    },
-    error: (err) => {
-      console.error("Erreur delete answer", err);
-    }
-  });
-}
-
-addQuestion() {
-  const newQuestion: any = {
-    text: 'New Question',
-    answers: [] 
-  };
-
-  this.quizService.addQuestion(this.quiz.id, newQuestion).subscribe({
-    next: (saved) => {
-      if (!this.editedQuiz.questions) {
-        this.editedQuiz.questions = [];
-      }
-
-      this.editedQuiz.questions.push({
-        ...saved,
-        answers: saved.answers || []
-      });
-    },
-    error: (err) => console.error(err)
-  });
-}
-
-deleteQuestion(questionId: number, index: number) {
-
-  if (!questionId) return;
-
-  this.quizService.deleteQuestion(questionId).subscribe({
-    next: () => {
-      this.editedQuiz.questions.splice(index, 1);
-    },
-    error: (err) => console.error(err)
-  });
-}
-
-
-addAnswer(question: Question) {
-  const newAnswer: any = {
-    text: 'New Answer',
-    correct: false
-  };
-
-  this.quizService.addAnswer(question.id, newAnswer).subscribe({
-    next: (saved) => {
-      question.answers.push(saved);
-    },
-    error: (err) => console.error(err)
-  });
-}
-
-private getDeleteRedirectCourseId(): number | null {
-  if (this.assignedCourseId != null && Number.isFinite(this.assignedCourseId) && this.assignedCourseId > 0) {
-    return this.assignedCourseId;
+    this.isEditMode = true;
+    this.pendingDeletedQuestionIds = [];
+    this.pendingDeletedAnswerIds = [];
+    this.editedQuiz = this.createEditableQuiz(this.quiz);
   }
 
-  return null;
-}
+  cancelEdit() {
+    this.resetEditState();
+  }
 
-private rebuildCorrectAnswerState(): void {
-  this.correctAnswersMap = {};
-  this.showCorrectAnswerMap = {};
+  setCorrectAnswer(questionIndex: number, answerIndex: number) {
+    const answers = this.editedQuiz.questions[questionIndex]?.answers || [];
+    answers.forEach((answer, index) => {
+      answer.correct = index === answerIndex;
+    });
+  }
 
-  this.quiz.questions.forEach((question) => {
-    this.showCorrectAnswerMap[question.id] = false;
+  addQuestion() {
+    this.editedQuiz.questions.push({
+      id: undefined,
+      text: '',
+      answers: [],
+      clientKey: this.nextClientKey('question'),
+      isNew: true,
+      originalText: ''
+    });
+  }
 
-    const correctAnswers = (question.answers || []).filter(answer => answer.correct);
-    if (correctAnswers.length > 0) {
-      this.correctAnswersMap[question.id] = correctAnswers;
+  deleteQuestion(index: number) {
+    const [question] = this.editedQuiz.questions.splice(index, 1);
+    if (!question) {
+      return;
     }
-  });
-}
+
+    if (question.id) {
+      this.pendingDeletedQuestionIds = this.addUniqueId(this.pendingDeletedQuestionIds, question.id);
+      this.pendingDeletedAnswerIds = this.pendingDeletedAnswerIds.filter(
+        (answerId) => !question.answers.some((answer) => answer.id === answerId)
+      );
+    }
+  }
+
+  addAnswer(question: EditableQuestion) {
+    question.answers.push({
+      id: undefined,
+      text: '',
+      correct: question.answers.length === 0,
+      clientKey: this.nextClientKey('answer'),
+      isNew: true,
+      originalText: '',
+      originalCorrect: false
+    });
+  }
+
+  deleteAnswer(questionIndex: number, answerIndex: number) {
+    const question = this.editedQuiz.questions[questionIndex];
+    if (!question) {
+      return;
+    }
+
+    const [answer] = question.answers.splice(answerIndex, 1);
+    if (!answer) {
+      return;
+    }
+
+    if (answer.id) {
+      this.pendingDeletedAnswerIds = this.addUniqueId(this.pendingDeletedAnswerIds, answer.id);
+    }
+
+    if (answer.correct && question.answers.length > 0) {
+      question.answers[0].correct = true;
+    }
+  }
+
+  trackByQuestion(_index: number, question: EditableQuestion | Question): string | number {
+    return (question as EditableQuestion).clientKey ?? question.id;
+  }
+
+  trackByAnswer(_index: number, answer: EditableAnswer | Answer): string | number {
+    return (answer as EditableAnswer).clientKey ?? answer.id;
+  }
+
+  get displayedQuestions(): Array<Question | EditableQuestion> {
+    return this.isEditMode ? (this.editedQuiz?.questions ?? []) : this.quiz.questions;
+  }
+
+  answersForDisplay(question: Question | EditableQuestion): Array<Answer | EditableAnswer> {
+    return question.answers ?? [];
+  }
+
+  private async loadQuizDetails(quizId: number): Promise<void> {
+    try {
+      const quizData = await firstValueFrom(this.quizService.getQuizById(quizId));
+      const questions = await firstValueFrom(this.quizService.getQuizQuestions(quizId));
+      const answerGroups = questions.length > 0
+        ? await firstValueFrom(forkJoin(questions.map((question) => this.quizService.getAnswersByQuestion(question.id))))
+        : [];
+
+      const hydratedQuestions = questions.map((question, index) => ({
+        ...question,
+        answers: answerGroups[index] || []
+      }));
+
+      this.quiz = {
+        ...quizData,
+        questions: hydratedQuestions
+      };
+
+      this.rebuildCorrectAnswerState();
+      this.checkQuizStatus(quizId);
+    } catch (err) {
+      console.error('Error loading quiz details', err);
+      this.showToast('Error loading quiz.');
+    }
+  }
+
+  private createEditableQuiz(quiz: Quiz): EditableQuiz {
+    return {
+      id: quiz.id,
+      title: quiz.title,
+      passingScore: quiz.passingScore,
+      questions: quiz.questions.map((question) => ({
+        id: question.id,
+        text: question.text,
+        answers: (question.answers || []).map((answer) => ({
+          id: answer.id,
+          text: answer.text,
+          correct: answer.correct,
+          clientKey: this.nextClientKey('answer', answer.id),
+          isNew: false,
+          originalText: answer.text,
+          originalCorrect: answer.correct
+        })),
+        clientKey: this.nextClientKey('question', question.id),
+        isNew: false,
+        originalText: question.text
+      }))
+    };
+  }
+
+  private isQuestionChanged(question: EditableQuestion): boolean {
+    return question.text.trim() !== question.originalText;
+  }
+
+  private isAnswerChanged(answer: EditableAnswer): boolean {
+    return answer.text.trim() !== answer.originalText || answer.correct !== answer.originalCorrect;
+  }
+
+  private addUniqueId(list: number[], id: number): number[] {
+    return list.includes(id) ? list : [...list, id];
+  }
+
+  private nextClientKey(prefix: string, id?: number): string {
+    if (id) {
+      return `${prefix}-${id}`;
+    }
+
+    this.tempKeyCounter += 1;
+    return `${prefix}-new-${this.tempKeyCounter}`;
+  }
+
+  private resetEditState(): void {
+    this.isEditMode = false;
+    this.pendingDeletedQuestionIds = [];
+    this.pendingDeletedAnswerIds = [];
+  }
+
+  private getDeleteRedirectCourseId(): number | null {
+    if (this.assignedCourseId != null && Number.isFinite(this.assignedCourseId) && this.assignedCourseId > 0) {
+      return this.assignedCourseId;
+    }
+
+    return null;
+  }
+
+  private rebuildCorrectAnswerState(): void {
+    this.correctAnswersMap = {};
+    this.showCorrectAnswerMap = {};
+
+    this.quiz.questions.forEach((question) => {
+      this.showCorrectAnswerMap[question.id] = false;
+
+      const correctAnswers = (question.answers || []).filter(answer => answer.correct);
+      if (correctAnswers.length > 0) {
+        this.correctAnswersMap[question.id] = correctAnswers;
+      }
+    });
+  }
 }

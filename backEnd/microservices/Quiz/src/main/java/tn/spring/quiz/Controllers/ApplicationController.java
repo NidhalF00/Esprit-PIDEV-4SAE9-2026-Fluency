@@ -7,6 +7,7 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import tn.spring.quiz.Enums.ApplicationStatus;
@@ -56,6 +57,7 @@ public class ApplicationController {
     }
 
     @PostMapping("/{id}/slots")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<?> createSlots(
             @PathVariable Long id,
             @RequestBody List<LocalDateTime> slots
@@ -106,12 +108,14 @@ public class ApplicationController {
         return ResponseEntity.ok(createdSlots);
     }
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<List<Application>> getAllApplications() {
         List<Application> applications = applicationService.getAllApplications();
         return ResponseEntity.ok(applications);
     }
 
     @PostMapping("/{id}/schedule")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<?> scheduleInterview(
             @PathVariable Long id,
             @RequestParam("link") String link
@@ -143,6 +147,7 @@ public class ApplicationController {
         return ResponseEntity.ok("Interview scheduled and email sent!");
     }
     @PutMapping("/{id}/statusA")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<?> updateStatusAcceptedEndpoint(
             @PathVariable Long id,
             @RequestParam String status,
@@ -159,6 +164,7 @@ public class ApplicationController {
         }
     }
     @PutMapping("/{id}/statusR")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<?> updateStatusRejectedEndpoint(
             @PathVariable Long id,
             @RequestParam String status) {  // Plus besoin du teacherEmail/password ici
@@ -172,6 +178,7 @@ public class ApplicationController {
         }
     }
     @GetMapping("/download/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<Resource> downloadCv(@PathVariable Long id) throws IOException {
         Application app = applicationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Application not found"));

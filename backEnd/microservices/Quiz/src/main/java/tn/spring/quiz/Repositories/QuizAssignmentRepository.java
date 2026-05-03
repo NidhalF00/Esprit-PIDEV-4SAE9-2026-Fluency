@@ -9,4 +9,5 @@ import java.util.UUID;
 public interface QuizAssignmentRepository extends JpaRepository<QuizAssignment, Long> {
     boolean existsByQuiz_IdAndStudentId(Long quizId, UUID studentId);
     List<QuizAssignment> findByStudentIdOrderByAssignedAtDesc(UUID studentId);
+    void deleteByQuiz_Id(Long quizId);
 }

@@ -17,7 +17,7 @@ export interface Course {
   providedIn: 'root'
 })
 export class CourseService {
-  private apiUrl = "http://localhost:8056/api/courses";
+  private apiUrl = "http://localhost:8090/api/courses";
 
   constructor(private http: HttpClient) {}
 
@@ -26,6 +26,6 @@ export class CourseService {
   }
 
 getCourseById(courseId: number): Observable<Course> {
-  return this.http.get<Course>(`${this.apiUrl}/getCourseById/${courseId}`);
+  return this.http.get<Course>(`${this.apiUrl}/${courseId}`);
 }
 }

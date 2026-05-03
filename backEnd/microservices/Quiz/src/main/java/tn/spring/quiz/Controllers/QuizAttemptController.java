@@ -2,6 +2,7 @@ package tn.spring.quiz.Controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import tn.spring.quiz.DTO.QuizSubmissionRequest;
 import tn.spring.quiz.Services.QuizAttemptService;
@@ -17,12 +18,14 @@ public class QuizAttemptController {
     private final QuizAttemptService attemptService;
 
     @PostMapping("/submit")
+    @PreAuthorize("hasAuthority('STUDENT')")
     public ResponseEntity<?> submitQuiz(@RequestBody QuizSubmissionRequest request) {
         return ResponseEntity.ok(
                 attemptService.submitQuiz(request)
         );
     }
     @GetMapping("/status")
+    @PreAuthorize("hasAuthority('STUDENT')")
     public ResponseEntity<?> getQuizAttemptsStatus(
             @RequestParam Long quizId,
             @RequestParam UUID studentId

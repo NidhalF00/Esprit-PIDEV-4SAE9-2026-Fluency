@@ -59,10 +59,17 @@ createQuiz() {
   this.quizService.addQuiz(this.courseId, payload).subscribe({
     next: (quiz) => {
       console.log('Quiz créé:', quiz);
-      this.createdQuiz = quiz;
-      this.quiz = quiz;
+      const hydratedQuiz = {
+        ...quiz,
+        questions: quiz.questions || []
+      };
+      this.createdQuiz = hydratedQuiz;
+      this.quiz = hydratedQuiz;
     },
-    error: (err) => console.error(err)
+    error: (err) => {
+      console.error('Error creating quiz', err);
+      alert('Error creating quiz.');
+    }
   });
 }
 
@@ -89,8 +96,12 @@ private validateTutorCourseAccess(): void {
 
 
 addQuestion() {
+  if (!this.quiz.id || !this.newQuestionText.trim()) {
+    return;
+  }
+
   const newQuestion: any = {
-    text: this.newQuestionText,
+    text: this.newQuestionText.trim(),
     answers: [] 
   };
 
@@ -106,7 +117,10 @@ addQuestion() {
       });
       this.newQuestionText = '';
     },
-    error: (err) => console.error(err)
+    error: (err) => {
+      console.error('Error adding question', err);
+      alert('Error adding question.');
+    }
   });
 }
 
@@ -114,8 +128,12 @@ addQuestion() {
 
 
 addAnswer(question: Question) {
+  if (!question?.id || !this.newAnswerText.trim()) {
+    return;
+  }
+
   const newAnswer: any = {
-    text: this.newAnswerText,
+    text: this.newAnswerText.trim(),
     correct: this.newAnswerCorrect
   };
 
@@ -125,7 +143,10 @@ addAnswer(question: Question) {
       this.newAnswerCorrect = false;
       question.answers.push(saved);
     },
-    error: (err) => console.error(err)
+    error: (err) => {
+      console.error('Error adding answer', err);
+      alert('Error adding answer.');
+    }
   });
 }
   // 4️⃣ Sélectionner une question pour ajouter des réponses

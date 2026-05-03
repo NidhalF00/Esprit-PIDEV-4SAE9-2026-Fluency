@@ -28,7 +28,7 @@ public class QuizController {
 
 
     @PostMapping("/course/{courseId}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'TUTOR')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'TUTOR')")
     public ResponseEntity<Quiz> createQuiz(@PathVariable Long courseId, @RequestBody Quiz quiz) {
         Quiz savedQuiz = quizService.createQuiz(courseId, quiz);
         return ResponseEntity.ok(savedQuiz);
@@ -36,14 +36,14 @@ public class QuizController {
 
     // Update Quiz
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'TUTOR')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'TUTOR')")
     public ResponseEntity<Quiz> updateQuiz(@PathVariable Long id, @RequestBody Quiz quiz) {
         return ResponseEntity.ok(quizService.updateQuiz(id, quiz));
     }
 
     // Delete Quiz
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'TUTOR')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'TUTOR')")
     public ResponseEntity<?> deleteQuiz(@PathVariable Long id) {
         quizService.deleteQuiz(id);
         return ResponseEntity.ok().build();
@@ -79,6 +79,7 @@ public class QuizController {
         return ResponseEntity.ok(quizService.getAnswerByQuizQuestion(questionId));
     }
     @PostMapping("/quiz/{quizId}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'TUTOR')")
     public ResponseEntity<Question> createQuestion(
             @PathVariable Long quizId,
             @RequestBody Question question) {
@@ -89,6 +90,7 @@ public class QuizController {
 
     // Endpoint pour mettre à jour une question avec ses réponses
     @PutMapping("/question/{questionId}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'TUTOR')")
     public ResponseEntity<Question> updateQuestion(
             @PathVariable Long questionId,
             @RequestBody Question question) {
@@ -97,6 +99,7 @@ public class QuizController {
         return ResponseEntity.ok(updated);
     }
     @PostMapping("/quizAddQuestion/{quizId}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'TUTOR')")
     public ResponseEntity<Question> addQuestion(
             @PathVariable Long quizId,
             @RequestBody Question question) {
@@ -106,6 +109,7 @@ public class QuizController {
 
     // 🗑 Supprimer une question
     @DeleteMapping("/question/{questionId}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'TUTOR')")
     public ResponseEntity<Void> deleteQuestion(@PathVariable Long questionId) {
         questionService.deleteQuestion(questionId);
         return ResponseEntity.noContent().build();
@@ -113,6 +117,7 @@ public class QuizController {
 
     // ➕ Ajouter une réponse à une question
     @PostMapping("/{questionId}/answers")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'TUTOR')")
     public ResponseEntity<Answer> addAnswer(
             @PathVariable Long questionId,
             @RequestBody Answer answer) {
@@ -122,6 +127,7 @@ public class QuizController {
 
     // ✏️ Modifier une réponse
     @PutMapping("/answers/{answerId}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'TUTOR')")
     public ResponseEntity<Answer> updateAnswer(
             @PathVariable Long answerId,
             @RequestBody Answer answerDetails) {
@@ -131,6 +137,7 @@ public class QuizController {
 
     // 🗑 Supprimer une réponse
     @DeleteMapping("/answers/{answerId}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'TUTOR')")
     public ResponseEntity<Void> deleteAnswer(@PathVariable Long answerId) {
         questionService.deleteAnswer(answerId);
         return ResponseEntity.noContent().build();

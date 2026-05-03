@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface Answer {
@@ -47,14 +47,19 @@ export interface AssignedQuiz {
 })
 export class QuizService {
 
-  private apiUrl = "http://localhost:8056/api/quizzes";
-  private attemptUrl = "http://localhost:8056/api/quiz-attempts";
-  private assignmentUrl = "http://localhost:8056/api/quiz-assignments";
+  private apiUrl = "http://localhost:8090/api/quiz";
+  private attemptUrl = "http://localhost:8090/api/quiz-attempts";
+  private assignmentUrl = "http://localhost:8090/api/quiz-assignments";
 
   constructor(private http: HttpClient) {}
 
+  getAuthHeaders() {
+    const token = localStorage.getItem('token');
+    return new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  }
+
   getAllQuizzes(): Observable<Quiz[]> {
-    return this.http.get<Quiz[]>(this.apiUrl);
+    return this.http.get<Quiz[]>(`${this.apiUrl}/all`);
   }
 
   getQuizById(id: number): Observable<Quiz> {
@@ -62,19 +67,19 @@ export class QuizService {
   }
 
   createQuiz(quiz: Quiz): Observable<Quiz> {
-    return this.http.post<Quiz>(this.apiUrl, quiz);
+    return this.http.post<Quiz>(this.apiUrl, quiz, { headers: this.getAuthHeaders() });
   }
 
   updateQuiz(id: number, quiz: Quiz): Observable<Quiz> {
-    return this.http.put<Quiz>(`${this.apiUrl}/${id}`, quiz);
+    return this.http.put<Quiz>(`${this.apiUrl}/${id}`, quiz, { headers: this.getAuthHeaders() });
   }
 
   deleteQuiz(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`);
+    return this.http.delete(`${this.apiUrl}/${id}`, { headers: this.getAuthHeaders() });
   }
 
   submitQuiz(payload: any): Observable<any> {
-    return this.http.post(`${this.attemptUrl}/submit`, payload);
+    return this.http.post(`${this.attemptUrl}/submit`, payload, { headers: this.getAuthHeaders() });
   }
   getQuizQuestions(quizId: number): Observable<Question[]> {
   return this.http.get<Question[]>(`${this.apiUrl}/${quizId}/questions`);
@@ -88,45 +93,46 @@ getQuizzesByCourse(courseId: number): Observable<Quiz[]> {
 }
 getQuizStatus(quizId: number, studentId: string): Observable<any> {
   return this.http.get(
-    `${this.attemptUrl}/status?quizId=${quizId}&studentId=${studentId}`
+    `${this.attemptUrl}/status?quizId=${quizId}&studentId=${studentId}`,
+    { headers: this.getAuthHeaders() }
   );
 }
 updateQuestion(questionId: number, question: Question): Observable<Question> {
-  return this.http.put<Question>(`${this.apiUrl}/question/${questionId}`, question);
+  return this.http.put<Question>(`${this.apiUrl}/question/${questionId}`, question, { headers: this.getAuthHeaders() });
 }
 
 updateAnswer(answerId: number, answer: Answer): Observable<Answer> {
-  return this.http.put<Answer>(`${this.apiUrl}/answers/${answerId}`, answer);
+  return this.http.put<Answer>(`${this.apiUrl}/answers/${answerId}`, answer, { headers: this.getAuthHeaders() });
 }
 
 deleteAnswer(answerId: number): Observable<void> {
-  return this.http.delete<void>(`${this.apiUrl}/answers/${answerId}`);
+  return this.http.delete<void>(`${this.apiUrl}/answers/${answerId}`, { headers: this.getAuthHeaders() });
 }
 
 addQuestion(quizId: number, question: Question): Observable<Question> {
-  return this.http.post<Question>(`${this.apiUrl}/quizAddQuestion/${quizId}`, question);
+  return this.http.post<Question>(`${this.apiUrl}/quizAddQuestion/${quizId}`, question, { headers: this.getAuthHeaders() });
 }
 
 
 addAnswer(questionId: number, answer: Answer): Observable<Answer> {
-  return this.http.post<Answer>(`${this.apiUrl}/${questionId}/answers`, answer);
+  return this.http.post<Answer>(`${this.apiUrl}/${questionId}/answers`, answer, { headers: this.getAuthHeaders() });
 }
 
 
 deleteQuestion(questionId: number): Observable<void> {
-  return this.http.delete<void>(`${this.apiUrl}/question/${questionId}`);
+  return this.http.delete<void>(`${this.apiUrl}/question/${questionId}`, { headers: this.getAuthHeaders() });
 }
 
 addQuiz(courseId: number, quiz: { title: string }): Observable<Quiz> {
   const quizToSend = { ...quiz, passingScore: 70, questions: [] };
-  return this.http.post<Quiz>(`${this.apiUrl}/course/${courseId}`, quizToSend);
+  return this.http.post<Quiz>(`${this.apiUrl}/course/${courseId}`, quizToSend, { headers: this.getAuthHeaders() });
 }
 
 assignQuiz(payload: AssignQuizPayload): Observable<any> {
-  return this.http.post(this.assignmentUrl, payload);
+  return this.http.post(this.assignmentUrl, payload, { headers: this.getAuthHeaders() });
 }
 
 getAssignedQuizzesByStudent(studentId: string): Observable<AssignedQuiz[]> {
-  return this.http.get<AssignedQuiz[]>(`${this.assignmentUrl}/student/${studentId}/quizzes`);
+  return this.http.get<AssignedQuiz[]>(`${this.assignmentUrl}/student/${studentId}/quizzes`, { headers: this.getAuthHeaders() });
 }
 }

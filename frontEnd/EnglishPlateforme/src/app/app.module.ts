@@ -36,6 +36,8 @@ import { AddTeacherComponent } from './features/admin/add-teacher/add-teacher.co
     BrowserModule,
     AppRoutingModule,
     SharedModule,
+    UserModule,
+    AdminModule,
     ReactiveFormsModule,
     RouterModule ,
     HttpClientModule,
