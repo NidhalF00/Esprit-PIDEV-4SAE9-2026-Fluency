@@ -28,11 +28,14 @@ async def lifespan(app: FastAPI):
     _models["pca"]          = joblib.load(f"{MODEL_DIR}/pca.pkl")
     _models["kmeans"]       = joblib.load(f"{MODEL_DIR}/kmeans.pkl")
     _models["rf"]           = joblib.load(f"{MODEL_DIR}/rf_classifier.pkl")
+    _models["xgb"]          = joblib.load(f"{MODEL_DIR}/xgb_classifier.pkl")
+    _models["best"]         = joblib.load(f"{MODEL_DIR}/best_classifier.pkl")
     _models["feature_cols"] = joblib.load(f"{MODEL_DIR}/feature_cols.pkl")
     _models["encoders"]     = joblib.load(f"{MODEL_DIR}/encoders.pkl")
     with open(f"{MODEL_DIR}/metrics.json") as f:
         _models["metrics"] = json.load(f)
-    print("[ML] All models loaded and ready.")
+    best_name = _models["metrics"].get("best_classifier", "unknown")
+    print(f"[ML] All models loaded and ready. Best classifier: {best_name}")
     yield
 
 
@@ -110,12 +113,31 @@ def model_info():
 @app.post("/predict", tags=["ML"])
 def predict(student: StudentInput):
     """
-    Predict whether a student will pass (G3 >= 10) or fail their exam/retake.
+    Predict using the best classifier selected by cross-validation (RF or XGBoost).
 
     Returns:
     - prediction: "pass" or "fail"
     - probability_pass: confidence score
+    - model_used: which classifier was selected
     """
+    try:
+        X = _to_pca_vector(student)
+        clf   = _models["best"]
+        pred  = int(clf.predict(X)[0])
+        proba = clf.predict_proba(X)[0]
+        return {
+            "prediction":       "pass" if pred == 1 else "fail",
+            "probability_pass": round(float(proba[1]), 4),
+            "probability_fail": round(float(proba[0]), 4),
+            "model_used":       _models["metrics"].get("best_classifier", "unknown"),
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/predict/rf", tags=["ML"])
+def predict_rf(student: StudentInput):
+    """Predict using Random Forest specifically."""
     try:
         X = _to_pca_vector(student)
         pred  = int(_models["rf"].predict(X)[0])
@@ -124,6 +146,24 @@ def predict(student: StudentInput):
             "prediction":       "pass" if pred == 1 else "fail",
             "probability_pass": round(float(proba[1]), 4),
             "probability_fail": round(float(proba[0]), 4),
+            "model_used":       "random_forest",
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/predict/xgb", tags=["ML"])
+def predict_xgb(student: StudentInput):
+    """Predict using XGBoost specifically."""
+    try:
+        X = _to_pca_vector(student)
+        pred  = int(_models["xgb"].predict(X)[0])
+        proba = _models["xgb"].predict_proba(X)[0]
+        return {
+            "prediction":       "pass" if pred == 1 else "fail",
+            "probability_pass": round(float(proba[1]), 4),
+            "probability_fail": round(float(proba[0]), 4),
+            "model_used":       "xgboost",
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

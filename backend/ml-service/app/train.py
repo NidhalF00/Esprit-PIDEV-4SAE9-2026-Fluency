@@ -7,12 +7,12 @@ from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.decomposition import PCA
 from sklearn.cluster import KMeans
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, cross_val_score, StratifiedKFold
 from sklearn.metrics import accuracy_score, f1_score, roc_auc_score, silhouette_score
+from xgboost import XGBClassifier
 
-import os as _os
-DATA_PATH = _os.environ.get("DATA_PATH", "/app/data/student-mat.csv")
-MODEL_DIR = _os.environ.get("MODEL_DIR", "/app/models")
+DATA_PATH = os.environ.get("DATA_PATH", "/app/data/student-mat.csv")
+MODEL_DIR  = os.environ.get("MODEL_DIR",  "/app/models")
 
 CAT_COLS = [
     'school', 'sex', 'address', 'famsize', 'Pstatus',
@@ -23,7 +23,6 @@ CAT_COLS = [
 
 
 def generate_synthetic_data(n: int = 400) -> pd.DataFrame:
-    """Synthetic dataset mimicking UCI Student Performance schema (for dev/testing)."""
     np.random.seed(42)
     data = {
         'school':    np.random.choice(['GP', 'MS'], n, p=[0.75, 0.25]),
@@ -96,7 +95,6 @@ def train_and_save() -> dict:
     else:
         df = generate_synthetic_data(400)
         print("[ML] Real dataset not found — using synthetic data (400 records)")
-        print(f"[ML] To use the real dataset, place student-mat.csv in /app/data/")
 
     X_scaled, y, scaler, encoders, feature_cols = preprocess(df)
 
@@ -104,51 +102,82 @@ def train_and_save() -> dict:
     pca = PCA(n_components=0.95, random_state=42)
     X_pca = pca.fit_transform(X_scaled)
 
-    # K-Means clustering (k=3 profiles: at-risk / average / high-performing)
+    # K-Means clustering
     kmeans = KMeans(n_clusters=3, random_state=42, n_init=10)
     clusters = kmeans.fit_predict(X_pca)
     sil = silhouette_score(X_pca, clusters)
 
-    # Random Forest classifier
     X_train, X_test, y_train, y_test = train_test_split(
         X_pca, y, test_size=0.2, random_state=42, stratify=y
     )
+    cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+
+    # Random Forest
     rf = RandomForestClassifier(n_estimators=100, random_state=42)
     rf.fit(X_train, y_train)
+    rf_auc_cv = cross_val_score(
+        RandomForestClassifier(n_estimators=100, random_state=42),
+        X_pca, y, cv=cv, scoring='roc_auc'
+    ).mean()
 
-    y_pred = rf.predict(X_test)
-    y_proba = rf.predict_proba(X_test)[:, 1]
+    # XGBoost
+    xgb = XGBClassifier(
+        n_estimators=100, max_depth=6, learning_rate=0.1,
+        subsample=0.8, colsample_bytree=0.8,
+        eval_metric='logloss', random_state=42, verbosity=0
+    )
+    xgb.fit(X_train, y_train)
+    xgb_auc_cv = cross_val_score(
+        XGBClassifier(n_estimators=100, max_depth=6, learning_rate=0.1,
+                      eval_metric='logloss', random_state=42, verbosity=0),
+        X_pca, y, cv=cv, scoring='roc_auc'
+    ).mean()
+
+    # Choisir le meilleur modèle (ROC-AUC CV)
+    if xgb_auc_cv >= rf_auc_cv:
+        best_clf, best_name = xgb, "xgboost"
+    else:
+        best_clf, best_name = rf, "random_forest"
+
+    y_pred  = best_clf.predict(X_test)
+    y_proba = best_clf.predict_proba(X_test)[:, 1]
 
     metrics = {
-        "accuracy":             round(float(accuracy_score(y_test, y_pred)), 4),
-        "f1_score":             round(float(f1_score(y_test, y_pred)), 4),
-        "roc_auc":              round(float(roc_auc_score(y_test, y_proba)), 4),
-        "silhouette_score":     round(float(sil), 4),
-        "pca_components":       int(pca.n_components_),
-        "pca_variance_explained": round(float(sum(pca.explained_variance_ratio_)), 4),
-        "n_clusters":           3,
-        "cluster_labels":       ["At-Risk", "Average", "High-Performing"],
-        "n_train":              int(len(X_train)),
-        "n_test":               int(len(X_test)),
-        "dataset":              "real (UCI student-mat.csv)" if os.path.exists(DATA_PATH) else "synthetic",
+        "best_classifier":          best_name,
+        "accuracy":                 round(float(accuracy_score(y_test, y_pred)), 4),
+        "f1_score":                 round(float(f1_score(y_test, y_pred)), 4),
+        "roc_auc":                  round(float(roc_auc_score(y_test, y_proba)), 4),
+        "rf_cv_roc_auc":            round(float(rf_auc_cv), 4),
+        "xgb_cv_roc_auc":           round(float(xgb_auc_cv), 4),
+        "silhouette_score":         round(float(sil), 4),
+        "pca_components":           int(pca.n_components_),
+        "pca_variance_explained":   round(float(sum(pca.explained_variance_ratio_)), 4),
+        "n_clusters":               3,
+        "cluster_labels":           ["At-Risk", "Average", "High-Performing"],
+        "n_train":                  int(len(X_train)),
+        "n_test":                   int(len(X_test)),
+        "dataset":                  "real (UCI student-mat.csv)" if os.path.exists(DATA_PATH) else "synthetic",
     }
 
     joblib.dump(scaler,       f"{MODEL_DIR}/scaler.pkl")
     joblib.dump(pca,          f"{MODEL_DIR}/pca.pkl")
     joblib.dump(kmeans,       f"{MODEL_DIR}/kmeans.pkl")
     joblib.dump(rf,           f"{MODEL_DIR}/rf_classifier.pkl")
+    joblib.dump(xgb,          f"{MODEL_DIR}/xgb_classifier.pkl")
+    joblib.dump(best_clf,     f"{MODEL_DIR}/best_classifier.pkl")
     joblib.dump(feature_cols, f"{MODEL_DIR}/feature_cols.pkl")
     joblib.dump(encoders,     f"{MODEL_DIR}/encoders.pkl")
 
     with open(f"{MODEL_DIR}/metrics.json", "w") as f:
         json.dump(metrics, f, indent=2)
 
-    print(f"[ML] Training complete — Accuracy: {metrics['accuracy']}, "
-          f"F1: {metrics['f1_score']}, ROC-AUC: {metrics['roc_auc']}, "
-          f"Silhouette: {metrics['silhouette_score']}")
+    print(f"[ML] Training complete — Best: {best_name}, "
+          f"Accuracy: {metrics['accuracy']}, F1: {metrics['f1_score']}, "
+          f"ROC-AUC: {metrics['roc_auc']} | "
+          f"RF CV AUC: {rf_auc_cv:.4f}, XGB CV AUC: {xgb_auc_cv:.4f}")
     return metrics
 
 
 def ensure_model():
-    if not os.path.exists(f"{MODEL_DIR}/rf_classifier.pkl"):
+    if not os.path.exists(f"{MODEL_DIR}/best_classifier.pkl"):
         train_and_save()
