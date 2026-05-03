@@ -140,6 +140,48 @@ services:
     networks:
       - platform-network
 
+  # ── PostgreSQL (pour SonarQube) ───────────────────────────────────────────────
+  sonar-db:
+    image: postgres:15-alpine
+    container_name: sonar-db
+    environment:
+      POSTGRES_USER: sonar
+      POSTGRES_PASSWORD: sonar
+      POSTGRES_DB: sonarqube
+    volumes:
+      - sonar-db-data:/var/lib/postgresql/data
+    networks:
+      - platform-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sonar -d sonarqube"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── SonarQube Community Edition ───────────────────────────────────────────────
+  sonarqube:
+    image: sonarqube:10-community
+    container_name: sonarqube
+    depends_on:
+      sonar-db:
+        condition: service_healthy
+    environment:
+      SONAR_JDBC_URL: jdbc:postgresql://sonar-db:5432/sonarqube
+      SONAR_JDBC_USERNAME: sonar
+      SONAR_JDBC_PASSWORD: sonar
+    ports:
+      - "9000:9000"
+    volumes:
+      - sonar-data:/opt/sonarqube/data
+      - sonar-logs:/opt/sonarqube/logs
+      - sonar-extensions:/opt/sonarqube/extensions
+    networks:
+      - platform-network
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+
 networks:
   platform-network:
     driver: bridge
@@ -148,3 +190,7 @@ volumes:
   mysql-data:
   ml-models:
   ml-data:
+  sonar-db-data:
+  sonar-data:
+  sonar-logs:
+  sonar-extensions:
