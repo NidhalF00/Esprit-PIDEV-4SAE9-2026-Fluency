@@ -1,0 +1,135 @@
+name: CI — Backend
+
+on:
+  push:
+    branches: [main, claim-retake-management]
+    paths:
+      - 'backend/**'
+      - '.github/workflows/ci-backend.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'backend/**'
+
+jobs:
+
+  # ── Claim Service ─────────────────────────────────────────────────────────────
+  claim-service:
+    name: Claim Service — Test & Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Run tests
+        working-directory: backend/claim-service
+        run: mvn test -Dspring.profiles.active=test --no-transfer-progress
+
+      - name: Build JAR
+        working-directory: backend/claim-service
+        run: mvn package -DskipTests --no-transfer-progress
+
+      - name: Build Docker image
+        working-directory: backend/claim-service
+        run: docker build -t claim-service:${{ github.sha }} .
+
+  # ── Retake Service ────────────────────────────────────────────────────────────
+  retake-service:
+    name: Retake Service — Build & Docker
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Build JAR
+        working-directory: backend/retake-service
+        run: mvn package -DskipTests --no-transfer-progress
+
+      - name: Build Docker image
+        working-directory: backend/retake-service
+        run: docker build -t retake-service:${{ github.sha }} .
+
+  # ── Auth Service ──────────────────────────────────────────────────────────────
+  auth-service:
+    name: Auth Service — Build & Docker
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Build JAR
+        working-directory: backend/auth-service
+        run: mvn package -DskipTests --no-transfer-progress
+
+      - name: Build Docker image
+        working-directory: backend/auth-service
+        run: docker build -t auth-service:${{ github.sha }} .
+
+  # ── Gateway & Eureka ─────────────────────────────────────────────────────────
+  gateway-eureka:
+    name: Gateway & Eureka — Build & Docker
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Build Gateway JAR
+        working-directory: backend/gateway-service
+        run: mvn package -DskipTests --no-transfer-progress
+
+      - name: Build Gateway Docker image
+        working-directory: backend/gateway-service
+        run: docker build -t gateway-service:${{ github.sha }} .
+
+      - name: Build Eureka JAR
+        working-directory: backend/eureka-server
+        run: mvn package -DskipTests --no-transfer-progress
+
+      - name: Build Eureka Docker image
+        working-directory: backend/eureka-server
+        run: docker build -t eureka-server:${{ github.sha }} .
+
+  # ── ML Service ───────────────────────────────────────────────────────────────
+  ml-service:
+    name: ML Service — Build Docker
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        working-directory: backend/ml-service
+        run: docker build -t ml-service:${{ github.sha }} .
