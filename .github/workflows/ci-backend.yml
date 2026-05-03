@@ -149,7 +149,7 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Build & analyse claim-service
+      - name: Build, test & analyse claim-service
         working-directory: backend/claim-service
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -159,4 +159,6 @@ jobs:
             -Dspring.profiles.active=test \
             -Dsonar.projectKey=platform-education-claim-service \
             -Dsonar.projectName="Claim Service" \
+            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
+            -Dsonar.java.coveragePlugin=jacoco \
             --no-transfer-progress
