@@ -1,0 +1,1724 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guide de Validation Sprint 2 — Platform Education</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; color: #1a1a2e; background: #fff; font-size: 13px; line-height: 1.6; }
+
+  /* Cover page */
+  .cover { page-break-after: always; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); color: white; text-align: center; padding: 40px; }
+  .cover h1 { font-size: 2.4em; font-weight: 800; margin-bottom: 10px; letter-spacing: 1px; }
+  .cover .subtitle { font-size: 1.2em; color: #a8d8ea; margin-bottom: 30px; }
+  .cover .badge { background: #e94560; padding: 8px 24px; border-radius: 20px; font-weight: bold; font-size: 1em; margin: 10px 5px; display: inline-block; }
+  .cover .info { margin-top: 40px; font-size: 0.95em; color: #ccc; }
+  .cover .warning { margin-top: 20px; background: rgba(233,69,96,0.2); border: 1px solid #e94560; border-radius: 8px; padding: 15px 25px; max-width: 500px; font-size: 0.9em; }
+
+  /* Navigation */
+  .toc { page-break-after: always; padding: 40px 50px; }
+  .toc h2 { font-size: 1.8em; color: #0f3460; border-bottom: 3px solid #e94560; padding-bottom: 10px; margin-bottom: 25px; }
+  .toc ol { padding-left: 20px; }
+  .toc li { padding: 6px 0; font-size: 1em; color: #333; }
+  .toc li span { color: #e94560; font-weight: bold; margin-right: 8px; }
+  .toc .sub { font-size: 0.9em; color: #666; margin-left: 20px; list-style: disc; }
+
+  /* Sections */
+  .section { padding: 35px 50px; page-break-before: always; }
+  .section:first-of-type { page-break-before: auto; }
+  h2.section-title { font-size: 1.6em; color: white; background: linear-gradient(90deg, #0f3460, #16213e); padding: 12px 20px; border-radius: 8px; margin-bottom: 25px; display: flex; align-items: center; gap: 10px; }
+  h2.section-title .num { background: #e94560; border-radius: 50%; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.85em; font-weight: bold; flex-shrink: 0; }
+  h3 { color: #0f3460; font-size: 1.1em; margin: 20px 0 10px; border-left: 4px solid #e94560; padding-left: 10px; }
+  h4 { color: #e94560; font-size: 0.95em; margin: 15px 0 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  p { margin-bottom: 10px; color: #333; }
+
+  /* Cards & Boxes */
+  .card { background: #f8f9ff; border: 1px solid #e0e6ff; border-radius: 10px; padding: 18px 20px; margin-bottom: 15px; }
+  .card.red { background: #fff5f5; border-color: #ffcccc; }
+  .card.green { background: #f0fff4; border-color: #b2f0c8; }
+  .card.blue { background: #f0f7ff; border-color: #b2d4ff; }
+  .card.orange { background: #fff8f0; border-color: #ffd4a0; }
+  .card.yellow { background: #fffdf0; border-color: #ffe4a0; }
+
+  .alert { border-radius: 8px; padding: 12px 16px; margin: 15px 0; font-weight: 600; display: flex; align-items: flex-start; gap: 10px; }
+  .alert.danger { background: #fff0f0; border-left: 4px solid #e94560; color: #c0392b; }
+  .alert.success { background: #f0fff8; border-left: 4px solid #27ae60; color: #1e8449; }
+  .alert.info { background: #f0f7ff; border-left: 4px solid #2980b9; color: #1a5276; }
+  .alert.warning { background: #fffbf0; border-left: 4px solid #f39c12; color: #a04000; }
+
+  /* Code */
+  pre { background: #1e1e2e; color: #cdd6f4; border-radius: 8px; padding: 15px 18px; font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; line-height: 1.5; overflow-x: auto; margin: 10px 0 15px; }
+  code { background: #f0f0ff; color: #c0392b; padding: 1px 5px; border-radius: 3px; font-family: 'Consolas', monospace; font-size: 11.5px; }
+  pre .comment { color: #6a9955; }
+  pre .keyword { color: #569cd6; }
+  pre .string { color: #ce9178; }
+  pre .annotation { color: #dcdcaa; }
+  pre .type { color: #4ec9b0; }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 12px; }
+  th { background: #0f3460; color: white; padding: 8px 12px; text-align: left; }
+  td { padding: 7px 12px; border-bottom: 1px solid #e8e8f0; }
+  tr:nth-child(even) { background: #f8f9ff; }
+  tr:hover { background: #f0f4ff; }
+
+  /* Lists */
+  ul, ol { margin: 8px 0 12px 20px; }
+  li { margin-bottom: 5px; color: #333; }
+  li strong { color: #0f3460; }
+
+  /* Q&A */
+  .qa-block { border: 1px solid #e0e6ff; border-radius: 10px; margin-bottom: 18px; overflow: hidden; }
+  .qa-q { background: #0f3460; color: white; padding: 10px 16px; font-weight: 700; font-size: 0.95em; }
+  .qa-q::before { content: "Q: "; color: #e94560; }
+  .qa-a { background: #f8f9ff; padding: 12px 16px; color: #333; }
+  .qa-a::before { content: "R: "; font-weight: bold; color: #27ae60; }
+
+  /* Flow diagram */
+  .flow { display: flex; align-items: center; flex-wrap: wrap; gap: 5px; margin: 15px 0; }
+  .flow-box { background: #0f3460; color: white; padding: 6px 14px; border-radius: 6px; font-size: 11px; font-weight: 600; }
+  .flow-box.red { background: #e94560; }
+  .flow-box.green { background: #27ae60; }
+  .flow-box.gray { background: #7f8c8d; }
+  .flow-arrow { color: #e94560; font-size: 1.2em; font-weight: bold; }
+
+  /* Status badges */
+  .badge-status { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 11px; font-weight: bold; margin: 2px; }
+  .open { background: #d4edda; color: #155724; }
+  .in-progress { background: #cce5ff; color: #004085; }
+  .retake-auth { background: #fff3cd; color: #856404; }
+  .resolved { background: #d1ecf1; color: #0c5460; }
+  .rejected { background: #f8d7da; color: #721c24; }
+  .canceled { background: #e2e3e5; color: #383d41; }
+
+  /* Section divider */
+  .divider { border: none; border-top: 2px dashed #e0e6ff; margin: 25px 0; }
+
+  /* Tips */
+  .tip { background: linear-gradient(135deg, #667eea15, #764ba215); border: 1px solid #667eea40; border-radius: 8px; padding: 12px 16px; margin: 12px 0; font-size: 0.92em; }
+  .tip::before { content: "💡 "; }
+
+  /* File path label above code blocks */
+  .file-path { font-family: 'Consolas', monospace; font-size: 10.5px; background: #2d2d3f; color: #7ec8e3; padding: 5px 14px; border-radius: 6px 6px 0 0; display: block; margin-bottom: -4px; border-bottom: 1px solid #444; }
+  .file-path::before { content: "📄 "; }
+
+  /* Print */
+  @media print {
+    body { font-size: 12px; }
+    .cover { min-height: auto; padding: 60px 40px; }
+    .section { page-break-before: always; }
+    pre { font-size: 10.5px; }
+  }
+
+  .tag { background: #e94560; color: white; font-size: 10px; padding: 1px 7px; border-radius: 3px; font-weight: bold; vertical-align: middle; margin-left: 5px; }
+  .tag.blue { background: #2980b9; }
+  .tag.green { background: #27ae60; }
+
+  /* Grid 2 cols */
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 15px 0; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin: 15px 0; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════ COVER ═══ -->
+<div class="cover">
+  <div style="font-size:0.85em; letter-spacing:3px; text-transform:uppercase; color:#a8d8ea; margin-bottom:15px;">Esprit — Projet Integration</div>
+  <h1>Guide de Validation<br>Sprint 2</h1>
+  <div class="subtitle">Platform Education — Module Réclamations &amp; Rattrapages</div>
+  <div>
+    <span class="badge">Claim Service</span>
+    <span class="badge" style="background:#0f3460">Retake Service</span>
+    <span class="badge" style="background:#27ae60">Tests JUnit / Mockito</span>
+  </div>
+  <div class="info">
+    <strong>Zeineb Necib</strong> &nbsp;|&nbsp; Branche: <code style="background:rgba(255,255,255,0.15); color:white; padding:2px 8px; border-radius:4px;">claim-retake-management</code>
+  </div>
+  <div class="warning">
+    <strong>TRES IMPORTANT :</strong> Ce guide te prépare à expliquer ORALEMENT chaque décision technique.
+    Ne mémorise pas — comprends pourquoi chaque règle existe.
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ TOC ═══ -->
+<div class="toc">
+  <h2>Table des matières</h2>
+  <ol>
+    <li><span>1.</span> Architecture microservices — Vue d'ensemble</li>
+    <li><span>2.</span> Logique métier — Claim Service (le cœur du projet)</li>
+    <li><span>3.</span> Logique métier — Retake Service</li>
+    <li><span>4.</span> Communication inter-services — OpenFeign</li>
+    <li><span>5.</span> Sécurité JWT</li>
+    <li><span>6.</span> Tests Unitaires — JUnit + Mockito <span class="tag">TRES IMPORTANT</span></li>
+    <li><span>7.</span> Tests d'Intégration — SpringBootTest</li>
+    <li><span>8.</span> Frontend Angular — Composants &amp; Services</li>
+    <li><span>9.</span> Innovations — IA + ML</li>
+    <li><span>10.</span> Questions-Réponses pour la soutenance</li>
+    <li><span>11.</span> Checklist finale avant validation</li>
+  </ol>
+</div>
+
+<!-- ═══════════════════════════════════════════════ SECTION 1 ═══ -->
+<div class="section">
+  <h2 class="section-title"><span class="num">1</span> Architecture Microservices</h2>
+
+  <div class="alert info">
+    L'architecture est basée sur Spring Cloud. Chaque service est indépendant, avec sa propre base de données. Ils communiquent via l'API Gateway (point d'entrée unique) et OpenFeign (appels directs entre services).
+  </div>
+
+  <h3>Services et leurs ports</h3>
+  <table>
+    <tr><th>Service</th><th>Port</th><th>Base de données</th><th>Rôle</th></tr>
+    <tr><td><strong>Eureka Server</strong></td><td>8761</td><td>—</td><td>Annuaire des services (Service Discovery)</td></tr>
+    <tr><td><strong>API Gateway</strong></td><td>8080</td><td>—</td><td>Point d'entrée unique, routage, CORS</td></tr>
+    <tr><td><strong>Auth Service</strong></td><td>8083</td><td>auth_db</td><td>Authentification, JWT, gestion des users</td></tr>
+    <tr><td><strong>Claim Service</strong></td><td>8081</td><td>claim_db</td><td>Gestion des réclamations (ton module)</td></tr>
+    <tr><td><strong>Retake Service</strong></td><td>8082</td><td>retake_db</td><td>Gestion des demandes de rattrapage</td></tr>
+    <tr><td><strong>ML Service</strong></td><td>5000</td><td>—</td><td>Analyse prédictive des étudiants (Python)</td></tr>
+  </table>
+
+  <h3>Flux d'une requête (à expliquer en soutenance)</h3>
+  <div class="flow">
+    <div class="flow-box red">Angular :4200</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box">API Gateway :8080</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box green">Claim Service :8081</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box">MySQL claim_db</div>
+  </div>
+  <div class="flow" style="margin-top:5px">
+    <div class="flow-box red">Angular :4200</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box">API Gateway :8080</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box green">Retake Service :8082</div>
+    <div class="flow-arrow">→ OpenFeign →</div>
+    <div class="flow-box">Claim Service :8081</div>
+  </div>
+
+  <h3>Routes dans l'API Gateway</h3>
+  <table>
+    <tr><th>Pattern URL</th><th>Redirigé vers</th></tr>
+    <tr><td><code>/auth/**, /user/**, /api/students/**</code></td><td>auth-service:8083</td></tr>
+    <tr><td><code>/api/claims/**</code></td><td>claim-service:8081</td></tr>
+    <tr><td><code>/api/retake-requests/**</code></td><td>retake-service:8082</td></tr>
+    <tr><td><code>/api/ml/**</code></td><td>ml-service:5000</td></tr>
+  </table>
+
+  <div class="qa-block">
+    <div class="qa-q">Pourquoi utiliser une API Gateway ?</div>
+    <div class="qa-a">Pour avoir un seul point d'entrée. Le frontend n'a pas besoin de connaître l'adresse de chaque service — il appelle toujours <code>localhost:8080</code>. La Gateway route ensuite la requête vers le bon service. Elle gère aussi le CORS de façon centralisée.</div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Qu'est-ce qu'Eureka Server ?</div>
+    <div class="qa-a">C'est le registre de services (Service Discovery). Chaque microservice s'enregistre sur Eureka au démarrage avec son nom et son adresse. Quand le Retake Service appelle "claim-service" via Feign, Eureka lui donne l'adresse réelle automatiquement — pas besoin d'hardcoder les URLs.</div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Pourquoi chaque service a sa propre base de données ?</div>
+    <div class="qa-a">C'est le principe du découplage en microservices. Chaque service est maître de ses données. On ne peut pas faire de JOIN SQL entre deux bases différentes — c'est pour ça que <code>retakeRequestId</code> dans Claim est un simple Long (référence cross-service) et non une relation JPA.</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ SECTION 2 ═══ -->
+<div class="section">
+  <h2 class="section-title"><span class="num">2</span> Logique Métier — Claim Service</h2>
+
+  <div class="alert danger">
+    C'est le coeur de ton module. Tu dois être capable d'expliquer CHAQUE règle et pourquoi elle existe.
+  </div>
+
+  <h3>Entité Claim — les champs importants</h3>
+  <table>
+    <tr><th>Champ</th><th>Type</th><th>Description</th></tr>
+    <tr><td><code>id</code></td><td>Long</td><td>Identifiant auto-généré</td></tr>
+    <tr><td><code>subject</code></td><td>String</td><td>Sujet de la réclamation</td></tr>
+    <tr><td><code>description</code></td><td>String</td><td>Description détaillée</td></tr>
+    <tr><td><code>type</code></td><td>ClaimType</td><td>TECHNICAL / PEDAGOGICAL / ADMINISTRATIVE / OTHER</td></tr>
+    <tr><td><code>status</code></td><td>ClaimStatus</td><td>Statut actuel (cycle de vie)</td></tr>
+    <tr><td><code>student</code></td><td>User (FK)</td><td>L'étudiant qui a créé la réclamation</td></tr>
+    <tr><td><code>retakeRequestId</code></td><td>Long</td><td>Lien cross-service vers RetakeRequest (pas de Join JPA !)</td></tr>
+    <tr><td><code>createdAt</code></td><td>LocalDateTime</td><td>Date de création</td></tr>
+  </table>
+
+  <div class="tip">Le champ <code>retakeRequestId</code> est un simple Long et non une relation JPA (<code>@ManyToOne</code>). Pourquoi ? Parce que RetakeRequest est dans une base de données séparée (retake_db) — on ne peut pas faire de JOIN SQL entre deux bases différentes. On stocke juste l'ID comme référence.</div>
+
+  <h3>Cycle de vie d'une réclamation (ClaimStatus)</h3>
+  <div style="text-align:center; margin: 20px 0;">
+    <div class="flow" style="justify-content:center">
+      <div class="flow-box green">OPEN</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box blue" style="background:#2980b9">IN_PROGRESS</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box" style="background:#f39c12">RETAKE_AUTHORIZED</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box green">RESOLVED</div>
+    </div>
+    <div class="flow" style="justify-content:center; margin-top:10px">
+      <div class="flow-box green">OPEN</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box red">REJECTED</div>
+      <span style="margin:0 20px; color:#666">ou</span>
+      <div class="flow-box gray">CANCELED</div>
+    </div>
+  </div>
+  <div style="text-align:center; margin-bottom:15px;">
+    <span class="badge-status open">OPEN</span>
+    <span class="badge-status in-progress">IN_PROGRESS</span>
+    <span class="badge-status retake-auth">RETAKE_AUTHORIZED</span>
+    <span class="badge-status resolved">RESOLVED</span>
+    <span class="badge-status rejected">REJECTED</span>
+    <span class="badge-status canceled">CANCELED</span>
+  </div>
+
+  <h3>Règles métier — createClaim()</h3>
+  <div class="card green">
+    <strong>Règle 1 : Anti-doublon</strong><br>
+    Si un étudiant essaie de créer une réclamation avec le même sujet et qu'il a déjà une réclamation active (OPEN ou IN_PROGRESS) sur ce sujet → on lance une <code>DuplicateClaimException</code>.
+    <span class="file-path">ClaimService — backend/claim-service/src/main/java/tn/english/school/claimservice/service/ClaimService.java</span>
+    <pre><code>boolean isDuplicate = claimRepository.existsByStudentIdAndSubjectAndStatusIn(
+    claim.getStudent().getId(),
+    claim.getSubject(),
+    List.of(ClaimStatus.OPEN, ClaimStatus.IN_PROGRESS)
+);
+if (isDuplicate) {
+    throw new DuplicateClaimException("Duplicate Alert: ...");
+}</code></pre>
+    <em>Pourquoi ?</em> Pour éviter le spam et les réclamations en double.
+  </div>
+
+  <div class="card blue">
+    <strong>Règle 2 : Le statut initial est toujours OPEN</strong><br>
+    Peu importe ce que le frontend envoie, le service force <code>status = OPEN</code> à la création.
+    <span class="file-path">ClaimService — backend/claim-service/src/main/java/tn/english/school/claimservice/service/ClaimService.java</span>
+    <pre><code>claim.setStatus(ClaimStatus.OPEN); // Forcé par le service
+return claimRepository.save(claim);</code></pre>
+    <em>Pourquoi ?</em> On ne fait jamais confiance aux données du client pour les champs critiques.
+  </div>
+
+  <div class="card orange">
+    <strong>Règle 3 : Upsert de l'étudiant</strong><br>
+    L'étudiant est sauvegardé/mis-à-jour localement dans claim_db. Le claim-service maintient une copie locale des données utilisateur pour éviter les appels réseau constants vers auth-service.
+  </div>
+
+  <h3>Règles métier — updateClaim() et deleteClaim()</h3>
+  <div class="grid2">
+    <div class="card red">
+      <strong>updateClaim</strong> : Interdit si le statut n'est pas OPEN<br><br>
+      <code>if (existing.getStatus() != ClaimStatus.OPEN) {<br>
+      &nbsp;&nbsp;throw new IllegalStateException("Action denied...");<br>
+      }</code>
+    </div>
+    <div class="card red">
+      <strong>deleteClaim</strong> : Interdit si le statut n'est pas OPEN<br><br>
+      <code>if (existing.getStatus() != ClaimStatus.OPEN) {<br>
+      &nbsp;&nbsp;throw new IllegalStateException("Action denied...");<br>
+      }</code>
+    </div>
+  </div>
+  <div class="tip">La logique est similaire : on protège les réclamations en cours de traitement contre toute modification ou suppression accidentelle.</div>
+
+  <h3>Règles métier — authorizeRetake() <span class="tag">Logique avancée</span></h3>
+  <div class="card" style="background:#fffbf0; border-color:#f39c12;">
+    <strong>C'est la règle la plus complexe — explique-la bien !</strong>
+    <ol style="margin-top:10px">
+      <li><strong>Vérification du type</strong> : Seules les réclamations de type <code>PEDAGOGICAL</code> peuvent être autorisées en rattrapage. Une réclamation TECHNICAL ne peut pas générer un rattrapage.</li>
+      <li><strong>Vérification du statut</strong> : Si la réclamation est déjà RESOLVED ou CANCELED, on refuse (claim fermée).</li>
+      <li><strong>Idempotence</strong> : Si c'est déjà RETAKE_AUTHORIZED, on retourne simplement l'existant sans sauvegarder à nouveau.</li>
+      <li><strong>Changement de statut</strong> : On passe à <code>RETAKE_AUTHORIZED</code>.</li>
+    </ol>
+  </div>
+  <span class="file-path">ClaimService — backend/claim-service/src/main/java/tn/english/school/claimservice/service/ClaimService.java</span>
+  <pre><span class="keyword">public</span> Claim authorizeRetake(Long id) {
+    Claim existing = getClaimById(id);
+
+    <span class="comment">// Règle 1 : Uniquement les claims pédagogiques</span>
+    if (existing.getType() != ClaimType.PEDAGOGICAL) {
+        throw new IllegalStateException(<span class="string">"Only pedagogical claims can be authorized for a retake."</span>);
+    }
+    <span class="comment">// Règle 2 : Pas si la claim est fermée</span>
+    if (existing.getStatus() == ClaimStatus.RESOLVED || existing.getStatus() == ClaimStatus.CANCELED) {
+        throw new IllegalStateException(<span class="string">"Cannot authorize a retake for a closed or canceled claim."</span>);
+    }
+    <span class="comment">// Règle 3 : Idempotence — si déjà autorisé, ne pas re-sauvegarder</span>
+    if (existing.getStatus() == ClaimStatus.RETAKE_AUTHORIZED) {
+        return existing;
+    }
+
+    existing.setStatus(ClaimStatus.RETAKE_AUTHORIZED);
+    return claimRepository.save(existing);
+}</pre>
+</div>
+
+<!-- ═══════════════════════════════════════════════ SECTION 3 ═══ -->
+<div class="section">
+  <h2 class="section-title"><span class="num">3</span> Logique Métier — Retake Service</h2>
+
+  <h3>Entité RetakeRequest</h3>
+  <table>
+    <tr><th>Champ</th><th>Type</th><th>Description</th></tr>
+    <tr><td><code>id</code></td><td>Long</td><td>Auto-généré</td></tr>
+    <tr><td><code>courseName</code></td><td>String</td><td>Matière du rattrapage</td></tr>
+    <tr><td><code>reason</code></td><td>String</td><td>Raison de la demande</td></tr>
+    <tr><td><code>status</code></td><td>RequestStatus</td><td>PENDING / APPROVED / DENIED</td></tr>
+    <tr><td><code>studentId</code></td><td>Long</td><td>ID de l'étudiant (cross-service, pas de Join)</td></tr>
+    <tr><td><code>claimId</code></td><td>Long</td><td>Lien vers la Claim (cross-service)</td></tr>
+    <tr><td><code>attachmentPath</code></td><td>String</td><td>Chemin du fichier justificatif</td></tr>
+    <tr><td><code>documentStatus</code></td><td>DocumentStatus</td><td>PENDING_REVIEW / VALID / INVALID</td></tr>
+    <tr><td><code>documentRejectionReason</code></td><td>String</td><td>Raison de rejet du document</td></tr>
+  </table>
+
+  <h3>Règles métier — createRetakeFromClaim() <span class="tag">Logique avancée</span></h3>
+  <div class="card" style="background:#f0fff4; border-color:#b2f0c8;">
+    <strong>Conditions pour créer une demande de rattrapage :</strong>
+    <ol style="margin-top:10px">
+      <li>La Claim liée doit être de type <strong>PEDAGOGICAL</strong></li>
+      <li>Il ne doit pas y avoir déjà une RetakeRequest liée à cette Claim (<strong>relation 1-1</strong>)</li>
+      <li>La Claim doit être en statut <strong>RETAKE_AUTHORIZED</strong></li>
+    </ol>
+    <br>
+    <em>Après création :</em> Le Retake Service appelle <strong>automatiquement</strong> le Claim Service via OpenFeign pour enregistrer le lien (<code>claimClient.linkRetakeRequest(claimId, saved.getId())</code>)
+  </div>
+
+  <h3>Cycle complet d'un rattrapage (à expliquer)</h3>
+  <div class="flow" style="flex-direction:column; align-items:flex-start; gap:8px;">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <div class="flow-box" style="width:30px; text-align:center">1</div>
+      <span>Étudiant crée une réclamation <span class="badge-status open">OPEN</span> de type <code>PEDAGOGICAL</code></span>
+    </div>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <div class="flow-box" style="width:30px; text-align:center">2</div>
+      <span>Admin examine et autorise → <span class="badge-status retake-auth">RETAKE_AUTHORIZED</span></span>
+    </div>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <div class="flow-box" style="width:30px; text-align:center">3</div>
+      <span>Étudiant soumet une RetakeRequest avec document justificatif</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <div class="flow-box" style="width:30px; text-align:center">4</div>
+      <span>Admin valide/rejette le document (DocumentStatus)</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <div class="flow-box" style="width:30px; text-align:center">5</div>
+      <span>Admin approuve ou refuse la demande (RequestStatus → APPROVED/DENIED)</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <div class="flow-box" style="width:30px; text-align:center">6</div>
+      <span>Si document rejeté (INVALID) → étudiant peut resoumettre</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ SECTION 4 ═══ -->
+<div class="section">
+  <h2 class="section-title"><span class="num">4</span> Communication Inter-Services — OpenFeign</h2>
+
+  <div class="alert info">
+    OpenFeign permet à un microservice d'appeler un autre microservice comme si c'était une simple méthode Java, sans écrire du code HTTP manuel.
+  </div>
+
+  <h3>Pourquoi OpenFeign ici ?</h3>
+  <div class="card blue">
+    Quand un étudiant soumet une RetakeRequest, le <strong>Retake Service</strong> doit vérifier l'état de la Claim correspondante (statut, type) — données qui se trouvent dans le <strong>Claim Service</strong>.<br><br>
+    Au lieu de dupliquer les données ou de faire une requête HTTP manuelle, on utilise OpenFeign pour appeler l'API du Claim Service directement depuis le code Java du Retake Service.
+  </div>
+
+  <h3>Interface ClaimClient — dans le Retake Service</h3>
+  <span class="file-path">ClaimClient — backend/retake-service/src/main/java/tn/english/school/retakeservice/client/ClaimClient.java</span>
+  <pre><span class="annotation">@FeignClient</span>(name = <span class="string">"claim-service"</span>)  <span class="comment">// "claim-service" = nom enregistré sur Eureka</span>
+<span class="keyword">public interface</span> <span class="type">ClaimClient</span> {
+
+    <span class="annotation">@GetMapping</span>(<span class="string">"/api/claims/{id}"</span>)
+    <span class="type">ClaimDTO</span> getClaimById(<span class="annotation">@PathVariable</span>(<span class="string">"id"</span>) Long id);
+
+    <span class="annotation">@PutMapping</span>(<span class="string">"/api/claims/{claimId}/link-retake/{retakeRequestId}"</span>)
+    <span class="type">ClaimDTO</span> linkRetakeRequest(
+        <span class="annotation">@PathVariable</span>(<span class="string">"claimId"</span>) Long claimId,
+        <span class="annotation">@PathVariable</span>(<span class="string">"retakeRequestId"</span>) Long retakeRequestId
+    );
+}</pre>
+
+  <h3>Ce qui se passe quand on appelle <code>claimClient.getClaimById(1L)</code></h3>
+  <div class="flow" style="flex-direction:column; align-items:flex-start; gap:8px;">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <div class="flow-box" style="width:30px; text-align:center">1</div>
+      <span>Le code Java appelle <code>claimClient.getClaimById(1L)</code> — comme une méthode normale</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <div class="flow-box" style="width:30px; text-align:center">2</div>
+      <span>Feign interroge Eureka pour trouver l'adresse réelle de "claim-service"</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <div class="flow-box" style="width:30px; text-align:center">3</div>
+      <span>Feign construit automatiquement une requête HTTP GET vers <code>http://localhost:8081/api/claims/1</code></span>
+    </div>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <div class="flow-box" style="width:30px; text-align:center">4</div>
+      <span>Feign désérialise la réponse JSON en objet <code>ClaimDTO</code> et le retourne</span>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Comment fonctionne OpenFeign ? Qu'est-ce qui se passe en coulisses ?</div>
+    <div class="qa-a">1. Le Retake Service démarre et s'enregistre sur Eureka.<br>2. Quand il appelle <code>claimClient.getClaimById(1L)</code>, Feign interroge Eureka pour trouver l'adresse de "claim-service".<br>3. Feign construit automatiquement la requête HTTP GET vers <code>http://localhost:8081/api/claims/1</code>.<br>4. Il désérialise la réponse JSON en objet <code>ClaimDTO</code>.</div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Pourquoi utiliser ClaimDTO et pas l'entité Claim directement ?</div>
+    <div class="qa-a">Parce que le Retake Service ne dépend pas du code du Claim Service. Le DTO est une copie locale des champs nécessaires. Cela respecte le principe de découplage — chaque microservice est indépendant.</div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Où Feign est-il utilisé concrètement dans le Retake Service ?</div>
+    <div class="qa-a">Dans <code>RetakeRequestService</code>, à trois endroits : <br>1. <code>createRetakeFromClaim()</code> → vérifie le type et le statut de la Claim avant de créer, puis appelle <code>linkRetakeRequest()</code> pour enregistrer le lien dans le Claim Service.<br>2. <code>updateRequest()</code> → vérifie que la Claim est encore OPEN avant d'autoriser la modification.<br>3. <code>deleteRequest()</code> → vérifie que la Claim est encore OPEN avant de supprimer.</div>
+  </div>
+
+  <h3>ClaimDTO (dans retake-service)</h3>
+  <span class="file-path">ClaimDTO — backend/retake-service/src/main/java/tn/english/school/retakeservice/dto/ClaimDTO.java</span>
+  <pre><span class="keyword">public class</span> <span class="type">ClaimDTO</span> {
+    <span class="keyword">private</span> Long id;
+    <span class="keyword">private</span> String status;    <span class="comment">// "OPEN", "RETAKE_AUTHORIZED", etc.</span>
+    <span class="keyword">private</span> String type;      <span class="comment">// "PEDAGOGICAL", "TECHNICAL", etc.</span>
+    <span class="keyword">private</span> UserDTO student;  <span class="comment">// Pour récupérer studentId</span>
+}</pre>
+</div>
+
+<!-- ═══════════════════════════════════════════════ SECTION 5 ═══ -->
+<div class="section">
+  <h2 class="section-title"><span class="num">5</span> Sécurité JWT</h2>
+
+  <div class="alert warning">
+    Connais les grandes lignes, tu n'as pas codé l'auth-service — mais tu dois savoir comment ton module s'en sert.
+  </div>
+
+  <h3>Comment ça marche (à expliquer en 3 phrases)</h3>
+  <div class="card blue">
+    <ol>
+      <li><strong>Login</strong> : L'utilisateur envoie email/password → auth-service vérifie et génère un <strong>token JWT</strong> (chaîne encodée contenant : userId, email, role, expiration).</li>
+      <li><strong>Stockage</strong> : Angular stocke le token dans le <code>localStorage</code>.</li>
+      <li><strong>Appels sécurisés</strong> : À chaque requête, Angular ajoute automatiquement <code>Authorization: Bearer &lt;token&gt;</code> grâce au <strong>tokenInterceptor</strong>. Le backend valide le token.</li>
+    </ol>
+  </div>
+
+  <h3>Rôles dans le projet</h3>
+  <table>
+    <tr><th>Rôle</th><th>Peut faire</th></tr>
+    <tr><td><strong>STUDENT</strong></td><td>Créer une réclamation, voir ses propres réclamations, envoyer des messages, soumettre une RetakeRequest</td></tr>
+    <tr><td><strong>ADMIN</strong></td><td>Voir toutes les réclamations, changer les statuts, autoriser les rattrapages, approuver/refuser les RetakeRequests, voir la colonne ML Analysis</td></tr>
+  </table>
+
+  <h3>Intercepteurs Angular</h3>
+  <div class="grid2">
+    <div class="card">
+      <strong>tokenInterceptor</strong><br>
+      Ajoute automatiquement le header <code>Authorization: Bearer &lt;token&gt;</code> sur tous les appels vers l'API Gateway (:8080).
+    </div>
+    <div class="card">
+      <strong>errorInterceptor</strong><br>
+      Intercepte les erreurs 401 (non authentifié) et 403 (non autorisé) et redirige vers la page de login.
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Qu'est-ce qu'un JWT ? Que contient-il ?</div>
+    <div class="qa-a">JWT = JSON Web Token. C'est une chaîne encodée en base64 composée de 3 parties séparées par des points : <strong>Header</strong> (algorithme) + <strong>Payload</strong> (données : userId, email, role, expiration) + <strong>Signature</strong> (pour vérifier l'authenticité). Il est stateless — le serveur n'a pas besoin de stocker de session.</div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Comment sécurises-tu tes endpoints ?</div>
+    <div class="qa-a">Dans la configuration Spring Security, les endpoints publics (login, register) sont autorisés sans token. Les autres requièrent un JWT valide. Au niveau du frontend, le tokenInterceptor injecte le token sur chaque requête, et l'errorInterceptor redirige si le token est expiré ou invalide (401/403).</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ SECTION 6 ═══ -->
+<div class="section">
+  <h2 class="section-title"><span class="num">6</span> Tests Unitaires — JUnit + Mockito <span class="tag">TRES IMPORTANT</span></h2>
+
+  <div class="alert danger">
+    Le prof a insisté : les tests ne doivent pas se limiter au CRUD simple. Tu as des tests de logique métier complexe. Connais-les parfaitement !
+  </div>
+
+  <h3>Concept clé : Tests Unitaires vs Tests d'Intégration</h3>
+  <div class="grid2">
+    <div class="card green">
+      <strong>Tests Unitaires (ClaimServiceTest)</strong><br><br>
+      - Testent <strong>une seule classe</strong> isolément<br>
+      - Utilisent des <strong>mocks</strong> (faux objets) à la place des vraies dépendances<br>
+      - Rapides, pas de base de données<br>
+      - <code>@ExtendWith(MockitoExtension.class)</code>
+    </div>
+    <div class="card blue">
+      <strong>Tests d'Intégration (ClaimServiceIntegrationTest)</strong><br><br>
+      - Testent le système <strong>complet</strong> (service + repository + base de données)<br>
+      - Utilisent une <strong>vraie base H2 en mémoire</strong><br>
+      - Plus lents, mais vérifient la vraie intégration<br>
+      - <code>@SpringBootTest</code>
+    </div>
+  </div>
+
+  <h3>Annotations Mockito à connaître</h3>
+  <table>
+    <tr><th>Annotation</th><th>Rôle</th><th>Exemple</th></tr>
+    <tr><td><code>@Mock</code></td><td>Crée un faux objet</td><td><code>@Mock ClaimRepository claimRepository;</code></td></tr>
+    <tr><td><code>@InjectMocks</code></td><td>Injecte les mocks dans la classe testée</td><td><code>@InjectMocks ClaimService claimService;</code></td></tr>
+    <tr><td><code>when(...).thenReturn(...)</code></td><td>Définit ce que le mock doit retourner</td><td><code>when(repo.findById(1L)).thenReturn(Optional.of(claim));</code></td></tr>
+    <tr><td><code>verify(...)</code></td><td>Vérifie qu'une méthode a été appelée</td><td><code>verify(claimRepository).save(claim);</code></td></tr>
+    <tr><td><code>verify(..., never())</code></td><td>Vérifie qu'une méthode N'a PAS été appelée</td><td><code>verify(claimRepository, never()).save(any());</code></td></tr>
+    <tr><td><code>assertThatThrownBy</code></td><td>Vérifie qu'une exception est lancée</td><td><code>assertThatThrownBy(() -&gt; ...).isInstanceOf(...)</code></td></tr>
+  </table>
+
+  <h3>Test 1 — Création réussie (cas normal)</h3>
+  <span class="file-path">ClaimServiceTest — backend/claim-service/src/test/java/tn/english/school/claimservice/service/ClaimServiceTest.java</span>
+  <pre><span class="annotation">@Test</span>
+<span class="keyword">void</span> createClaim_success() {
+    <span class="comment">// ARRANGE : préparer les mocks</span>
+    when(userRepository.findById(1L)).thenReturn(Optional.of(student));
+    when(userRepository.save(any(User.class))).thenReturn(student);
+    when(claimRepository.existsByStudentIdAndSubjectAndStatusIn(
+        1L, <span class="string">"Exam contestation"</span>, List.of(OPEN, IN_PROGRESS)
+    )).thenReturn(<span class="keyword">false</span>);  <span class="comment">// Pas de doublon</span>
+    when(claimRepository.save(any(Claim.class))).thenReturn(claim);
+
+    <span class="comment">// ACT : appeler la méthode testée</span>
+    var result = claimService.createClaim(claim);
+
+    <span class="comment">// ASSERT : vérifier le résultat</span>
+    assertThat(result).isNotNull();
+    assertThat(result.getStatus()).isEqualTo(ClaimStatus.OPEN);  <span class="comment">// Statut forcé à OPEN</span>
+    verify(claimRepository).save(claim);  <span class="comment">// Vérifier que save a été appelé</span>
+}</pre>
+  <div class="tip">Remarque le pattern <strong>AAA : Arrange / Act / Assert</strong>. C'est la structure standard d'un bon test unitaire.</div>
+
+  <h3>Test 2 — Anti-doublon (logique métier complexe)</h3>
+  <span class="file-path">ClaimServiceTest — backend/claim-service/src/test/java/tn/english/school/claimservice/service/ClaimServiceTest.java</span>
+  <pre><span class="annotation">@Test</span>
+<span class="keyword">void</span> createClaim_duplicateActive_throwsDuplicateClaimException() {
+    when(userRepository.findById(1L)).thenReturn(Optional.of(student));
+    when(userRepository.save(any())).thenReturn(student);
+    when(claimRepository.existsByStudentIdAndSubjectAndStatusIn(
+        1L, <span class="string">"Exam contestation"</span>, List.of(OPEN, IN_PROGRESS)
+    )).thenReturn(<span class="keyword">true</span>);  <span class="comment">// Simuler un doublon existant</span>
+
+    <span class="comment">// Vérifier que la bonne exception est lancée</span>
+    assertThatThrownBy(() -> claimService.createClaim(claim))
+        .isInstanceOf(DuplicateClaimException.class)
+        .hasMessageContaining(<span class="string">"Duplicate Alert"</span>);
+
+    <span class="comment">// Vérifier que RIEN n'a été sauvegardé</span>
+    verify(claimRepository, never()).save(any());
+}</pre>
+
+  <h3>Test 3 — authorizeRetake avec type incorrect</h3>
+  <span class="file-path">ClaimServiceTest — backend/claim-service/src/test/java/tn/english/school/claimservice/service/ClaimServiceTest.java</span>
+  <pre><span class="annotation">@Test</span>
+<span class="keyword">void</span> authorizeRetake_notPedagogical_throwsIllegalStateException() {
+    claim.setType(ClaimType.TECHNICAL);  <span class="comment">// Type INCORRECT pour un rattrapage</span>
+    when(claimRepository.findById(1L)).thenReturn(Optional.of(claim));
+
+    assertThatThrownBy(() -> claimService.authorizeRetake(1L))
+        .isInstanceOf(IllegalStateException.class)
+        .hasMessageContaining(<span class="string">"Only pedagogical claims"</span>);
+
+    verify(claimRepository, never()).save(any());  <span class="comment">// Aucune modification</span>
+}</pre>
+
+  <h3>Test 4 — Idempotence de authorizeRetake</h3>
+  <span class="file-path">ClaimServiceTest — backend/claim-service/src/test/java/tn/english/school/claimservice/service/ClaimServiceTest.java</span>
+  <pre><span class="annotation">@Test</span>
+<span class="keyword">void</span> authorizeRetake_alreadyAuthorized_returnsExistingWithoutSave() {
+    claim.setStatus(ClaimStatus.RETAKE_AUTHORIZED);  <span class="comment">// Déjà autorisé</span>
+    when(claimRepository.findById(1L)).thenReturn(Optional.of(claim));
+
+    var result = claimService.authorizeRetake(1L);
+
+    assertThat(result.getStatus()).isEqualTo(ClaimStatus.RETAKE_AUTHORIZED);
+    verify(claimRepository, never()).save(any());  <span class="comment">// Pas de sauvegarde inutile !</span>
+}</pre>
+  <div class="tip"><strong>Idempotence</strong> = appeler la même opération plusieurs fois donne le même résultat. C'est une propriété importante pour les APIs robustes.</div>
+
+  <h3>Liste complète des tests unitaires</h3>
+  <table>
+    <tr><th>Méthode de test</th><th>Ce qui est testé</th><th>Type</th></tr>
+    <tr><td><code>createClaim_success</code></td><td>Création normale, statut forcé à OPEN</td><td><span style="color:green">Cas positif</span></td></tr>
+    <tr><td><code>createClaim_duplicateActive_throws...</code></td><td>Rejet d'un doublon actif</td><td><span style="color:red">Cas négatif</span></td></tr>
+    <tr><td><code>authorizeRetake_success</code></td><td>Autorisation normale d'un retake</td><td><span style="color:green">Cas positif</span></td></tr>
+    <tr><td><code>authorizeRetake_alreadyAuthorized_...</code></td><td>Idempotence — pas de double save</td><td><span style="color:orange">Cas limite</span></td></tr>
+    <tr><td><code>authorizeRetake_notPedagogical_throws...</code></td><td>Type incorrect → exception</td><td><span style="color:red">Cas négatif</span></td></tr>
+    <tr><td><code>authorizeRetake_alreadyResolved_throws...</code></td><td>Claim fermée → exception</td><td><span style="color:red">Cas négatif</span></td></tr>
+    <tr><td><code>authorizeRetake_alreadyCanceled_throws...</code></td><td>Claim annulée → exception</td><td><span style="color:red">Cas négatif</span></td></tr>
+    <tr><td><code>updateClaim_statusNotOpen_throws...</code></td><td>Modif interdite si IN_PROGRESS</td><td><span style="color:red">Cas négatif</span></td></tr>
+    <tr><td><code>deleteClaim_statusNotOpen_throws...</code></td><td>Suppression interdite si RESOLVED</td><td><span style="color:red">Cas négatif</span></td></tr>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════════════ SECTION 7 ═══ -->
+<div class="section">
+  <h2 class="section-title"><span class="num">7</span> Tests d'Intégration — SpringBootTest</h2>
+
+  <h3>Différence avec les tests unitaires</h3>
+  <div class="card blue">
+    Les tests d'intégration démarrent <strong>tout le contexte Spring</strong> et utilisent une vraie base de données H2 en mémoire (configurée dans <code>application-test.yml</code>). Ils vérifient que le service + le repository + la BDD fonctionnent ensemble correctement.
+  </div>
+
+  <h3>Annotations importantes</h3>
+  <span class="file-path">ClaimServiceIntegrationTest — backend/claim-service/src/test/java/tn/english/school/claimservice/integration/ClaimServiceIntegrationTest.java</span>
+  <pre><span class="annotation">@SpringBootTest</span>           <span class="comment">// Démarre tout le contexte Spring</span>
+<span class="annotation">@ActiveProfiles</span>(<span class="string">"test"</span>)    <span class="comment">// Utilise application-test.yml (H2 en mémoire)</span>
+<span class="annotation">@Transactional</span>            <span class="comment">// Annule toutes les modifications après chaque test (isolation)</span>
+class ClaimServiceIntegrationTest { ... }</pre>
+
+  <h3>Test 1 — Persistance réelle en base de données</h3>
+  <span class="file-path">ClaimServiceIntegrationTest — backend/claim-service/src/test/java/tn/english/school/claimservice/integration/ClaimServiceIntegrationTest.java</span>
+  <pre><span class="annotation">@Test</span>
+<span class="keyword">void</span> createClaim_persistedInDb_withGeneratedId() {
+    var claim = buildClaim(<span class="string">"Math exam grade"</span>, ClaimType.PEDAGOGICAL);
+
+    var saved = claimService.createClaim(claim);
+
+    <span class="comment">// Re-fetch depuis la vraie BDD (pas juste le cache Hibernate !)</span>
+    var fromDb = claimRepository.findById(saved.getId())
+        .orElseThrow(() -> new AssertionError(<span class="string">"Claim not found in DB"</span>));
+    assertThat(fromDb.getId()).isNotNull();
+    assertThat(fromDb.getStatus()).isEqualTo(ClaimStatus.OPEN);
+}</pre>
+  <div class="tip">Le <code>findById</code> après save est crucial — il prouve que les données sont vraiment persistées en base, pas juste dans le cache de la session Hibernate.</div>
+
+  <h3>Test 2 — Anti-doublon avec vraie BDD</h3>
+  <span class="file-path">ClaimServiceIntegrationTest — backend/claim-service/src/test/java/tn/english/school/claimservice/integration/ClaimServiceIntegrationTest.java</span>
+  <pre><span class="annotation">@Test</span>
+<span class="keyword">void</span> createClaim_duplicate_throwsDuplicateClaimException() {
+    var first = buildClaim(<span class="string">"Physics exam"</span>, ClaimType.PEDAGOGICAL);
+    claimService.createClaim(first);
+    claimRepository.flush();  <span class="comment">// IMPORTANT : force l'écriture en BDD avant le test doublon</span>
+
+    var duplicate = buildClaim(<span class="string">"Physics exam"</span>, ClaimType.PEDAGOGICAL);
+
+    assertThatThrownBy(() -> claimService.createClaim(duplicate))
+        .isInstanceOf(DuplicateClaimException.class)
+        .hasMessageContaining(<span class="string">"Duplicate Alert"</span>);
+}</pre>
+  <div class="tip">Le <code>claimRepository.flush()</code> est important ! Sans lui, le premier save reste dans le cache Hibernate et la vérification doublon ne lit pas encore la vraie table.</div>
+
+  <h3>Test 3 — Cycle complet (Create → Authorize → Link)</h3>
+  <span class="file-path">ClaimServiceIntegrationTest — backend/claim-service/src/test/java/tn/english/school/claimservice/integration/ClaimServiceIntegrationTest.java</span>
+  <pre><span class="annotation">@Test</span>
+<span class="keyword">void</span> fullCycle_create_authorize_link() {
+    <span class="comment">// Étape 1 : Créer</span>
+    var claim = buildClaim(<span class="string">"Biology retake"</span>, ClaimType.PEDAGOGICAL);
+    var created = claimService.createClaim(claim);
+    assertThat(created.getStatus()).isEqualTo(ClaimStatus.OPEN);
+
+    <span class="comment">// Étape 2 : Autoriser le rattrapage</span>
+    var authorized = claimService.authorizeRetake(created.getId());
+    assertThat(authorized.getStatus()).isEqualTo(ClaimStatus.RETAKE_AUTHORIZED);
+
+    <span class="comment">// Étape 3 : Lier une RetakeRequest</span>
+    var linked = claimService.linkRetakeRequest(authorized.getId(), 42L);
+    assertThat(linked.getRetakeRequestId()).isEqualTo(42L);
+    assertThat(linked.getStatus()).isEqualTo(ClaimStatus.RETAKE_AUTHORIZED);
+}</pre>
+  <div class="alert success">Ce test simule le cas d'usage réel complet. C'est exactement ce que l'utilisateur ferait dans l'application. C'est la vraie valeur d'un test d'intégration.</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ SECTION 8 ═══ -->
+<div class="section">
+  <h2 class="section-title"><span class="num">8</span> Frontend Angular — Composants &amp; Services</h2>
+
+  <div class="alert info">
+    Le frontend est développé en Angular avec Angular Material. Tous les appels HTTP passent par le service <code>ClaimService</code> (Angular). L'architecture est basée sur des composants standalone avec injection de dépendances via <code>inject()</code>.
+  </div>
+
+  <h3>Structure des fichiers frontend</h3>
+  <table>
+    <tr><th>Fichier</th><th>Chemin</th><th>Rôle</th></tr>
+    <tr><td><strong>ClaimsListComponent</strong></td><td><code>frontend/src/app/routes/claims/claims-list/claims-list.component.ts</code></td><td>Liste toutes les réclamations, filtres, suppression</td></tr>
+    <tr><td><strong>NewClaimDialogComponent</strong></td><td><code>frontend/src/app/routes/claims/claims-list/new-claim-dialog/new-claim-dialog.component.ts</code></td><td>Dialog de création d'une réclamation (STUDENT)</td></tr>
+    <tr><td><strong>ClaimDetailComponent</strong></td><td><code>frontend/src/app/routes/claims/claim-detail/claim-detail.component.ts</code></td><td>Détail claim + messagerie + retake + document</td></tr>
+    <tr><td><strong>RetakeRequestsComponent</strong></td><td><code>frontend/src/app/routes/claims/retake-requests/retake-requests.component.ts</code></td><td>Liste des retakes + ML Analysis (ADMIN)</td></tr>
+    <tr><td><strong>ClaimService</strong> (Angular)</td><td><code>frontend/src/app/routes/claims/services/claim.service.ts</code></td><td>Tous les appels HTTP claim + retake</td></tr>
+    <tr><td><strong>MlService</strong></td><td><code>frontend/src/app/routes/claims/services/ml.service.ts</code></td><td>Appels vers ML service (profil + analyse)</td></tr>
+    <tr><td><strong>tokenInterceptor</strong></td><td><code>frontend/src/app/core/interceptors/token-interceptor.ts</code></td><td>Injecte JWT sur toutes les requêtes</td></tr>
+  </table>
+
+  <h3>ClaimService Angular — le pont entre UI et API</h3>
+  <div class="alert info">C'est le service central du frontend. Il regroupe TOUS les appels HTTP vers le Claim Service ET le Retake Service. Les composants injectent ce service et ne font jamais d'appels HTTP directement.</div>
+
+  <span class="file-path">ClaimService — frontend/src/app/routes/claims/services/claim.service.ts</span>
+  <pre><span class="annotation">@Injectable</span>({ providedIn: <span class="string">'root'</span> })
+<span class="keyword">export class</span> <span class="type">ClaimService</span> {
+  <span class="keyword">private readonly</span> http = inject(HttpClient);
+  <span class="keyword">private readonly</span> claimApi = environment.claimApiUrl;   <span class="comment">// http://localhost:8080/api</span>
+  <span class="keyword">private readonly</span> retakeApi = environment.retakeApiUrl;  <span class="comment">// http://localhost:8080/api</span>
+
+  <span class="comment">// Retourne toutes les claims (ADMIN) ou celles d'un étudiant (filtre par studentId)</span>
+  getAllClaims(studentId?: number) {
+    <span class="keyword">const</span> url = studentId
+      ? <span class="string">`${this.claimApi}/claims?studentId=${studentId}`</span>
+      : <span class="string">`${this.claimApi}/claims`</span>;
+    <span class="keyword">return</span> this.http.get&lt;Claim[]&gt;(url);
+  }
+
+  authorizeRetake(id: number) {
+    <span class="keyword">return</span> this.http.patch&lt;Claim&gt;(<span class="string">`${this.claimApi}/claims/${id}/authorize-retake`</span>, {});
+  }
+
+  createRetakeFromClaim(claimId: number, courseName: string, reason: string, file: File) {
+    <span class="keyword">const</span> formData = <span class="keyword">new</span> FormData();
+    formData.append(<span class="string">'retakeRequest'</span>, <span class="keyword">new</span> Blob([JSON.stringify({ courseName, reason })], { type: <span class="string">'application/json'</span> }));
+    formData.append(<span class="string">'attachment'</span>, file);
+    <span class="keyword">return</span> this.http.post(<span class="string">`${this.retakeApi}/retake-requests/from-claim/${claimId}`</span>, formData);
+  }
+}</pre>
+
+  <h3>ClaimsListComponent — logique rôle ADMIN vs STUDENT</h3>
+  <div class="card blue">
+    <strong>Comportement différent selon le rôle :</strong>
+    <ul>
+      <li><strong>ADMIN</strong> → appelle <code>getAllClaims()</code> sans filtre → voit toutes les réclamations</li>
+      <li><strong>STUDENT</strong> → appelle <code>getAllClaims(studentId)</code> → voit uniquement les siennes</li>
+    </ul>
+  </div>
+  <span class="file-path">ClaimsListComponent — frontend/src/app/routes/claims/claims-list/claims-list.component.ts</span>
+  <pre><span class="comment">// ngOnInit() — détection du rôle depuis AuthService</span>
+this.authService.user().subscribe(user =&gt; {
+  this.isAdmin = user.roles?.includes(<span class="string">'ADMIN'</span>) ?? false;
+  this.currentUserId = user.id ? Number(user.id) : undefined;
+  this.loadClaims();
+});
+
+loadClaims() {
+  <span class="keyword">const</span> studentId = this.isAdmin ? undefined : this.currentUserId;
+  <span class="comment">// Si ADMIN → pas de filtre. Si STUDENT → filtre par son ID</span>
+  this.claimService.getAllClaims(studentId).subscribe({ ... });
+}</pre>
+
+  <h3>ClaimDetailComponent — fonctionnalités avancées</h3>
+  <div class="card" style="background:#f0fff4; border-color:#b2f0c8;">
+    <strong>Ce composant gère 4 fonctionnalités en une seule page :</strong>
+    <ol style="margin-top:8px">
+      <li><strong>Affichage du détail</strong> de la réclamation + statut + type</li>
+      <li><strong>Messagerie temps réel</strong> : student et admin peuvent s'envoyer des messages</li>
+      <li><strong>Autorisation retake</strong> (ADMIN) + <strong>soumission retake</strong> (STUDENT) avec fichier joint</li>
+      <li><strong>Gestion du document</strong> : valider, rejeter (avec raison), resoumettre</li>
+    </ol>
+  </div>
+  <span class="file-path">ClaimDetailComponent — frontend/src/app/routes/claims/claim-detail/claim-detail.component.ts</span>
+  <pre><span class="comment">// Génération de réponse IA — bouton "Draft AI Response"</span>
+draftResponse() {
+  this.claimService.draftResponse(this.claim.id).subscribe({
+    next: res =&gt; {
+      this.newMessage = res.draft;  <span class="comment">// Pré-remplit le champ message</span>
+    },
+    error: () =&gt; {
+      this.snackBar.open(<span class="string">'AI draft unavailable, please write manually.'</span>, <span class="string">'Close'</span>);
+    }
+  });
+}
+
+<span class="comment">// Soumission d'une RetakeRequest avec fichier (STUDENT)</span>
+submitRetake() {
+  this.claimService
+    .createRetakeFromClaim(this.claim.id, this.courseName, this.reason, this.selectedFile)
+    .subscribe({ ... });
+}</pre>
+
+  <h3>RetakeRequestsComponent — Colonne ML Analysis</h3>
+  <span class="file-path">RetakeRequestsComponent — frontend/src/app/routes/claims/retake-requests/retake-requests.component.ts</span>
+  <pre><span class="comment">// Au chargement, si ADMIN → analyse ML pour chaque étudiant unique</span>
+loadMlAnalyses(requests: RetakeRequest[]) {
+  <span class="keyword">const</span> studentIds = [...<span class="keyword">new</span> Set(requests.map(r =&gt; r.studentId))];
+
+  <span class="keyword">for</span> (<span class="keyword">const</span> studentId of studentIds) {
+    this.mlService.analyzeStudent(studentId).subscribe({
+      next: result =&gt; {
+        this.mlAnalyses.set(studentId, result);  <span class="comment">// Map studentId → analyse</span>
+        this.cdr.markForCheck();
+      }
+    });
+  }
+}</pre>
+
+  <h3>MlService — chaîne d'appels RxJS</h3>
+  <span class="file-path">MlService — frontend/src/app/routes/claims/services/ml.service.ts</span>
+  <pre><span class="comment">// analyzeStudent() enchaîne 2 appels HTTP avec switchMap</span>
+analyzeStudent(userId: number): Observable&lt;MlAnalysis&gt; {
+  <span class="keyword">return</span> this.getAcademicProfile(userId).pipe(   <span class="comment">// 1. GET profil académique</span>
+    switchMap(profile =&gt;
+      this.http.post&lt;MlAnalysis&gt;(<span class="string">`${this.mlApi}/analyze`</span>, {  <span class="comment">// 2. POST vers ML service</span>
+        G1: profile.g1, G2: profile.g2,
+        age: profile.age, failures: profile.failures,
+        absences: profile.absences, studytime: profile.studytime,
+      })
+    )
+  );
+}</pre>
+  <div class="tip"><strong>switchMap</strong> : quand le premier Observable émet une valeur (profil), il annule toute requête précédente et lance un nouvel Observable (la prédiction ML). C'est l'opérateur RxJS pour enchaîner des appels HTTP dépendants.</div>
+
+  <h3>tokenInterceptor — Sécurité JWT automatique</h3>
+  <span class="file-path">tokenInterceptor — frontend/src/app/core/interceptors/token-interceptor.ts</span>
+  <pre><span class="keyword">export function</span> tokenInterceptor(req: HttpRequest&lt;unknown&gt;, next: HttpHandlerFn) {
+  <span class="keyword">const</span> tokenService = inject(TokenService);
+
+  <span class="comment">// Si le token est valide, on l'ajoute sur toutes les requêtes</span>
+  if (tokenService.valid() && shouldAppendToken(req.url)) {
+    <span class="keyword">return</span> next(
+      req.clone({
+        headers: req.headers.append(<span class="string">'Authorization'</span>, tokenService.getBearerToken()),
+      })
+    ).pipe(
+      catchError((error: HttpErrorResponse) =&gt; {
+        if (error.status === 401) tokenService.clear();  <span class="comment">// Token expiré</span>
+        <span class="keyword">return</span> throwError(() =&gt; error);
+      })
+    );
+  }
+  <span class="keyword">return</span> next(req);
+}</pre>
+
+  <div class="qa-block">
+    <div class="qa-q">Comment le frontend sait si l'utilisateur est ADMIN ou STUDENT ?</div>
+    <div class="qa-a">Via le service <code>AuthService</code> (<code>frontend/src/app/core/authentication/auth.service.ts</code>). En appelant <code>this.authService.user()</code>, on obtient un Observable avec les infos du token JWT décodé, dont <code>roles</code>. On vérifie <code>user.roles?.includes('ADMIN')</code> pour adapter l'affichage.</div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Qu'est-ce que <code>MatTableDataSource</code> et pourquoi l'utiliser ?</div>
+    <div class="qa-a"><code>MatTableDataSource</code> (Angular Material) est une source de données pour les tableaux qui gère automatiquement le tri, la pagination et le filtre. En définissant un <code>filterPredicate</code> personnalisé dans <code>ClaimsListComponent</code>, on peut filtrer par texte, statut ET type simultanément sans recharger les données depuis le serveur.</div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Pourquoi utiliser <code>ChangeDetectorRef.markForCheck()</code> partout ?</div>
+    <div class="qa-a">Parce que les composants utilisent la stratégie <code>OnPush</code> (changement de détection optimisé). Angular ne vérifie pas automatiquement les changements à chaque cycle — il faut lui dire explicitement que des données ont changé avec <code>markForCheck()</code>, notamment après un appel HTTP asynchrone.</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ SECTION 9 ═══ -->
+<div class="section">
+  <h2 class="section-title"><span class="num">9</span> Innovations — IA + ML</h2>
+
+  <h3>Innovation 1 : Réponse IA automatique (HuggingFace)</h3>
+  <div class="card orange">
+    <strong>Endpoint :</strong> <code>GET /api/claims/{id}/draft-response</code><br><br>
+    Quand un admin clique sur "Générer réponse", le service envoie les détails de la réclamation à l'API HuggingFace (modèle de langage). Il reçoit en retour un brouillon de réponse rédigé automatiquement.<br><br>
+    <em>Bénéfice :</em> Gain de temps pour l'administration, cohérence dans les réponses.
+  </div>
+
+  <h3>Innovation 2 : Analyse ML des étudiants (Python FastAPI)</h3>
+  <div class="card" style="background:#f5f0ff; border-color:#b2a0f0;">
+    <strong>Objectif :</strong> Prédire si un étudiant va réussir son rattrapage<br><br>
+    <strong>Algorithmes :</strong>
+    <ul>
+      <li><strong>PCA</strong> (Analyse en Composantes Principales) : Réduction de dimensionnalité, garde 95% de la variance</li>
+      <li><strong>K-Means (k=3)</strong> : Clustering des étudiants en 3 groupes</li>
+      <li><strong>Random Forest (100 arbres)</strong> : Classification binaire réussite/échec</li>
+    </ul>
+    <br>
+    <strong>Clusters identifiés :</strong>
+    <ul>
+      <li>At-Risk (rouge) : probabilité de réussite &lt; 40%</li>
+      <li>Average (orange) : 40% ≤ probabilité &lt; 60%</li>
+      <li>High-Performing (vert) : probabilité ≥ 60%</li>
+    </ul>
+    <br>
+    <strong>Intégration :</strong> La colonne "ML Analysis" dans le tableau des RetakeRequests (visible uniquement pour les ADMIN) affiche une barre de progression colorée et le cluster de l'étudiant.
+  </div>
+
+  <h3>Communication ML via Gateway</h3>
+  <div class="flow">
+    <div class="flow-box red">Angular</div>
+    <div class="flow-arrow">→ GET /api/ml/analyze</div>
+    <div class="flow-box">Gateway :8080</div>
+    <div class="flow-arrow">→ strip /api/ml →</div>
+    <div class="flow-box green">ML Service :5000</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box">Prédiction JSON</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ SECTION 10 ═══ -->
+<div class="section">
+  <h2 class="section-title"><span class="num">10</span> Questions-Réponses pour la Soutenance</h2>
+
+  <div class="alert info">Prépare-toi à expliquer chaque réponse avec tes propres mots, sans lire ce guide.</div>
+
+  <h3>Architecture</h3>
+
+  <div class="qa-block">
+    <div class="qa-q">Pourquoi avoir séparé Claims et Retakes en deux services différents ?</div>
+    <div class="qa-a">Parce qu'ils ont des responsabilités différentes. Le Claim Service gère le processus de réclamation (communication student-admin). Le Retake Service gère la logique administrative du rattrapage (document, approbation). En les séparant, chaque service peut évoluer indépendamment, et si le Retake Service tombe, les réclamations continuent de fonctionner.</div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Comment les deux services communiquent-ils ?</div>
+    <div class="qa-a">Via OpenFeign. Le Retake Service déclare une interface <code>ClaimClient</code> annotée <code>@FeignClient(name="claim-service")</code>. Feign interroge Eureka pour trouver l'adresse du Claim Service, puis construit automatiquement les requêtes HTTP. Quand une RetakeRequest est créée, Feign appelle <code>linkRetakeRequest()</code> pour que le Claim Service enregistre le lien de son côté.</div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Qu'est-ce que le Service Discovery et pourquoi c'est utile ?</div>
+    <div class="qa-a">Eureka Server est le Service Discovery. Chaque microservice s'y enregistre au démarrage. Au lieu d'hardcoder "http://localhost:8081" dans le code, on utilise juste le nom logique "claim-service" et Eureka résout l'adresse réelle dynamiquement. C'est utile si un service change de port ou d'adresse.</div>
+  </div>
+
+  <h3>Tests</h3>
+
+  <div class="qa-block">
+    <div class="qa-q">Quelle est la différence entre @Mock et @Autowired dans les tests ?</div>
+    <div class="qa-a"><code>@Mock</code> crée un faux objet simulé (mock) qui ne fait rien par défaut — on lui dit ce qu'il doit retourner avec <code>when(...).thenReturn(...)</code>. C'est pour les tests unitaires où on veut isoler la classe testée. <code>@Autowired</code> injecte un vrai objet du contexte Spring — c'est pour les tests d'intégration avec <code>@SpringBootTest</code>.</div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Pourquoi utiliser @Transactional dans les tests d'intégration ?</div>
+    <div class="qa-a">Pour isoler les tests. Avec <code>@Transactional</code>, toutes les modifications de base de données effectuées dans un test sont automatiquement annulées (rollback) à la fin du test. Ainsi, chaque test repart d'un état propre et les tests n'interfèrent pas entre eux.</div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Pourquoi faire <code>claimRepository.flush()</code> dans le test anti-doublon ?</div>
+    <div class="qa-a">Hibernate est lazy — il met les opérations en file d'attente et ne les exécute pas forcément immédiatement. Sans flush(), le premier INSERT est dans le cache de la session mais pas encore dans la vraie table SQL. Le flush() force l'écriture physique en base de données, pour que la requête <code>existsByStudentIdAndSubjectAndStatusIn</code> qui vérifie le doublon lise les données réelles.</div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Pourquoi <code>verify(claimRepository, never()).save(any())</code> est important ?</div>
+    <div class="qa-a">Ce n'est pas suffisant de vérifier qu'une exception est lancée. Il faut aussi vérifier que le code s'est bien arrêté avant de sauvegarder. Sans ce verify, on ne sait pas si les données corrompues ont quand même été enregistrées en base avant que l'exception soit lancée.</div>
+  </div>
+
+  <h3>Logique métier</h3>
+
+  <div class="qa-block">
+    <div class="qa-q">Pourquoi retakeRequestId est un Long et pas une relation JPA @ManyToOne ?</div>
+    <div class="qa-a">Parce que RetakeRequest est dans une base de données séparée (retake_db). JPA ne peut pas faire de JOIN entre deux bases de données différentes. On stocke juste l'ID numérique comme référence cross-service. Si on veut les données complètes, on fait un appel REST/Feign vers le Retake Service.</div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Qu'est-ce que l'idempotence ? Donne un exemple dans ton code.</div>
+    <div class="qa-a">L'idempotence signifie qu'appeler la même opération plusieurs fois produit le même résultat sans effets secondaires supplémentaires. Dans <code>authorizeRetake()</code>, si le statut est déjà <code>RETAKE_AUTHORIZED</code>, on retourne simplement l'objet existant sans appeler <code>claimRepository.save()</code>. Ainsi, autoriser un rattrapage deux fois est équivalent à l'autoriser une fois.</div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Pourquoi l'étudiant est-il dupliqué dans claim_db ?</div>
+    <div class="qa-a">C'est un pattern appelé "local copy" ou "data denormalization". Le Claim Service maintient une copie locale des données utilisateur pour éviter un appel réseau vers auth-service à chaque lecture. Le service fait un "upsert" (insert ou update) au moment de la création d'une réclamation pour maintenir les données synchronisées.</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ SECTION 11 ═══ -->
+<div class="section">
+  <h2 class="section-title"><span class="num">11</span> Checklist Finale avant Validation</h2>
+
+  <div class="alert danger">Vérifie tout ça AVANT de te présenter !</div>
+
+  <h3>Fonctionnalités à démontrer</h3>
+  <div class="card green">
+    <ul style="list-style:none; padding:0;">
+      <li>☐ <strong>Créer une réclamation</strong> en tant qu'étudiant (STUDENT)</li>
+      <li>☐ <strong>Tenter de créer un doublon</strong> → message d'erreur affiché</li>
+      <li>☐ <strong>Autoriser un rattrapage</strong> en tant qu'admin (ADMIN) sur une claim PEDAGOGICAL</li>
+      <li>☐ <strong>Tenter d'autoriser un TECHNICAL</strong> → erreur logique métier</li>
+      <li>☐ <strong>Créer une RetakeRequest</strong> depuis une claim RETAKE_AUTHORIZED avec fichier</li>
+      <li>☐ <strong>Valider/Rejeter le document</strong> en tant qu'admin</li>
+      <li>☐ <strong>Resoumettre un document</strong> après rejet</li>
+      <li>☐ <strong>Approuver / Refuser</strong> la RetakeRequest</li>
+      <li>☐ <strong>Messagerie</strong> dans le détail d'une réclamation</li>
+      <li>☐ <strong>Générer une réponse IA</strong> (draft-response)</li>
+      <li>☐ <strong>Colonne ML Analysis</strong> dans le tableau retakes (ADMIN)</li>
+    </ul>
+  </div>
+
+  <h3>Tests à lancer</h3>
+  <pre><span class="comment"># Lancer tous les tests du claim-service</span>
+cd backend/claim-service
+mvn test
+
+<span class="comment"># Si les tests passent, tu verras :</span>
+<span class="string">Tests run: 12, Failures: 0, Errors: 0, Skipped: 0</span></pre>
+
+  <h3>Architecture à expliquer sur le tableau</h3>
+  <div class="card yellow">
+    Sois prêt à dessiner ce schéma rapidement :
+    <br><br>
+    <strong>Angular :4200</strong> → <strong>Gateway :8080</strong> → {<strong>claim-service :8081</strong>, <strong>retake-service :8082</strong>, <strong>auth-service :8083</strong>, <strong>ml-service :5000</strong>}<br>
+    + <strong>Eureka :8761</strong> (registre de tous les services)<br>
+    + <strong>OpenFeign</strong> : retake-service ↔ claim-service (communication directe entre services)
+  </div>
+
+  <h3>Phrases clés à mémoriser</h3>
+  <div class="grid2">
+    <div class="card">
+      <strong>"J'ai implémenté l'anti-doublon..."</strong><br>
+      → Vérification en BDD avant save, exception personnalisée <code>DuplicateClaimException</code>
+    </div>
+    <div class="card">
+      <strong>"La logique de rattrapage est conditionnelle..."</strong><br>
+      → 3 conditions : type PEDAGOGICAL, statut non fermé, relation 1-1
+    </div>
+    <div class="card">
+      <strong>"OpenFeign gère la communication..."</strong><br>
+      → Déclaration interface, Eureka résout l'adresse, appel HTTP transparent
+    </div>
+    <div class="card">
+      <strong>"J'ai testé les cas d'erreur..."</strong><br>
+      → 9 tests unitaires + 3 tests d'intégration couvrant la logique métier
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="alert success" style="font-size:1em;">
+    <div>
+      <strong>Tu as tout ce qu'il faut !</strong><br>
+      Ton module couvre : logique métier avancée, architecture microservices (Gateway + Eureka + OpenFeign), tests unitaires + intégration, sécurité JWT, et deux innovations (IA + ML). Ce n'est pas un CRUD simple — c'est une vraie architecture distribuée avec une logique métier bien testée.<br><br>
+      <strong>Bonne chance pour la soutenance !</strong>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════ SECTION 12 ═══ -->
+<div class="section">
+  <h2 class="section-title"><span class="num">12</span> Fonctions Avancées — Explication Ligne par Ligne</h2>
+
+  <div class="alert info">
+    Cette section explique <strong>chaque ligne</strong> de code des fonctions avancées du projet : appel API GROQ, pipeline ML Python, stockage de fichier, communication Feign, et seed académique.
+  </div>
+
+  <!-- ─────────────────────────────────── GROQ API -->
+  <h3>1. Appel API GROQ — Génération de réponse IA (HuggingFaceService)</h3>
+  <div class="card orange">
+    <strong>Chemin :</strong> <code>backend/claim-service/src/main/java/tn/english/school/claimservice/service/HuggingFaceService.java</code><br>
+    <strong>Rôle :</strong> Envoie les détails d'une réclamation au modèle LLM <em>llama-3.3-70b-versatile</em> via l'API GROQ et retourne un brouillon de réponse rédigé automatiquement pour l'admin.
+  </div>
+
+  <span class="file-path">backend/claim-service/src/main/java/tn/english/school/claimservice/service/HuggingFaceService.java</span>
+  <pre><span class="annotation">@Service</span>
+<span class="keyword">public class</span> <span class="type">HuggingFaceService</span> {
+
+    <span class="comment">// Ligne 1 : @Value injecte la valeur de "groq.api.token" depuis application.properties</span>
+    <span class="comment">// GROQ est une API compatible OpenAI qui donne accès à des LLMs ultra-rapides (ex: LLaMA)</span>
+    <span class="annotation">@Value</span>(<span class="string">"${groq.api.token:}"</span>)           <span class="comment">// ":}" = chaîne vide si variable absente (pas de crash)</span>
+    <span class="keyword">private</span> String apiToken;
+
+    <span class="comment">// URL du endpoint GROQ — format identique à l'API OpenAI (compatible)</span>
+    <span class="keyword">private static final</span> String GROQ_API_URL = <span class="string">"https://api.groq.com/openai/v1/chat/completions"</span>;
+
+    <span class="comment">// Modèle LLM utilisé : LLaMA 3.3 70B — très performant pour la rédaction</span>
+    <span class="keyword">private static final</span> String MODEL = <span class="string">"llama-3.3-70b-versatile"</span>;
+
+    <span class="comment">// RestTemplate = client HTTP synchrone de Spring pour faire des appels REST</span>
+    <span class="keyword">private final</span> RestTemplate restTemplate = <span class="keyword">new</span> RestTemplate();
+
+    <span class="keyword">public</span> String <span class="type">draftAdminResponse</span>(Claim claim) {
+        <span class="keyword">try</span> {
+            <span class="comment">// Ligne A : Création des headers HTTP</span>
+            HttpHeaders headers = <span class="keyword">new</span> HttpHeaders();
+
+            <span class="comment">// Ligne B : Authorization Bearer = standard pour les API modernes</span>
+            <span class="comment">// Le token GROQ s'obtient sur console.groq.com</span>
+            headers.set(<span class="string">"Authorization"</span>, <span class="string">"Bearer "</span> + apiToken);
+            headers.set(<span class="string">"Content-Type"</span>, <span class="string">"application/json"</span>);
+            headers.set(<span class="string">"Accept"</span>, <span class="string">"application/json"</span>);
+
+            <span class="comment">// Ligne C : Corps de la requête — format OpenAI Chat Completions</span>
+            Map&lt;String, Object&gt; body = Map.of(
+                <span class="string">"model"</span>, MODEL,                    <span class="comment">// Quel LLM utiliser</span>
+                <span class="string">"messages"</span>, List.of(
+                    Map.of(<span class="string">"role"</span>, <span class="string">"system"</span>, <span class="string">"content"</span>,
+                        <span class="string">"You are a professional academic administrator. "</span>
+                        + <span class="string">"Write concise, empathetic responses to student claims. "</span>
+                        + <span class="string">"Keep responses to 2-3 sentences. No greetings or sign-offs."</span>),
+                    <span class="comment">// Message "system" = instructions globales données au modèle</span>
+
+                    Map.of(<span class="string">"role"</span>, <span class="string">"user"</span>, <span class="string">"content"</span>,
+                        String.format(
+                            <span class="string">"Write a professional administrator response to this student claim:\n\n"</span>
+                            + <span class="string">"Subject: %s\nType: %s\nDescription: %s"</span>,
+                            claim.getSubject(), claim.getType(), claim.getDescription()
+                        ))
+                    <span class="comment">// Message "user" = la vraie demande avec les données de la réclamation</span>
+                ),
+                <span class="string">"max_tokens"</span>, 150,          <span class="comment">// Limite la longueur de la réponse</span>
+                <span class="string">"temperature"</span>, 0.7          <span class="comment">// 0=déterministe, 1=créatif — 0.7 = équilibre</span>
+            );
+
+            <span class="comment">// Ligne D : HttpEntity = enveloppe body + headers dans un objet Spring</span>
+            HttpEntity&lt;Map&lt;String, Object&gt;&gt; request = <span class="keyword">new</span> HttpEntity&lt;&gt;(body, headers);
+
+            <span class="comment">// Ligne E : Envoi POST vers GROQ API — retourne Map contenant la réponse JSON</span>
+            ResponseEntity&lt;Map&gt; response = restTemplate.postForEntity(GROQ_API_URL, request, Map.class);
+
+            <span class="comment">// Ligne F : Extraction du texte depuis la structure de réponse OpenAI</span>
+            <span class="comment">// Structure JSON : { choices: [ { message: { content: "texte..." } } ] }</span>
+            List&lt;Map&lt;String, Object&gt;&gt; choices = (List&lt;Map&lt;String, Object&gt;&gt;) response.getBody().get(<span class="string">"choices"</span>);
+            Map&lt;String, Object&gt; message = (Map&lt;String, Object&gt;) choices.get(0).get(<span class="string">"message"</span>);
+
+            <span class="comment">// Ligne G : On récupère le "content" et on enlève les espaces avec trim()</span>
+            <span class="keyword">return</span> ((String) message.get(<span class="string">"content"</span>)).trim();
+
+        } <span class="keyword">catch</span> (Exception e) {
+            <span class="comment">// Ligne H : Si l'API est indisponible ou token invalide → exception gérée par GlobalExceptionHandler</span>
+            <span class="keyword">throw new</span> IllegalStateException(<span class="string">"AI draft failed: "</span> + e.getMessage());
+        }
+    }
+}</pre>
+
+  <div class="card blue">
+    <strong>Pourquoi GROQ et pas OpenAI ?</strong>
+    GROQ est beaucoup plus rapide (inference hardware dédié) et dispose d'un tier gratuit généreux. L'API est 100% compatible avec le format OpenAI — donc le code est identique, seule l'URL change.
+  </div>
+
+  <div class="card green">
+    <strong>Flux complet "Draft Response" :</strong><br>
+    <div class="flow" style="flex-wrap:wrap; margin:8px 0;">
+      <div class="flow-box red">Admin clique "Générer"</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box">Angular GET /api/claims/{id}/draft-response</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box green">ClaimController</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box">HuggingFaceService.draftAdminResponse(claim)</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box red">POST https://api.groq.com/...</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box">Texte LLaMA retourné</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ─────────────────────────────────── ML TRAIN -->
+  <h3>2. Pipeline ML — Entraînement des Modèles (train.py)</h3>
+  <div class="card" style="background:#f5f0ff; border-color:#b2a0f0;">
+    <strong>Chemin :</strong> <code>backend/ml-service/app/train.py</code><br>
+    <strong>Rôle :</strong> Charge le dataset, préprocesse les données, entraîne et sauvegarde 4 modèles ML. S'exécute automatiquement au démarrage si les modèles n'existent pas encore.
+  </div>
+
+  <h4>Fonction generate_synthetic_data() — Données de secours</h4>
+  <span class="file-path">backend/ml-service/app/train.py — ligne 25</span>
+  <pre><span class="keyword">def</span> <span class="type">generate_synthetic_data</span>(n: int = 400) -> pd.DataFrame:
+    <span class="comment">"""Si student-mat.csv est absent, génère 400 lignes fictives réalistes."""</span>
+
+    np.random.seed(42)          <span class="comment"># Graine fixe = résultats reproductibles</span>
+
+    data = {
+        <span class="comment"># Choix pondéré : 75% GP, 25% MS (reflète la vraie distribution UCI)</span>
+        <span class="string">'school'</span>: np.random.choice([<span class="string">'GP'</span>, <span class="string">'MS'</span>], n, p=[0.75, 0.25]),
+        <span class="string">'age'</span>:    np.random.randint(15, 23, n),    <span class="comment"># Entiers entre 15 et 22</span>
+        <span class="string">'failures'</span>: np.random.choice([0,1,2,3], n, p=[0.67,0.19,0.08,0.06]),
+        <span class="comment"># Distribution réaliste : 67% des étudiants n'ont pas échoué</span>
+        <span class="string">'G1'</span>: np.random.randint(3, 19, n),         <span class="comment"># Notes 1er trimestre</span>
+        <span class="string">'G2'</span>: np.random.randint(3, 19, n),         <span class="comment"># Notes 2ème trimestre</span>
+        <span class="comment"># ... (autres colonnes)</span>
+    }
+    df = pd.DataFrame(data)
+
+    <span class="comment"># G3 synthétique = combinaison linéaire de G1, G2, studytime, failures + bruit gaussien</span>
+    g3_base = (df[<span class="string">'G1'</span>] * 0.4 + df[<span class="string">'G2'</span>] * 0.4
+               + df[<span class="string">'studytime'</span>] * 0.5 - df[<span class="string">'failures'</span>] * 2
+               + np.random.normal(0, 2, n))   <span class="comment"># Bruit gaussien (σ=2)</span>
+
+    df[<span class="string">'G3'</span>] = np.clip(g3_base.round().astype(int), 0, 20)
+    <span class="comment"># clip → force G3 dans [0,20] même si la formule dépasse</span>
+    <span class="keyword">return</span> df</pre>
+
+  <h4>Fonction preprocess() — Encodage + Normalisation</h4>
+  <span class="file-path">backend/ml-service/app/train.py — ligne 70</span>
+  <pre><span class="keyword">def</span> <span class="type">preprocess</span>(df: pd.DataFrame):
+    df = df.copy()              <span class="comment"># Travaille sur une copie, ne modifie pas l'original</span>
+    encoders = {}
+
+    <span class="comment"># Étape 1 : Encodage des colonnes catégorielles (texte → nombres)</span>
+    <span class="comment"># LabelEncoder transforme ex: ['GP','MS'] → [0, 1]</span>
+    <span class="keyword">for</span> col <span class="keyword">in</span> CAT_COLS:         <span class="comment"># CAT_COLS = ['school','sex','address','Mjob',...]</span>
+        le = LabelEncoder()
+        df[col] = le.fit_transform(df[col].astype(str))
+        encoders[col] = le      <span class="comment"># Sauvegarde le mappeur pour réutilisation en inférence</span>
+
+    <span class="comment"># Étape 2 : Création de la variable cible binaire</span>
+    df[<span class="string">'pass'</span>] = (df[<span class="string">'G3'</span>] >= 10).astype(int)  <span class="comment"># 1=réussi, 0=échoué</span>
+
+    <span class="comment"># Étape 3 : Sélection des features (tout sauf G3 et 'pass')</span>
+    feature_cols = [c <span class="keyword">for</span> c <span class="keyword">in</span> df.columns <span class="keyword">if</span> c <span class="keyword">not in</span> [<span class="string">'G3'</span>, <span class="string">'pass'</span>]]
+
+    X = df[feature_cols].values     <span class="comment"># Matrice NumPy des features</span>
+    y = df[<span class="string">'pass'</span>].values           <span class="comment"># Vecteur des labels</span>
+
+    <span class="comment"># Étape 4 : Normalisation StandardScaler → moyenne=0, écart-type=1</span>
+    <span class="comment"># Indispensable pour PCA et K-Means qui sont sensibles à l'échelle</span>
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X)
+
+    <span class="keyword">return</span> X_scaled, y, scaler, encoders, feature_cols</pre>
+
+  <h4>Fonction train_and_save() — Pipeline complet</h4>
+  <span class="file-path">backend/ml-service/app/train.py — ligne 90</span>
+  <pre><span class="keyword">def</span> <span class="type">train_and_save</span>() -> dict:
+    os.makedirs(MODEL_DIR, exist_ok=True)   <span class="comment"># Crée /app/models si absent</span>
+
+    <span class="comment"># Priorité : données réelles UCI. Sinon : données synthétiques</span>
+    <span class="keyword">if</span> os.path.exists(DATA_PATH):           <span class="comment"># DATA_PATH = /app/data/student-mat.csv</span>
+        df = pd.read_csv(DATA_PATH, sep=<span class="string">';'</span>)  <span class="comment"># Dataset UCI séparé par ';'</span>
+    <span class="keyword">else</span>:
+        df = generate_synthetic_data(400)   <span class="comment"># Fallback 400 lignes fictives</span>
+
+    X_scaled, y, scaler, encoders, feature_cols = preprocess(df)
+
+    <span class="comment"># ── ÉTAPE 1 : PCA — Réduction de dimensionnalité ──────────────────</span>
+    <span class="comment"># n_components=0.95 → garde autant de composantes qui expliquent 95% de la variance</span>
+    <span class="comment"># Réduit le bruit et accélère l'entraînement (ex: 32 features → ~12 composantes)</span>
+    pca = PCA(n_components=0.95, random_state=42)
+    X_pca = pca.fit_transform(X_scaled)
+
+    <span class="comment"># ── ÉTAPE 2 : K-Means Clustering — Profils d'étudiants ───────────</span>
+    <span class="comment"># k=3 : At-Risk / Average / High-Performing</span>
+    <span class="comment"># n_init=10 : relance 10 fois avec des centroïdes différents → meilleure convergence</span>
+    kmeans = KMeans(n_clusters=3, random_state=42, n_init=10)
+    clusters = kmeans.fit_predict(X_pca)    <span class="comment"># Assigne chaque ligne à un cluster</span>
+    sil = silhouette_score(X_pca, clusters) <span class="comment"># Qualité du clustering (0=mauvais, 1=parfait)</span>
+
+    <span class="comment"># ── ÉTAPE 3 : Train/Test Split ────────────────────────────────────</span>
+    <span class="comment"># test_size=0.2 → 80% train, 20% test</span>
+    <span class="comment"># stratify=y → respecte la proportion pass/fail dans chaque split</span>
+    X_train, X_test, y_train, y_test = train_test_split(
+        X_pca, y, test_size=0.2, random_state=42, stratify=y)
+
+    <span class="comment"># ── ÉTAPE 4 : Random Forest — Classification binaire ─────────────</span>
+    <span class="comment"># n_estimators=100 : 100 arbres de décision — vote majoritaire</span>
+    <span class="comment"># Plus d'arbres = plus robuste mais plus lent</span>
+    rf = RandomForestClassifier(n_estimators=100, random_state=42)
+    rf.fit(X_train, y_train)
+
+    <span class="comment"># ── ÉTAPE 5 : Évaluation ─────────────────────────────────────────</span>
+    y_pred  = rf.predict(X_test)
+    y_proba = rf.predict_proba(X_test)[:, 1]  <span class="comment"># Proba de la classe "pass" (index 1)</span>
+
+    metrics = {
+        <span class="string">"accuracy"</span>: round(float(accuracy_score(y_test, y_pred)), 4),
+        <span class="comment"># accuracy = % de bonnes prédictions</span>
+        <span class="string">"f1_score"</span>: round(float(f1_score(y_test, y_pred)), 4),
+        <span class="comment"># F1 = moyenne harmonique précision/rappel (mieux que accuracy pour données déséquilibrées)</span>
+        <span class="string">"roc_auc"</span>:  round(float(roc_auc_score(y_test, y_proba)), 4),
+        <span class="comment"># ROC-AUC = aire sous la courbe ROC (0.5=hasard, 1=parfait)</span>
+        <span class="string">"silhouette_score"</span>: round(float(sil), 4),
+        <span class="comment"># Silhouette = qualité du clustering (séparation entre clusters)</span>
+    }
+
+    <span class="comment"># ── ÉTAPE 6 : Sauvegarde des modèles avec joblib ──────────────────</span>
+    <span class="comment"># joblib = sérialisation optimisée pour NumPy/scikit-learn (plus rapide que pickle)</span>
+    joblib.dump(scaler,       f<span class="string">"{MODEL_DIR}/scaler.pkl"</span>)      <span class="comment"># Normalisation</span>
+    joblib.dump(pca,          f<span class="string">"{MODEL_DIR}/pca.pkl"</span>)         <span class="comment"># Réducteur PCA</span>
+    joblib.dump(kmeans,       f<span class="string">"{MODEL_DIR}/kmeans.pkl"</span>)      <span class="comment"># Modèle clustering</span>
+    joblib.dump(rf,           f<span class="string">"{MODEL_DIR}/rf_classifier.pkl"</span>) <span class="comment"># Classifieur</span>
+    joblib.dump(feature_cols, f<span class="string">"{MODEL_DIR}/feature_cols.pkl"</span>) <span class="comment"># Liste des features</span>
+    joblib.dump(encoders,     f<span class="string">"{MODEL_DIR}/encoders.pkl"</span>)    <span class="comment"># Encodeurs catégoriels</span>
+
+    <span class="keyword">return</span> metrics
+
+<span class="keyword">def</span> <span class="type">ensure_model</span>():
+    <span class="comment"># Entraîne seulement si le modèle n'existe pas encore</span>
+    <span class="keyword">if not</span> os.path.exists(f<span class="string">"{MODEL_DIR}/rf_classifier.pkl"</span>):
+        train_and_save()</pre>
+
+  <hr class="divider">
+
+  <!-- ─────────────────────────────────── ML INFERENCE -->
+  <h3>3. Pipeline ML — Inférence en temps réel (main.py)</h3>
+  <div class="card" style="background:#f5f0ff; border-color:#b2a0f0;">
+    <strong>Chemin :</strong> <code>backend/ml-service/app/main.py</code><br>
+    <strong>Rôle :</strong> Expose les endpoints FastAPI pour prédire et clusteriser un étudiant à partir de ses données académiques.
+  </div>
+
+  <h4>Fonction _to_pca_vector() — Préparation d'une entrée pour l'inférence</h4>
+  <span class="file-path">backend/ml-service/app/main.py — ligne 78</span>
+  <pre><span class="keyword">def</span> <span class="type">_to_pca_vector</span>(student: StudentInput) -> np.ndarray:
+    <span class="comment"># Ligne 1 : Convertit le modèle Pydantic en dictionnaire Python</span>
+    row = student.model_dump()
+    df = pd.DataFrame([row])     <span class="comment"># DataFrame d'une seule ligne (nécessaire pour sklearn)</span>
+
+    <span class="comment"># Ligne 2 : Réappliquer les mêmes encodages que l'entraînement</span>
+    <span class="comment"># IMPORTANT : on doit encoder avec les MÊMES LabelEncoders (mêmes mappings)</span>
+    <span class="keyword">for</span> col <span class="keyword">in</span> CAT_COLS:
+        le: LabelEncoder = _models[<span class="string">"encoders"</span>].get(col)
+        <span class="keyword">if</span> le <span class="keyword">is not None</span>:
+            val = df[col].astype(str)
+            known = set(le.classes_)      <span class="comment"># Valeurs connues de l'entraînement</span>
+            <span class="comment"># Si valeur inconnue → 0 par défaut (gestion des cas imprévus)</span>
+            df[col] = val.apply(<span class="keyword">lambda</span> v: le.transform([v])[0] <span class="keyword">if</span> v <span class="keyword">in</span> known <span class="keyword">else</span> 0)
+
+    <span class="comment"># Ligne 3 : Sélectionner les features dans le bon ordre</span>
+    feature_cols = _models[<span class="string">"feature_cols"</span>]
+    X = df[feature_cols].values.astype(float)
+
+    <span class="comment"># Ligne 4 : Normaliser avec le MÊME scaler que l'entraînement</span>
+    X_scaled = _models[<span class="string">"scaler"</span>].transform(X)   <span class="comment"># transform() et pas fit_transform()</span>
+    <span class="comment"># Différence : fit_transform() recalcule la moyenne/std, transform() utilise celles de l'entraînement</span>
+
+    <span class="comment"># Ligne 5 : Réduire avec le MÊME PCA que l'entraînement</span>
+    X_pca = _models[<span class="string">"pca"</span>].transform(X_scaled)
+
+    <span class="keyword">return</span> X_pca    <span class="comment"># Vecteur prêt pour predict() ou cluster()</span></pre>
+
+  <h4>Endpoint /predict — Random Forest</h4>
+  <span class="file-path">backend/ml-service/app/main.py — ligne 110</span>
+  <pre><span class="annotation">@app.post</span>(<span class="string">"/predict"</span>)
+<span class="keyword">def</span> <span class="type">predict</span>(student: StudentInput):
+    X = _to_pca_vector(student)           <span class="comment"># Transforme l'entrée en vecteur PCA</span>
+
+    pred  = int(_models[<span class="string">"rf"</span>].predict(X)[0])        <span class="comment"># 0=fail, 1=pass</span>
+    proba = _models[<span class="string">"rf"</span>].predict_proba(X)[0]         <span class="comment"># [proba_fail, proba_pass]</span>
+
+    <span class="keyword">return</span> {
+        <span class="string">"prediction"</span>:       <span class="string">"pass"</span> <span class="keyword">if</span> pred == 1 <span class="keyword">else</span> <span class="string">"fail"</span>,
+        <span class="string">"probability_pass"</span>: round(float(proba[1]), 4),   <span class="comment"># proba[1] = classe "pass"</span>
+        <span class="string">"probability_fail"</span>: round(float(proba[0]), 4),   <span class="comment"># proba[0] = classe "fail"</span>
+    }</pre>
+
+  <h4>Endpoint /cluster — K-Means</h4>
+  <span class="file-path">backend/ml-service/app/main.py — ligne 132</span>
+  <pre><span class="annotation">@app.post</span>(<span class="string">"/cluster"</span>)
+<span class="keyword">def</span> <span class="type">cluster</span>(student: StudentInput):
+    X = _to_pca_vector(student)
+    cluster_id = int(_models[<span class="string">"kmeans"</span>].predict(X)[0])   <span class="comment"># 0, 1 ou 2</span>
+
+    CLUSTER_LABELS = [<span class="string">"At-Risk"</span>, <span class="string">"Average"</span>, <span class="string">"High-Performing"</span>]
+    CLUSTER_DESC = {
+        0: <span class="string">"Student shows signs of academic difficulty."</span>,
+        1: <span class="string">"Student performs at an average level."</span>,
+        2: <span class="string">"Student demonstrates strong academic performance."</span>,
+    }
+    <span class="keyword">return</span> {
+        <span class="string">"cluster"</span>:     cluster_id,
+        <span class="string">"label"</span>:       CLUSTER_LABELS[cluster_id],
+        <span class="string">"description"</span>: CLUSTER_DESC.get(cluster_id, <span class="string">""</span>),
+    }</pre>
+
+  <hr class="divider">
+
+  <!-- ─────────────────────────────────── ACADEMIC PROFILE -->
+  <h3>4. Profil Académique — Seed + Endpoint (auth-service)</h3>
+
+  <h4>StudentAcademicProfileService.seedProfiles() — Génération automatique</h4>
+  <div class="card blue">
+    <strong>Chemin :</strong> <code>backend/auth-service/src/main/java/tn/english/school/authservice/service/StudentAcademicProfileService.java</code><br>
+    <strong>Appelé par :</strong> <code>DataInitializer.run()</code> après la création des users
+  </div>
+
+  <span class="file-path">backend/auth-service/src/main/java/tn/english/school/authservice/service/StudentAcademicProfileService.java</span>
+  <pre><span class="keyword">public void</span> <span class="type">seedProfiles</span>() {
+    <span class="comment">// Ligne 1 : Récupère uniquement les utilisateurs avec rôle STUDENT</span>
+    List&lt;AppUser&gt; students = userRepository.findAll().stream()
+        .filter(u -> u.getRole() == Role.STUDENT)
+        .toList();
+
+    Random rng = <span class="keyword">new</span> Random(42);    <span class="comment">// Graine fixe → résultats reproductibles (comme en Python)</span>
+    int seeded = 0;
+
+    <span class="keyword">for</span> (AppUser student : students) {
+        <span class="comment">// Ligne 2 : Idempotent — ne recrée pas si déjà présent</span>
+        <span class="keyword">if</span> (profileRepository.existsByStudentId(student.getId())) <span class="keyword">continue</span>;
+
+        <span class="comment">// Ligne 3 : Génère G1 aléatoire entre 6 et 18</span>
+        int g1 = 6 + rng.nextInt(13);
+
+        <span class="comment">// Ligne 4 : G2 ≈ G1 ± 2 (corrélé à G1, comme dans la réalité)</span>
+        int g2 = Math.max(0, g1 + rng.nextInt(5) - 2);
+        g2 = Math.min(g2, 20);          <span class="comment">// Borne à 20 maximum</span>
+
+        <span class="comment">// Ligne 5 : Construit et sauvegarde le profil</span>
+        StudentAcademicProfile profile = StudentAcademicProfile.<span class="type">builder</span>()
+            .student(student)
+            .age(16 + rng.nextInt(6))    <span class="comment">// 16 à 21 ans</span>
+            .g1(g1)
+            .g2(g2)
+            .failures(<span class="type">weightedFailures</span>(rng))  <span class="comment">// Distribution pondérée (voir dessous)</span>
+            .absences(rng.nextInt(20))   <span class="comment">// 0 à 19 absences</span>
+            .studytime(1 + rng.nextInt(4)) <span class="comment">// 1=&lt;2h, 2=2-5h, 3=5-10h, 4=&gt;10h</span>
+            .build();
+
+        profileRepository.save(profile);
+        seeded++;
+    }
+}
+
+<span class="comment">// Distribution réaliste des échecs : 65% → 0, 19% → 1, 10% → 2, 6% → 3</span>
+<span class="keyword">private int</span> <span class="type">weightedFailures</span>(Random rng) {
+    int r = rng.nextInt(100);
+    if (r &lt; 65) return 0;    <span class="comment">// La majorité des étudiants n'ont pas échoué</span>
+    if (r &lt; 84) return 1;    <span class="comment">// 19% ont 1 échec</span>
+    if (r &lt; 94) return 2;    <span class="comment">// 10% ont 2 échecs</span>
+    return 3;                <span class="comment">// 6% ont 3 échecs</span>
+}</pre>
+
+  <h4>StudentAcademicProfileController — Endpoint GET profil</h4>
+  <span class="file-path">backend/auth-service/src/main/java/tn/english/school/authservice/controller/StudentAcademicProfileController.java</span>
+  <pre><span class="annotation">@RestController</span>
+<span class="annotation">@RequestMapping</span>(<span class="string">"/api/students"</span>)
+<span class="keyword">public class</span> <span class="type">StudentAcademicProfileController</span> {
+
+    <span class="comment">// GET /api/students/{userId}/academic-profile</span>
+    <span class="comment">// Appelé par : Angular MlService.getAcademicProfile(userId)</span>
+    <span class="comment">// Route Gateway : /api/students/** → auth-service:8083</span>
+    <span class="annotation">@GetMapping</span>(<span class="string">"/{userId}/academic-profile"</span>)
+    <span class="keyword">public</span> ResponseEntity&lt;?&gt; <span class="type">getProfile</span>(<span class="annotation">@PathVariable</span> Long userId) {
+
+        <span class="comment">// findByStudentId retourne Optional&lt;StudentAcademicProfile&gt;</span>
+        <span class="keyword">return</span> profileService.findByStudentId(userId)
+
+            <span class="comment">// Si profil trouvé → construit un Map propre (sans exposer l'entité JPA entière)</span>
+            .map(p -> ResponseEntity.ok(Map.of(
+                <span class="string">"userId"</span>,    userId,
+                <span class="string">"age"</span>,       p.getAge(),
+                <span class="string">"g1"</span>,        p.getG1(),       <span class="comment">// Note 1er trimestre</span>
+                <span class="string">"g2"</span>,        p.getG2(),       <span class="comment">// Note 2ème trimestre</span>
+                <span class="string">"failures"</span>,  p.getFailures(), <span class="comment">// Nombre d'échecs passés</span>
+                <span class="string">"absences"</span>,  p.getAbsences(), <span class="comment">// Nombre d'absences</span>
+                <span class="string">"studytime"</span>, p.getStudytime() <span class="comment">// Heures de travail/semaine (1-4)</span>
+            )))
+
+            <span class="comment">// Si pas de profil pour cet étudiant → 404 Not Found</span>
+            .orElse(ResponseEntity.notFound().build());
+    }
+}</pre>
+
+  <hr class="divider">
+
+  <!-- ─────────────────────────────────── FILE STORAGE -->
+  <h3>5. Stockage de Fichier — FileStorageService</h3>
+  <div class="card blue">
+    <strong>Chemin :</strong> <code>backend/retake-service/src/main/java/tn/english/school/retakeservice/service/FileStorageService.java</code><br>
+    <strong>Rôle :</strong> Sauvegarde le fichier joint à une RetakeRequest sur le disque serveur avec un nom unique UUID.
+  </div>
+
+  <span class="file-path">backend/retake-service/src/main/java/tn/english/school/retakeservice/service/FileStorageService.java</span>
+  <pre><span class="annotation">@Service</span>
+<span class="keyword">public class</span> <span class="type">FileStorageService</span> {
+
+    <span class="comment">// Dossier de stockage injecté depuis application.properties (file.upload-dir)</span>
+    <span class="annotation">@Value</span>(<span class="string">"${file.upload-dir}"</span>)
+    <span class="keyword">private</span> String uploadDir;
+
+    <span class="keyword">public</span> String <span class="type">storeFile</span>(MultipartFile file) {
+        <span class="keyword">try</span> {
+            <span class="comment">// Ligne 1 : Crée un objet Path vers le dossier de destination</span>
+            Path uploadPath = Paths.get(uploadDir);
+
+            <span class="comment">// Ligne 2 : Si le dossier n'existe pas encore, le crée (+ parents si besoin)</span>
+            <span class="keyword">if</span> (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+
+            <span class="comment">// Ligne 3 : Génère un nom unique pour éviter les collisions</span>
+            <span class="comment">// UUID = identifiant aléatoire 128 bits (ex: a3f4b2c1-...)</span>
+            <span class="comment">// On conserve le nom original pour que l'étudiant puisse l'identifier</span>
+            String fileName = UUID.randomUUID() + <span class="string">"_"</span> + file.getOriginalFilename();
+
+            <span class="comment">// Ligne 4 : Chemin complet = dossier + nom du fichier</span>
+            Path filePath = uploadPath.resolve(fileName);
+
+            <span class="comment">// Ligne 5 : Copie les octets du fichier reçu vers le disque</span>
+            <span class="comment">// getInputStream() lit le flux binaire du fichier uploadé</span>
+            Files.copy(file.getInputStream(), filePath);
+
+            <span class="comment">// Ligne 6 : Retourne seulement le nom (pas le chemin complet)</span>
+            <span class="comment">// Ce nom est stocké dans RetakeRequest.attachmentPath</span>
+            <span class="keyword">return</span> fileName;
+
+        } <span class="keyword">catch</span> (IOException e) {
+            <span class="keyword">throw new</span> RuntimeException(<span class="string">"Failed to store file: "</span> + e.getMessage());
+        }
+    }
+}</pre>
+
+  <hr class="divider">
+
+  <!-- ─────────────────────────────────── FEIGN + RETAKE -->
+  <h3>6. createRetakeFromClaim() — Logique complète avec Feign</h3>
+  <div class="card orange">
+    <strong>Chemin :</strong> <code>backend/retake-service/src/main/java/tn/english/school/retakeservice/service/RetakeRequestService.java</code><br>
+    <strong>Rôle :</strong> Crée une RetakeRequest en vérifiant toutes les règles métier via appel Feign vers claim-service, puis notifie claim-service du lien créé.
+  </div>
+
+  <span class="file-path">backend/retake-service/src/main/java/tn/english/school/retakeservice/service/RetakeRequestService.java — méthode createRetakeFromClaim()</span>
+  <pre><span class="keyword">public</span> RetakeRequest <span class="type">createRetakeFromClaim</span>(Long claimId, RetakeRequest retakeDetails, MultipartFile attachment) {
+
+    <span class="comment">// Ligne 1 : Appel FEIGN → GET http://claim-service/api/claims/{claimId}</span>
+    <span class="comment">// Eureka résout "claim-service" vers son adresse réelle (ex: 172.18.0.5:8081)</span>
+    ClaimDTO claim = claimClient.getClaimById(claimId);
+
+    <span class="comment">// Ligne 2 : RÈGLE 1 — Seules les réclamations PÉDAGOGIQUES peuvent générer un rattrapage</span>
+    <span class="keyword">if</span> (!<span class="string">"PEDAGOGICAL"</span>.equals(claim.getType())) {
+        <span class="keyword">throw new</span> InvalidRetakeException(
+            <span class="string">"Rule Violation: Retake requests can only be linked to claims of type 'PEDAGOGICAL'."</span>);
+    }
+
+    <span class="comment">// Ligne 3 : RÈGLE 2 — Anti-doublon : une seule RetakeRequest par réclamation</span>
+    <span class="keyword">if</span> (retakeRequestRepository.existsByClaimId(claimId)) {
+        <span class="keyword">throw new</span> ClaimAlreadyLinkedException(
+            <span class="string">"Rule Violation: A retake request is already linked to this claim."</span>);
+    }
+
+    <span class="comment">// Ligne 4 : RÈGLE 3 — L'admin doit avoir autorisé le rattrapage</span>
+    <span class="comment">// (statut RETAKE_AUTHORIZED positionné par claim-service via PATCH /authorize-retake)</span>
+    <span class="keyword">if</span> (!<span class="string">"RETAKE_AUTHORIZED"</span>.equals(claim.getStatus())) {
+        <span class="keyword">throw new</span> IllegalStateException(
+            <span class="string">"Action denied: You cannot submit a retake request until the administration authorizes it."</span>);
+    }
+
+    <span class="comment">// Ligne 5 : Lien cross-service — on stocke l'ID de la claim, pas l'objet JPA</span>
+    retakeDetails.setClaimId(claimId);
+
+    <span class="comment">// Ligne 6 : Copie l'ID de l'étudiant depuis la claim (évite un 2ème appel Feign)</span>
+    <span class="keyword">if</span> (claim.getStudent() != <span class="keyword">null</span>) {
+        retakeDetails.setStudentId(claim.getStudent().getId());
+    }
+
+    <span class="comment">// Ligne 7 : Si un fichier est joint, le stocke sur disque via FileStorageService</span>
+    <span class="keyword">if</span> (attachment != <span class="keyword">null</span> &amp;&amp; !attachment.isEmpty()) {
+        retakeDetails.setAttachmentPath(fileStorageService.storeFile(attachment));
+    }
+
+    <span class="comment">// Ligne 8 : Sauvegarde la RetakeRequest dans retake_db</span>
+    RetakeRequest saved = retakeRequestRepository.save(retakeDetails);
+
+    <span class="comment">// Ligne 9 : Notifie claim-service du lien créé (2ème appel Feign)</span>
+    <span class="comment">// PUT http://claim-service/api/claims/{claimId}/link-retake/{saved.getId()}</span>
+    <span class="comment">// → claim-service stocke retakeRequestId dans la Claim pour le lien bidirectionnel</span>
+    claimClient.linkRetakeRequest(claimId, saved.getId());
+
+    <span class="keyword">return</span> saved;
+}</pre>
+
+  <div class="card green">
+    <strong>Pourquoi 2 appels Feign dans cette seule méthode ?</strong>
+    <ol style="margin-top:6px">
+      <li><code>claimClient.getClaimById()</code> → Vérifier les règles métier AVANT de créer</li>
+      <li><code>claimClient.linkRetakeRequest()</code> → Notifier claim-service APRÈS la création pour synchroniser le lien</li>
+    </ol>
+    Cette double synchronisation garantit la cohérence des données entre les deux bases (claim_db et retake_db).
+  </div>
+
+  <hr class="divider">
+
+  <!-- ─────────────────────────────────── GROQ CONNEXION AUTH -->
+  <h3>7. DataInitializer — Seed sécurisé BCrypt</h3>
+  <span class="file-path">backend/auth-service/src/main/java/tn/english/school/authservice/config/DataInitializer.java</span>
+  <pre><span class="annotation">@Slf4j</span>
+<span class="annotation">@Component</span>                       <span class="comment">// Spring gère ce bean automatiquement</span>
+<span class="annotation">@RequiredArgsConstructor</span>         <span class="comment">// Lombok génère le constructeur avec les 3 dépendances injectées</span>
+<span class="keyword">public class</span> <span class="type">DataInitializer</span> <span class="keyword">implements</span> CommandLineRunner {
+
+    <span class="keyword">private final</span> UserRepository userRepository;
+    <span class="keyword">private final</span> PasswordEncoder passwordEncoder;    <span class="comment">// BCryptPasswordEncoder (ApplicationConfig)</span>
+    <span class="keyword">private final</span> StudentAcademicProfileService profileService;
+
+    <span class="annotation">@Override</span>
+    <span class="keyword">public void</span> <span class="type">run</span>(String... args) {
+        <span class="comment">// Ligne 1 : Seed users d'abord</span>
+        seedUsers();
+
+        <span class="comment">// Ligne 2 : PUIS seed des profils (qui nécessitent que les users existent)</span>
+        <span class="comment">// C'est pourquoi on a retiré @PostConstruct de StudentAcademicProfileService</span>
+        profileService.seedProfiles();
+    }
+
+    <span class="keyword">private void</span> <span class="type">seedUsers</span>() {
+        <span class="comment">// existsByEmail → SELECT COUNT(*) FROM users WHERE email=? — idempotent</span>
+        <span class="keyword">if</span> (!userRepository.existsByEmail(<span class="string">"zeinebnecib@gmail.com"</span>)) {
+            userRepository.save(AppUser.<span class="type">builder</span>()
+                .firstName(<span class="string">"Zeineb"</span>).lastName(<span class="string">"Necib"</span>)
+                .email(<span class="string">"zeinebnecib@gmail.com"</span>)
+                <span class="comment">// passwordEncoder.encode() applique BCrypt avec salt aléatoire</span>
+                <span class="comment">// "123456" → "$2a$10$..." (hash différent à chaque appel même pour le même mot de passe)</span>
+                .password(passwordEncoder.encode(<span class="string">"123456"</span>))
+                .role(Role.STUDENT)
+                .build());
+            log.info(<span class="string">"[DataInitializer] Student user created: zeinebnecib@gmail.com"</span>);
+        }
+
+        <span class="keyword">if</span> (!userRepository.existsByEmail(<span class="string">"admin@gmail.com"</span>)) {
+            userRepository.save(AppUser.<span class="type">builder</span>()
+                .firstName(<span class="string">"Admin"</span>).lastName(<span class="string">"Platform"</span>)
+                .email(<span class="string">"admin@gmail.com"</span>)
+                .password(passwordEncoder.encode(<span class="string">"123456"</span>))
+                .role(Role.ADMIN)
+                .build());
+            log.info(<span class="string">"[DataInitializer] Admin user created: admin@gmail.com"</span>);
+        }
+    }
+}</pre>
+
+  <hr class="divider">
+
+  <!-- ─────────────────────────────────── TABLEAU RECAP -->
+  <h3>Tableau récapitulatif — Fonctions avancées</h3>
+  <table>
+    <tr>
+      <th>Fonction</th>
+      <th>Classe / Fichier</th>
+      <th>Technologie avancée</th>
+      <th>Impact</th>
+    </tr>
+    <tr>
+      <td><code>draftAdminResponse()</code></td>
+      <td>HuggingFaceService.java</td>
+      <td>API GROQ LLaMA 3.3 70B, RestTemplate, Bearer Auth</td>
+      <td>Génère des réponses admin automatiques</td>
+    </tr>
+    <tr>
+      <td><code>train_and_save()</code></td>
+      <td>train.py</td>
+      <td>PCA + KMeans + RandomForest + joblib</td>
+      <td>Entraîne et persiste les 4 modèles ML</td>
+    </tr>
+    <tr>
+      <td><code>_to_pca_vector()</code></td>
+      <td>main.py</td>
+      <td>LabelEncoder, StandardScaler, PCA transform</td>
+      <td>Prépare l'entrée pour l'inférence ML</td>
+    </tr>
+    <tr>
+      <td><code>predict()</code> / <code>cluster()</code></td>
+      <td>main.py</td>
+      <td>FastAPI, RandomForest, KMeans inference</td>
+      <td>Prédit réussite + profil étudiant</td>
+    </tr>
+    <tr>
+      <td><code>seedProfiles()</code></td>
+      <td>StudentAcademicProfileService.java</td>
+      <td>Génération pondérée, Random seed, Builder</td>
+      <td>Données ML réalistes pour chaque étudiant</td>
+    </tr>
+    <tr>
+      <td><code>getProfile()</code></td>
+      <td>StudentAcademicProfileController.java</td>
+      <td>Optional.map, ResponseEntity, Map.of</td>
+      <td>Fournit les données pour l'analyse ML</td>
+    </tr>
+    <tr>
+      <td><code>storeFile()</code></td>
+      <td>FileStorageService.java</td>
+      <td>MultipartFile, UUID, NIO2 (java.nio.file)</td>
+      <td>Stocke les justificatifs de rattrapage</td>
+    </tr>
+    <tr>
+      <td><code>createRetakeFromClaim()</code></td>
+      <td>RetakeRequestService.java</td>
+      <td>OpenFeign (2 appels), règles métier en chaîne</td>
+      <td>Orchestre claim+retake avec 3 validations</td>
+    </tr>
+    <tr>
+      <td><code>seedUsers()</code></td>
+      <td>DataInitializer.java</td>
+      <td>CommandLineRunner, BCrypt, Builder pattern</td>
+      <td>Données de test disponibles au boot</td>
+    </tr>
+    <tr>
+      <td><code>analyzeStudent()</code></td>
+      <td>ml.service.ts (Angular)</td>
+      <td>RxJS switchMap, pipe, 2 appels HTTP chaînés</td>
+      <td>Profil → ML analyze en un seul Observable</td>
+    </tr>
+  </table>
+
+</div>
+
+</body>
+</html>

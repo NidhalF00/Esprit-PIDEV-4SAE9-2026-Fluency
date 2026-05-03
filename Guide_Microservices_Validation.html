@@ -1,0 +1,1421 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fiche Complète — Architecture Microservices | Platform Education 4SAE9</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #1a1a2e;
+    background: #fff;
+  }
+
+  /* ── PRINT ──────────────────────────────────────── */
+  @media print {
+    body { font-size: 11px; }
+    .page-break { page-break-before: always; }
+    .no-break { page-break-inside: avoid; }
+    nav { display: none; }
+    h1, h2, h3 { page-break-after: avoid; }
+  }
+
+  /* ── LAYOUT ─────────────────────────────────────── */
+  .container { max-width: 960px; margin: 0 auto; padding: 32px 24px; }
+
+  /* ── COVER ──────────────────────────────────────── */
+  .cover {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    color: #fff;
+    padding: 60px 40px;
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  .cover .badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 20px;
+    padding: 4px 16px;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .cover h1 { font-size: 32px; font-weight: 700; margin-bottom: 8px; }
+  .cover .subtitle { font-size: 16px; opacity: 0.8; margin-bottom: 24px; }
+  .cover .meta { display: flex; justify-content: center; gap: 32px; margin-top: 24px; }
+  .cover .meta-item { text-align: center; }
+  .cover .meta-item .label { font-size: 10px; opacity: 0.6; text-transform: uppercase; letter-spacing: 1px; }
+  .cover .meta-item .value { font-size: 14px; font-weight: 600; margin-top: 2px; }
+
+  /* ── SECTION HEADERS ─────────────────────────────── */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: linear-gradient(90deg, #0f3460, #16213e);
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 8px;
+    margin: 32px 0 16px;
+  }
+  .section-header .num {
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 13px; flex-shrink: 0;
+  }
+  .section-header h2 { font-size: 16px; font-weight: 600; }
+  .section-header .pts {
+    margin-left: auto;
+    background: #e94560;
+    border-radius: 12px;
+    padding: 2px 10px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #0f3460;
+    margin: 20px 0 8px;
+    padding-left: 10px;
+    border-left: 3px solid #e94560;
+  }
+
+  h4 {
+    font-size: 13px;
+    font-weight: 600;
+    color: #16213e;
+    margin: 14px 0 6px;
+  }
+
+  p { margin-bottom: 10px; color: #333; }
+
+  /* ── CODE BLOCKS ─────────────────────────────────── */
+  .code-block {
+    background: #0d1117;
+    border-radius: 8px;
+    margin: 12px 0;
+    overflow: hidden;
+  }
+  .code-block .code-header {
+    background: #161b22;
+    padding: 6px 14px;
+    font-size: 10px;
+    color: #8b949e;
+    font-family: 'JetBrains Mono', monospace;
+    border-bottom: 1px solid #21262d;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .code-block .code-header .lang-badge {
+    background: #0f3460;
+    color: #58a6ff;
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  .code-block pre {
+    padding: 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    line-height: 1.7;
+    color: #e6edf3;
+    overflow-x: auto;
+    white-space: pre;
+  }
+
+  /* Syntax highlighting */
+  .kw { color: #ff7b72; } /* keywords */
+  .st { color: #a5d6ff; } /* strings */
+  .cm { color: #8b949e; font-style: italic; } /* comments */
+  .an { color: #ffa657; } /* annotations */
+  .cl { color: #79c0ff; } /* class names */
+  .fn { color: #d2a8ff; } /* functions/methods */
+  .nm { color: #79c0ff; } /* numbers */
+  .pr { color: #e6edf3; } /* properties */
+  .va { color: #7ee787; } /* values/variables */
+
+  /* ── CARDS ───────────────────────────────────────── */
+  .card {
+    background: #f8f9ff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 12px 0;
+  }
+  .card.warning {
+    background: #fff8e6;
+    border-color: #f59e0b;
+    border-left: 4px solid #f59e0b;
+  }
+  .card.info {
+    background: #eff6ff;
+    border-color: #3b82f6;
+    border-left: 4px solid #3b82f6;
+  }
+  .card.success {
+    background: #f0fdf4;
+    border-color: #22c55e;
+    border-left: 4px solid #22c55e;
+  }
+  .card.danger {
+    background: #fff1f2;
+    border-color: #e94560;
+    border-left: 4px solid #e94560;
+  }
+
+  /* ── ARCHITECTURE DIAGRAM ────────────────────────── */
+  .arch-diagram {
+    background: #0d1117;
+    border-radius: 10px;
+    padding: 24px;
+    margin: 16px 0;
+    text-align: center;
+    color: #e6edf3;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    line-height: 2;
+  }
+  .arch-box {
+    display: inline-block;
+    border: 1px solid;
+    border-radius: 6px;
+    padding: 6px 14px;
+    margin: 2px;
+    font-weight: 600;
+    font-size: 11px;
+  }
+  .arch-box.frontend { border-color: #3b82f6; color: #93c5fd; background: rgba(59,130,246,0.1); }
+  .arch-box.gateway  { border-color: #f59e0b; color: #fcd34d; background: rgba(245,158,11,0.1); }
+  .arch-box.eureka   { border-color: #a855f7; color: #d8b4fe; background: rgba(168,85,247,0.1); }
+  .arch-box.service  { border-color: #22c55e; color: #86efac; background: rgba(34,197,94,0.1); }
+  .arch-box.ml       { border-color: #e94560; color: #fca5a5; background: rgba(233,69,96,0.1); }
+  .arch-box.db       { border-color: #8b949e; color: #c9d1d9; background: rgba(139,148,158,0.1); }
+  .arch-arrow { color: #58a6ff; }
+
+  /* ── TABLES ──────────────────────────────────────── */
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+  th { background: #0f3460; color: #fff; padding: 8px 12px; text-align: left; font-size: 12px; }
+  td { padding: 7px 12px; border-bottom: 1px solid #e2e8f0; font-size: 12px; }
+  tr:nth-child(even) td { background: #f8f9ff; }
+
+  /* ── GRID ────────────────────────────────────────── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 12px 0; }
+  @media print { .grid-2 { grid-template-columns: 1fr 1fr; } }
+
+  /* ── EVAL GRID ───────────────────────────────────── */
+  .eval-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin: 12px 0;
+  }
+  .eval-item {
+    background: linear-gradient(135deg, #0f3460, #16213e);
+    color: #fff;
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+  }
+  .eval-item .pts { font-size: 22px; font-weight: 700; color: #fcd34d; }
+  .eval-item .label { font-size: 10px; opacity: 0.85; margin-top: 4px; line-height: 1.3; }
+
+  /* ── FLOW DIAGRAM ────────────────────────────────── */
+  .flow {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin: 10px 0;
+    font-size: 12px;
+  }
+  .flow-step {
+    background: #0f3460;
+    color: #fff;
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .flow-arrow { color: #e94560; font-weight: 700; font-size: 16px; }
+
+  ul, ol { padding-left: 20px; margin-bottom: 10px; }
+  li { margin-bottom: 4px; font-size: 12px; color: #333; }
+
+  .tag {
+    display: inline-block;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    color: #1d4ed8;
+    border-radius: 4px;
+    padding: 1px 7px;
+    font-size: 10px;
+    font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+    margin: 1px;
+  }
+
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, #0f3460, transparent);
+    margin: 24px 0;
+  }
+
+  footer {
+    text-align: center;
+    padding: 24px;
+    color: #8b949e;
+    font-size: 11px;
+    border-top: 1px solid #e2e8f0;
+    margin-top: 40px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════ COVER -->
+<div class="cover">
+  <div class="badge">Fiche de Validation — Sprint 2</div>
+  <h1>Architecture Microservices</h1>
+  <div class="subtitle">Platform Education 4SAE9 — Guide Complet</div>
+  <p style="opacity:0.7;font-size:12px;">Eureka · Gateway · Docker · Sécurité JWT · Communication · ML Service · Angular</p>
+  <div class="meta">
+    <div class="meta-item"><div class="label">Classe</div><div class="value">5SE — 4SAE9</div></div>
+    <div class="meta-item"><div class="label">Sprint</div><div class="value">Sprint 2</div></div>
+    <div class="meta-item"><div class="label">Total</div><div class="value">20 pts</div></div>
+    <div class="meta-item"><div class="label">Équipe</div><div class="value">Fluency</div></div>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ═══════════════════════════════════════════════ GRILLE -->
+<div class="section-header">
+  <div class="num">0</div>
+  <h2>Grille d'Évaluation</h2>
+</div>
+
+<div class="eval-grid">
+  <div class="eval-item"><div class="pts">1.5</div><div class="label">Microservice Spring Boot</div></div>
+  <div class="eval-item"><div class="pts">3</div><div class="label">Compréhension du code</div></div>
+  <div class="eval-item"><div class="pts">2</div><div class="label">MS Technologie avancée + BD</div></div>
+  <div class="eval-item"><div class="pts">1</div><div class="label">Eureka Server</div></div>
+  <div class="eval-item"><div class="pts">1</div><div class="label">Config Server</div></div>
+  <div class="eval-item"><div class="pts">1</div><div class="label">API Gateway</div></div>
+  <div class="eval-item"><div class="pts">2</div><div class="label">Sécurité JWT</div></div>
+  <div class="eval-item"><div class="pts">1</div><div class="label">Git & Documentation</div></div>
+  <div class="eval-item"><div class="pts">2</div><div class="label">Docker Compose</div></div>
+  <div class="eval-item"><div class="pts">1.5</div><div class="label">Partie Frontend</div></div>
+  <div class="eval-item"><div class="pts">2</div><div class="label">Communication entre MS</div></div>
+  <div class="eval-item"><div class="pts">2</div><div class="label">Valeurs ajoutées</div></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ ARCHITECTURE -->
+<div class="section-header">
+  <div class="num">1</div>
+  <h2>Architecture Globale du Projet</h2>
+</div>
+
+<p>Le projet <strong>Platform Education</strong> suit une architecture microservices où chaque service est indépendant, déployé séparément, et communique via HTTP REST. Un seul point d'entrée (Gateway) reçoit toutes les requêtes frontend.</p>
+
+<div class="arch-diagram">
+  <div><span class="arch-box frontend">Angular Frontend :4200</span></div>
+  <div style="margin:4px 0;"><span style="color:#58a6ff;font-size:18px;">↓ HTTP REST (Bearer JWT)</span></div>
+  <div><span class="arch-box gateway">API Gateway :8080</span></div>
+  <div style="margin:4px 0; display:flex; justify-content:center; gap:20px; align-items:center;">
+    <span style="color:#58a6ff;">↙</span>
+    <span style="color:#58a6ff;">↓</span>
+    <span style="color:#58a6ff;">↓</span>
+    <span style="color:#58a6ff;">↘</span>
+    <span style="color:#58a6ff;">↘</span>
+  </div>
+  <div style="display:flex; justify-content:center; gap:8px; flex-wrap:wrap;">
+    <span class="arch-box service">auth-service :8083</span>
+    <span class="arch-box service">claim-service :8081</span>
+    <span class="arch-box service">retake-service :8082</span>
+    <span class="arch-box ml">ml-service :5000</span>
+  </div>
+  <div style="margin:6px 0; color:#8b949e;">↓ tous enregistrés sur ↓</div>
+  <div><span class="arch-box eureka">Eureka Server :8761</span></div>
+  <div style="margin:6px 0; color:#8b949e;">↓ base de données ↓</div>
+  <div style="display:flex; justify-content:center; gap:8px;">
+    <span class="arch-box db">auth_db</span>
+    <span class="arch-box db">claim_db</span>
+    <span class="arch-box db">retake_db</span>
+    <span class="arch-box db">PHPMyAdmin :8888</span>
+  </div>
+</div>
+
+<table>
+  <tr><th>Service</th><th>Technologie</th><th>Port</th><th>Rôle</th><th>Base de données</th></tr>
+  <tr><td>eureka-server</td><td>Spring Boot 3 + Netflix Eureka</td><td>8761</td><td>Service Discovery</td><td>—</td></tr>
+  <tr><td>gateway-service</td><td>Spring Cloud Gateway</td><td>8080</td><td>Point d'entrée unique + CORS</td><td>—</td></tr>
+  <tr><td>auth-service</td><td>Spring Boot 3 + Spring Security + JWT</td><td>8083</td><td>Authentification, gestion users</td><td>auth_db</td></tr>
+  <tr><td>claim-service</td><td>Spring Boot 3 + GROQ AI</td><td>8081</td><td>Gestion des réclamations</td><td>claim_db</td></tr>
+  <tr><td>retake-service</td><td>Spring Boot 3 + OpenFeign</td><td>8082</td><td>Demandes de rattrapages</td><td>retake_db</td></tr>
+  <tr><td>ml-service</td><td>Python FastAPI + scikit-learn</td><td>5000</td><td>Prédiction ML + clustering</td><td>Fichiers .pkl</td></tr>
+</table>
+
+<!-- ═══════════════════════════════════════════════ DOCKERFILE -->
+<div class="page-break"></div>
+<div class="section-header">
+  <div class="num">2</div>
+  <h2>Dockerfile — Conteneurisation</h2>
+  <span class="pts">Docker Compose 2pts</span>
+</div>
+
+<p>Un <strong>Dockerfile</strong> décrit comment construire une image Docker pour un service. Chaque microservice possède son propre Dockerfile.</p>
+
+<div class="card info">
+  <strong>Principe :</strong> Le Dockerfile liste les instructions pour créer une image. Cette image est ensuite instanciée en <em>container</em> lors du <code>docker compose up</code>.
+</div>
+
+<h3>Dockerfile — Services Spring Boot (Java)</h3>
+<p>Tous les services Java partagent le même pattern. Ils utilisent une image JRE légère Alpine.</p>
+
+<div class="card warning">
+  <strong>Important :</strong> Ces Dockerfiles ne compilent PAS le code. Ils copient le JAR déjà compilé depuis <code>target/</code>. Il faut donc lancer <code>mvn clean package -DskipTests</code> depuis <code>backend/</code> avant de faire <code>docker compose up --build</code>.
+</div>
+
+<div class="code-block">
+  <div class="code-header">
+    <span class="lang-badge">dockerfile</span>
+    backend/auth-service/Dockerfile &nbsp;|&nbsp;
+    backend/claim-service/Dockerfile &nbsp;|&nbsp;
+    backend/retake-service/Dockerfile &nbsp;|&nbsp;
+    backend/eureka-server/Dockerfile &nbsp;|&nbsp;
+    backend/gateway-service/Dockerfile
+  </div>
+  <pre><span class="cm"># Image de base : JRE Java 21 sur Alpine Linux (légère ~85MB)</span>
+<span class="kw">FROM</span> <span class="st">eclipse-temurin:21-jre-alpine</span>
+
+<span class="cm"># Répertoire de travail dans le container</span>
+<span class="kw">WORKDIR</span> <span class="st">/app</span>
+
+<span class="cm"># Copier le JAR compilé (mvn clean package produit target/*.jar)</span>
+<span class="kw">COPY</span> <span class="st">target/*.jar app.jar</span>
+
+<span class="cm"># Port exposé (documentaire, pas fonctionnel sans -p ou docker-compose)</span>
+<span class="kw">EXPOSE</span> <span class="nm">8083</span>   <span class="cm"># 8761 pour eureka, 8080 pour gateway, 8081 claim, 8082 retake</span>
+
+<span class="cm"># Commande de démarrage du container</span>
+<span class="kw">ENTRYPOINT</span> [<span class="st">"java"</span>, <span class="st">"-jar"</span>, <span class="st">"app.jar"</span>]</pre>
+</div>
+
+<h3>Dockerfile — ML Service (Python FastAPI)</h3>
+<p>Le service ML est en Python et utilise FastAPI. Son Dockerfile fait la compilation pip directement.</p>
+
+<div class="code-block">
+  <div class="code-header">
+    <span class="lang-badge">dockerfile</span>
+    backend/ml-service/Dockerfile
+  </div>
+  <pre><span class="cm"># Image Python 3.11 allégée</span>
+<span class="kw">FROM</span> <span class="st">python:3.11-slim</span>
+
+<span class="kw">WORKDIR</span> <span class="st">/app</span>
+
+<span class="cm"># Copier et installer les dépendances (FastAPI, scikit-learn, etc.)</span>
+<span class="kw">COPY</span> <span class="st">requirements.txt .</span>
+<span class="kw">RUN</span> <span class="fn">pip install</span> --no-cache-dir -r requirements.txt
+
+<span class="cm"># Copier tout le code source</span>
+<span class="kw">COPY</span> <span class="st">. .</span>
+
+<span class="cm"># Créer les dossiers pour les modèles ML et les données</span>
+<span class="kw">RUN</span> <span class="fn">mkdir</span> -p /app/models /app/data
+
+<span class="kw">EXPOSE</span> <span class="nm">5000</span>
+
+<span class="cm"># Lancement avec Uvicorn (serveur ASGI pour FastAPI)</span>
+<span class="kw">CMD</span> [<span class="st">"uvicorn"</span>, <span class="st">"app.main:app"</span>, <span class="st">"--host"</span>, <span class="st">"0.0.0.0"</span>, <span class="st">"--port"</span>, <span class="st">"5000"</span>]</pre>
+</div>
+
+<div class="grid-2">
+  <div class="card info">
+    <h4>FROM</h4>
+    Image de base (OS + runtime). Alpine = image minimale, sécurisée et légère.
+  </div>
+  <div class="card info">
+    <h4>WORKDIR</h4>
+    Définit le répertoire courant dans le container. Toutes les instructions suivantes s'exécutent depuis là.
+  </div>
+  <div class="card info">
+    <h4>COPY</h4>
+    Copie des fichiers de la machine hôte vers l'image Docker.
+  </div>
+  <div class="card info">
+    <h4>EXPOSE</h4>
+    Documentation du port. Docker Compose s'en sert mais il faut aussi mapper dans <code>ports:</code>.
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ DOCKER COMPOSE -->
+<div class="page-break"></div>
+<div class="section-header">
+  <div class="num">3</div>
+  <h2>Docker Compose — Orchestration</h2>
+  <span class="pts">2 pts</span>
+</div>
+
+<p><strong>Docker Compose</strong> orchestre plusieurs containers ensemble. Il définit les services, leur configuration, leurs dépendances et leur réseau commun.</p>
+
+<div class="code-block">
+  <div class="code-header">
+    <span class="lang-badge">yaml</span>
+    docker-compose.yml (racine du projet)
+  </div>
+  <pre><span class="kw">version</span>: <span class="st">'3.8'</span>
+
+<span class="kw">services</span>:
+
+  <span class="cm"># ── MySQL ─────────────────────────────────────────────────────</span>
+  <span class="pr">mysql</span>:
+    <span class="kw">image</span>: <span class="st">mysql:8.0</span>
+    <span class="kw">container_name</span>: <span class="st">mysql</span>
+    <span class="kw">environment</span>:
+      <span class="pr">MYSQL_ROOT_PASSWORD</span>: <span class="st">root</span>
+      <span class="pr">MYSQL_ROOT_HOST</span>: <span class="st">'%'</span>       <span class="cm"># Accepte les connexions de tous les hosts</span>
+    <span class="kw">ports</span>:
+      - <span class="st">"3307:3306"</span>                <span class="cm"># hôte:container</span>
+    <span class="kw">volumes</span>:
+      - <span class="st">mysql-data:/var/lib/mysql</span>  <span class="cm"># Persistance des données</span>
+    <span class="kw">networks</span>:
+      - <span class="st">platform-network</span>
+    <span class="kw">healthcheck</span>:                   <span class="cm"># Attend que MySQL soit prêt</span>
+      <span class="kw">test</span>: [<span class="st">"CMD"</span>, <span class="st">"mysqladmin"</span>, <span class="st">"ping"</span>, <span class="st">"-h"</span>, <span class="st">"localhost"</span>, <span class="st">"-uroot"</span>, <span class="st">"-proot"</span>]
+      <span class="kw">interval</span>: <span class="st">10s</span>
+      <span class="kw">timeout</span>: <span class="st">5s</span>
+      <span class="kw">retries</span>: <span class="nm">10</span>
+
+  <span class="cm"># ── PHPMyAdmin ─────────────────────────────────────────────────</span>
+  <span class="pr">phpmyadmin</span>:
+    <span class="kw">image</span>: <span class="st">phpmyadmin/phpmyadmin:latest</span>
+    <span class="kw">container_name</span>: <span class="st">phpmyadmin</span>
+    <span class="kw">environment</span>:
+      <span class="pr">PMA_HOST</span>: <span class="st">mysql</span>              <span class="cm"># Nom du service MySQL dans le réseau Docker</span>
+      <span class="pr">PMA_PORT</span>: <span class="nm">3306</span>
+      <span class="pr">MYSQL_ROOT_PASSWORD</span>: <span class="st">root</span>
+    <span class="kw">ports</span>:
+      - <span class="st">"8888:80"</span>                  <span class="cm"># http://localhost:8888</span>
+    <span class="kw">depends_on</span>:
+      <span class="pr">mysql</span>:
+        <span class="kw">condition</span>: <span class="st">service_healthy</span>
+    <span class="kw">networks</span>:
+      - <span class="st">platform-network</span>
+
+  <span class="cm"># ── Eureka Server ──────────────────────────────────────────────</span>
+  <span class="pr">eureka-server</span>:
+    <span class="kw">build</span>:
+      <span class="kw">context</span>: <span class="st">./backend/eureka-server</span>  <span class="cm"># Dossier contenant le Dockerfile</span>
+    <span class="kw">container_name</span>: <span class="st">eureka-server</span>
+    <span class="kw">ports</span>:
+      - <span class="st">"8761:8761"</span>
+    <span class="kw">networks</span>:
+      - <span class="st">platform-network</span>
+    <span class="kw">healthcheck</span>:
+      <span class="kw">test</span>: [<span class="st">"CMD-SHELL"</span>, <span class="st">"wget -qO- http://localhost:8761/actuator/health || exit 1"</span>]
+      <span class="kw">interval</span>: <span class="st">15s</span>
+      <span class="kw">timeout</span>: <span class="st">5s</span>
+      <span class="kw">retries</span>: <span class="nm">5</span>
+
+  <span class="cm"># ── API Gateway ────────────────────────────────────────────────</span>
+  <span class="pr">gateway-service</span>:
+    <span class="kw">build</span>:
+      <span class="kw">context</span>: <span class="st">./backend/gateway-service</span>
+    <span class="kw">container_name</span>: <span class="st">gateway-service</span>
+    <span class="kw">ports</span>:
+      - <span class="st">"8080:8080"</span>
+    <span class="kw">environment</span>:
+      - <span class="st">EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka/</span>
+    <span class="kw">depends_on</span>:
+      <span class="pr">eureka-server</span>:
+        <span class="kw">condition</span>: <span class="st">service_healthy</span>  <span class="cm"># Démarre APRÈS qu'Eureka soit healthy</span>
+    <span class="kw">networks</span>:
+      - <span class="st">platform-network</span>
+
+  <span class="cm"># ── Auth Service ───────────────────────────────────────────────</span>
+  <span class="pr">auth-service</span>:
+    <span class="kw">build</span>:
+      <span class="kw">context</span>: <span class="st">./backend/auth-service</span>
+    <span class="kw">container_name</span>: <span class="st">auth-service</span>
+    <span class="kw">ports</span>:
+      - <span class="st">"8083:8083"</span>
+    <span class="kw">environment</span>:
+      - <span class="st">SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/auth_db?createDatabaseIfNotExist=true&amp;serverTimezone=UTC</span>
+      - <span class="st">SPRING_DATASOURCE_USERNAME=root</span>
+      - <span class="st">SPRING_DATASOURCE_PASSWORD=root</span>
+      - <span class="st">EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka/</span>
+    <span class="kw">depends_on</span>:
+      <span class="pr">eureka-server</span>:
+        <span class="kw">condition</span>: <span class="st">service_healthy</span>
+      <span class="pr">mysql</span>:
+        <span class="kw">condition</span>: <span class="st">service_healthy</span>
+    <span class="kw">networks</span>:
+      - <span class="st">platform-network</span>
+
+  <span class="cm"># (claim-service et retake-service : même pattern que auth-service)</span>
+
+  <span class="cm"># ── ML Service (Python FastAPI) ────────────────────────────────</span>
+  <span class="pr">ml-service</span>:
+    <span class="kw">build</span>:
+      <span class="kw">context</span>: <span class="st">./backend/ml-service</span>
+    <span class="kw">container_name</span>: <span class="st">ml-service</span>
+    <span class="kw">ports</span>:
+      - <span class="st">"5001:5000"</span>              <span class="cm"># Port hôte 5001 → container 5000</span>
+    <span class="kw">volumes</span>:
+      - <span class="st">ml-data:/app/data</span>        <span class="cm"># Données CSV</span>
+      - <span class="st">ml-models:/app/models</span>    <span class="cm"># Modèles entraînés persistants</span>
+    <span class="kw">networks</span>:
+      - <span class="st">platform-network</span>
+
+<span class="kw">networks</span>:
+  <span class="pr">platform-network</span>:
+    <span class="kw">driver</span>: <span class="st">bridge</span>              <span class="cm"># Réseau virtuel isolé pour tous les services</span>
+
+<span class="kw">volumes</span>:
+  <span class="pr">mysql-data</span>:    <span class="cm"># Données MySQL persistées entre les restarts</span>
+  <span class="pr">ml-models</span>:    <span class="cm"># Modèles ML entraînés</span>
+  <span class="pr">ml-data</span>:</pre>
+</div>
+
+<h3>Concepts clés Docker Compose</h3>
+<div class="grid-2">
+  <div class="card info">
+    <h4>depends_on + condition</h4>
+    Garantit l'ordre de démarrage. <code>service_healthy</code> attend que le healthcheck passe avant de démarrer le service dépendant.
+  </div>
+  <div class="card info">
+    <h4>networks (bridge)</h4>
+    Tous les services dans <code>platform-network</code> se voient par leur <strong>nom de service</strong> (ex: <code>mysql</code>, <code>eureka-server</code>) à la place de l'IP.
+  </div>
+  <div class="card info">
+    <h4>volumes</h4>
+    Persistance des données. Sans volume, toutes les données disparaissent à chaque <code>docker compose down</code>.
+  </div>
+  <div class="card info">
+    <h4>environment</h4>
+    Variables d'environnement injectées dans le container. Elles surchargent <code>application.properties</code> dans Spring Boot.
+  </div>
+</div>
+
+<div class="card success">
+  <strong>Commandes essentielles :</strong><br>
+  <code>cd backend && mvn clean package -DskipTests</code> → Compiler tous les JAR<br>
+  <code>docker compose up --build</code> → Construire et démarrer tous les containers<br>
+  <code>docker compose down -v</code> → Arrêter et supprimer les volumes<br>
+  <code>docker compose logs -f auth-service</code> → Suivre les logs d'un service<br>
+  <code>docker ps</code> → Lister les containers actifs
+</div>
+
+<!-- ═══════════════════════════════════════════════ EUREKA -->
+<div class="page-break"></div>
+<div class="section-header">
+  <div class="num">4</div>
+  <h2>Eureka Server — Service Discovery</h2>
+  <span class="pts">1 pt</span>
+</div>
+
+<p>Eureka est un <strong>serveur de découverte</strong>. Chaque microservice s'enregistre sur Eureka au démarrage. Quand un service veut appeler un autre, il demande son adresse à Eureka au lieu de la coder en dur.</p>
+
+<h3>Eureka Server — Configuration</h3>
+
+<div class="code-block">
+  <div class="code-header">
+    <span class="lang-badge">java</span>
+    backend/eureka-server/src/main/java/tn/english/school/eurekaserver/EurekaServerApplication.java
+  </div>
+  <pre><span class="kw">package</span> <span class="cl">tn.english.school.eurekaserver</span>;
+
+<span class="kw">import</span> <span class="cl">org.springframework.boot.SpringApplication</span>;
+<span class="kw">import</span> <span class="cl">org.springframework.boot.autoconfigure.SpringBootApplication</span>;
+<span class="kw">import</span> <span class="cl">org.springframework.cloud.netflix.eureka.server.EnableEurekaServer</span>;
+
+<span class="an">@SpringBootApplication</span>
+<span class="an">@EnableEurekaServer</span>        <span class="cm">// Active le serveur Eureka — c'est tout ce qu'il faut !</span>
+<span class="kw">public class</span> <span class="cl">EurekaServerApplication</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(String[] args) {
+        SpringApplication.<span class="fn">run</span>(EurekaServerApplication.class, args);
+    }
+}</pre>
+</div>
+
+<div class="code-block">
+  <div class="code-header">
+    <span class="lang-badge">properties</span>
+    backend/eureka-server/src/main/resources/application.properties
+  </div>
+  <pre><span class="pr">spring.application.name</span>=<span class="st">eureka-server</span>
+<span class="pr">server.port</span>=<span class="nm">8761</span>
+
+<span class="cm"># Le serveur ne doit PAS s'enregistrer lui-même</span>
+<span class="pr">eureka.client.register-with-eureka</span>=<span class="va">false</span>
+<span class="pr">eureka.client.fetch-registry</span>=<span class="va">false</span>
+
+<span class="cm"># Ne pas attendre d'autres instances pour démarrer</span>
+<span class="pr">eureka.server.wait-time-in-ms-when-sync-empty</span>=<span class="nm">0</span></pre>
+</div>
+
+<h3>Eureka Client — Configuration dans chaque microservice</h3>
+<p>Chaque service Spring Boot qui doit s'enregistrer sur Eureka doit avoir :</p>
+
+<div class="code-block">
+  <div class="code-header">
+    <span class="lang-badge">java</span>
+    backend/auth-service/src/main/java/tn/english/school/authservice/AuthServiceApplication.java
+  </div>
+  <pre><span class="an">@SpringBootApplication</span>
+<span class="an">@EnableDiscoveryClient</span>    <span class="cm">// Enregistre ce service sur Eureka</span>
+<span class="kw">public class</span> <span class="cl">AuthServiceApplication</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(String[] args) {
+        SpringApplication.<span class="fn">run</span>(AuthServiceApplication.class, args);
+    }
+}</pre>
+</div>
+
+<div class="code-block">
+  <div class="code-header">
+    <span class="lang-badge">properties</span>
+    backend/auth-service/src/main/resources/application.properties (partie Eureka)
+  </div>
+  <pre><span class="pr">spring.application.name</span>=<span class="st">auth-service</span>   <span class="cm"># Nom avec lequel il s'enregistre sur Eureka</span>
+<span class="pr">server.port</span>=<span class="nm">8083</span>
+
+<span class="cm"># URL du serveur Eureka (localhost en dev, nom container en Docker)</span>
+<span class="pr">eureka.client.service-url.defaultZone</span>=<span class="st">http://localhost:8761/eureka/</span>
+
+<span class="cm"># Préférer l'IP au hostname (important en environnement Docker)</span>
+<span class="pr">eureka.instance.prefer-ip-address</span>=<span class="va">true</span></pre>
+</div>
+
+<div class="card warning">
+  <strong>Attention — Différence dev vs Docker :</strong><br>
+  En développement local : <code>eureka.client.service-url.defaultZone=http://localhost:8761/eureka/</code><br>
+  En Docker, l'URL est surchargée par la variable d'environnement du docker-compose :<br>
+  <code>EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka/</code><br>
+  (<code>eureka-server</code> = nom du service dans docker-compose, résolu par le réseau bridge)
+</div>
+
+<h3>Ce que chaque client Eureka doit avoir</h3>
+<table>
+  <tr><th>Élément</th><th>Où</th><th>Valeur</th></tr>
+  <tr><td><code>@EnableDiscoveryClient</code></td><td>Classe principale</td><td>Annotation obligatoire</td></tr>
+  <tr><td><code>spring.application.name</code></td><td>application.properties</td><td>Nom unique du service</td></tr>
+  <tr><td><code>eureka.client.service-url.defaultZone</code></td><td>application.properties</td><td>URL du serveur Eureka</td></tr>
+  <tr><td><code>eureka.instance.prefer-ip-address</code></td><td>application.properties</td><td><code>true</code> (pour Docker)</td></tr>
+  <tr><td>Dépendance Maven</td><td>pom.xml</td><td><code>spring-cloud-starter-netflix-eureka-client</code></td></tr>
+</table>
+
+<!-- ═══════════════════════════════════════════════ GATEWAY -->
+<div class="page-break"></div>
+<div class="section-header">
+  <div class="num">5</div>
+  <h2>API Gateway — Point d'Entrée Unique</h2>
+  <span class="pts">1 pt</span>
+</div>
+
+<p>Le Gateway est le <strong>point d'entrée unique</strong> de toute l'application. Il reçoit toutes les requêtes du frontend et les route vers le bon microservice. Il gère aussi le CORS (Cross-Origin Resource Sharing).</p>
+
+<div class="code-block">
+  <div class="code-header">
+    <span class="lang-badge">yaml</span>
+    backend/gateway-service/src/main/resources/application.yml
+  </div>
+  <pre><span class="pr">server</span>:
+  <span class="kw">port</span>: <span class="nm">8080</span>
+
+<span class="pr">spring</span>:
+  <span class="kw">application</span>:
+    <span class="pr">name</span>: <span class="st">gateway-service</span>
+
+  <span class="kw">cloud</span>:
+    <span class="kw">gateway</span>:
+      <span class="cm"># ── CORS global : autorise le frontend Angular ──────────────</span>
+      <span class="pr">globalcors</span>:
+        <span class="kw">cors-configurations</span>:
+          <span class="st">'[/**]'</span>:
+            <span class="kw">allowedOrigins</span>:
+              - <span class="st">"http://localhost:4200"</span>   <span class="cm"># URL du frontend Angular</span>
+            <span class="kw">allowedMethods</span>: [<span class="st">GET</span>, <span class="st">POST</span>, <span class="st">PUT</span>, <span class="st">PATCH</span>, <span class="st">DELETE</span>, <span class="st">OPTIONS</span>]
+            <span class="kw">allowedHeaders</span>: [<span class="st">"*"</span>]
+            <span class="kw">allowCredentials</span>: <span class="va">true</span>
+
+      <span class="cm"># ── Routes : règles de routage ───────────────────────────────</span>
+      <span class="kw">routes</span>:
+        <span class="cm"># Auth Service — toutes les requêtes /auth/**, /user/**, /api/students/**</span>
+        - <span class="kw">id</span>: <span class="st">auth-service</span>
+          <span class="kw">uri</span>: <span class="st">http://auth-service:8083</span>        <span class="cm"># Nom container dans Docker</span>
+          <span class="kw">predicates</span>:
+            - <span class="st">Path=/auth/**, /user/**, /api/students/**</span>
+
+        <span class="cm"># Claim Service</span>
+        - <span class="kw">id</span>: <span class="st">claim-service</span>
+          <span class="kw">uri</span>: <span class="st">http://claim-service:8081</span>
+          <span class="kw">predicates</span>:
+            - <span class="st">Path=/api/claims/**</span>
+
+        <span class="cm"># Retake Service</span>
+        - <span class="kw">id</span>: <span class="st">retake-service</span>
+          <span class="kw">uri</span>: <span class="st">http://retake-service:8082</span>
+          <span class="kw">predicates</span>:
+            - <span class="st">Path=/api/retake-requests/**</span>
+
+        <span class="cm"># ML Service — StripPrefix=2 enlève /api/ml du chemin</span>
+        <span class="cm"># /api/ml/predict → http://ml-service:5000/predict</span>
+        - <span class="kw">id</span>: <span class="st">ml-service</span>
+          <span class="kw">uri</span>: <span class="st">http://ml-service:5000</span>
+          <span class="kw">predicates</span>:
+            - <span class="st">Path=/api/ml/**</span>
+          <span class="kw">filters</span>:
+            - <span class="st">StripPrefix=2</span>     <span class="cm"># Enlève les 2 premiers segments (/api/ml)</span>
+
+<span class="pr">eureka</span>:
+  <span class="kw">client</span>:
+    <span class="kw">service-url</span>:
+      <span class="pr">defaultZone</span>: <span class="st">http://eureka-server:8761/eureka/</span></pre>
+</div>
+
+<h3>Comment fonctionne le routage</h3>
+<div class="flow">
+  <div class="flow-step">Frontend appelle<br>POST /auth/login</div>
+  <span class="flow-arrow">→</span>
+  <div class="flow-step">Gateway :8080<br>reçoit la requête</div>
+  <span class="flow-arrow">→</span>
+  <div class="flow-step">Vérifie les rules<br>Path=/auth/**</div>
+  <span class="flow-arrow">→</span>
+  <div class="flow-step">Route vers<br>auth-service:8083</div>
+  <span class="flow-arrow">→</span>
+  <div class="flow-step">AuthController<br>/auth/login</div>
+</div>
+
+<div class="flow">
+  <div class="flow-step">Frontend appelle<br>POST /api/ml/analyze</div>
+  <span class="flow-arrow">→</span>
+  <div class="flow-step">Gateway :8080</div>
+  <span class="flow-arrow">→</span>
+  <div class="flow-step">Path=/api/ml/**<br>StripPrefix=2</div>
+  <span class="flow-arrow">→</span>
+  <div class="flow-step">ml-service:5000<br><strong>/analyze</strong></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ SÉCURITÉ -->
+<div class="page-break"></div>
+<div class="section-header">
+  <div class="num">6</div>
+  <h2>Sécurité — JWT + Spring Security</h2>
+  <span class="pts">2 pts</span>
+</div>
+
+<p>La sécurité est gérée par <strong>JWT (JSON Web Token)</strong>. L'auth-service génère un token signé à la connexion. Le frontend l'envoie dans chaque requête via le header <code>Authorization: Bearer &lt;token&gt;</code>.</p>
+
+<h3>Flux d'authentification complet</h3>
+<div class="flow" style="flex-direction:column; align-items:flex-start; gap:8px;">
+  <div style="display:flex;align-items:center;gap:8px;"><div class="flow-step">1. Frontend</div><span class="flow-arrow">→</span><div class="flow-step">POST /auth/login {email, password}</div></div>
+  <div style="display:flex;align-items:center;gap:8px;"><div class="flow-step">2. AuthService</div><span class="flow-arrow">→</span><div class="flow-step">Vérifie email/mot de passe avec BCrypt</div></div>
+  <div style="display:flex;align-items:center;gap:8px;"><div class="flow-step">3. JwtService</div><span class="flow-arrow">→</span><div class="flow-step">Génère JWT signé HMAC-SHA512 (id, name, role, email)</div></div>
+  <div style="display:flex;align-items:center;gap:8px;"><div class="flow-step">4. Réponse</div><span class="flow-arrow">→</span><div class="flow-step">{accessToken, tokenType:"Bearer", expiresIn:86400}</div></div>
+  <div style="display:flex;align-items:center;gap:8px;"><div class="flow-step">5. Requêtes suivantes</div><span class="flow-arrow">→</span><div class="flow-step">Authorization: Bearer eyJ0eXAi...</div></div>
+  <div style="display:flex;align-items:center;gap:8px;"><div class="flow-step">6. JwtAuthFilter</div><span class="flow-arrow">→</span><div class="flow-step">Valide le token à chaque requête reçue</div></div>
+</div>
+
+<h3>JwtService — Génération et validation du token</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="lang-badge">java</span>
+    backend/auth-service/src/main/java/tn/english/school/authservice/service/JwtService.java
+  </div>
+  <pre><span class="an">@Service</span>
+<span class="kw">public class</span> <span class="cl">JwtService</span> {
+
+    <span class="an">@Value</span>(<span class="st">"${jwt.secret}"</span>)
+    <span class="kw">private</span> String secret;            <span class="cm">// Clé secrète (64+ caractères)</span>
+
+    <span class="an">@Value</span>(<span class="st">"${jwt.expiration}"</span>)
+    <span class="kw">private long</span> expirationMs;         <span class="cm">// 86400000 = 24h</span>
+
+    <span class="cm">// Génère le token JWT avec les claims de l'utilisateur</span>
+    <span class="kw">public</span> String <span class="fn">generateToken</span>(AppUser user) {
+        <span class="kw">long</span> nowMs = System.<span class="fn">currentTimeMillis</span>();
+        <span class="kw">return</span> Jwts.<span class="fn">builder</span>()
+                .<span class="fn">header</span>().<span class="fn">type</span>(<span class="st">"JWT"</span>).<span class="fn">and</span>()
+                .<span class="fn">claims</span>(Map.<span class="fn">of</span>(
+                    <span class="st">"id"</span>,   user.<span class="fn">getId</span>(),          <span class="cm">// ID utilisateur</span>
+                    <span class="st">"name"</span>, user.<span class="fn">getFirstName</span>() + <span class="st">" "</span> + user.<span class="fn">getLastName</span>(),
+                    <span class="st">"role"</span>, user.<span class="fn">getRole</span>().<span class="fn">name</span>() <span class="cm">// STUDENT ou ADMIN</span>
+                ))
+                .<span class="fn">subject</span>(user.<span class="fn">getEmail</span>())         <span class="cm">// sub = email</span>
+                .<span class="fn">issuedAt</span>(<span class="kw">new</span> Date(nowMs))
+                .<span class="fn">expiration</span>(<span class="kw">new</span> Date(nowMs + expirationMs))
+                .<span class="fn">signWith</span>(<span class="fn">getKey</span>())               <span class="cm">// HMAC-SHA512</span>
+                .<span class="fn">compact</span>();
+    }
+
+    <span class="kw">public boolean</span> <span class="fn">isTokenValid</span>(String token) {
+        <span class="kw">try</span> {
+            <span class="kw">return</span> <span class="fn">extractClaims</span>(token).<span class="fn">getExpiration</span>().<span class="fn">after</span>(<span class="kw">new</span> Date());
+        } <span class="kw">catch</span> (Exception e) { <span class="kw">return false</span>; }
+    }
+}</pre>
+</div>
+
+<h3>JwtAuthFilter — Filtre appliqué à chaque requête</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="lang-badge">java</span>
+    backend/auth-service/src/main/java/tn/english/school/authservice/config/JwtAuthFilter.java
+  </div>
+  <pre><span class="an">@Component</span>
+<span class="kw">public class</span> <span class="cl">JwtAuthFilter</span> <span class="kw">extends</span> <span class="cl">OncePerRequestFilter</span> {
+
+    <span class="an">@Override</span>
+    <span class="kw">protected void</span> <span class="fn">doFilterInternal</span>(HttpServletRequest request,
+                                        HttpServletResponse response,
+                                        FilterChain filterChain) {
+        <span class="kw">final</span> String authHeader = request.<span class="fn">getHeader</span>(<span class="st">"Authorization"</span>);
+
+        <span class="cm">// Pas de token → passe au filtre suivant (accès public)</span>
+        <span class="kw">if</span> (authHeader == <span class="va">null</span> || !authHeader.<span class="fn">startsWith</span>(<span class="st">"Bearer "</span>)) {
+            filterChain.<span class="fn">doFilter</span>(request, response);
+            <span class="kw">return</span>;
+        }
+
+        <span class="kw">final</span> String jwt = authHeader.<span class="fn">substring</span>(<span class="nm">7</span>); <span class="cm">// Enlève "Bearer "</span>
+
+        <span class="kw">if</span> (jwtService.<span class="fn">isTokenValid</span>(jwt)) {
+            String email = jwtService.<span class="fn">extractEmail</span>(jwt);
+            <span class="cm">// Charge l'utilisateur et l'authentifie dans le SecurityContext</span>
+            <span class="kw">var</span> userDetails = userDetailsService.<span class="fn">loadUserByUsername</span>(email);
+            <span class="kw">var</span> authToken = <span class="kw">new</span> <span class="cl">UsernamePasswordAuthenticationToken</span>(
+                    userDetails, <span class="va">null</span>, userDetails.<span class="fn">getAuthorities</span>());
+            SecurityContextHolder.<span class="fn">getContext</span>().<span class="fn">setAuthentication</span>(authToken);
+        }
+        filterChain.<span class="fn">doFilter</span>(request, response);
+    }
+}</pre>
+</div>
+
+<h3>SecurityConfig — Règles d'accès</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="lang-badge">java</span>
+    backend/auth-service/src/main/java/tn/english/school/authservice/config/SecurityConfig.java
+  </div>
+  <pre><span class="an">@Configuration</span> <span class="an">@EnableWebSecurity</span>
+<span class="kw">public class</span> <span class="cl">SecurityConfig</span> {
+
+    <span class="an">@Bean</span>
+    <span class="kw">public</span> <span class="cl">SecurityFilterChain</span> <span class="fn">securityFilterChain</span>(HttpSecurity http) <span class="kw">throws</span> Exception {
+        <span class="kw">return</span> http
+            .csrf(AbstractHttpConfigurer::disable)      <span class="cm">// API REST → pas de CSRF</span>
+            .sessionManagement(s -> s
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)) <span class="cm">// JWT = stateless</span>
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers(<span class="st">"/auth/login"</span>, <span class="st">"/auth/register"</span>).<span class="fn">permitAll</span>() <span class="cm">// Public</span>
+                .anyRequest().<span class="fn">authenticated</span>()                              <span class="cm">// Reste : JWT requis</span>
+            )
+            .authenticationProvider(authenticationProvider)
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+            .build();
+    }
+}</pre>
+</div>
+
+<!-- ═══════════════════════════════════════════════ CONFIG SERVER -->
+<div class="section-header">
+  <div class="num">7</div>
+  <h2>Config Server — Centralisation de la Configuration</h2>
+  <span class="pts">1 pt</span>
+</div>
+
+<p>Un <strong>Config Server</strong> centralise tous les fichiers <code>application.properties</code> dans un dépôt Git externe. Les microservices récupèrent leur configuration au démarrage depuis ce serveur.</p>
+
+<div class="card info">
+  <strong>Dans ce projet :</strong> La configuration est gérée directement dans chaque service via les variables d'environnement Docker Compose qui <em>surchargent</em> les application.properties. C'est une approche simplifiée mais fonctionnelle, équivalente en comportement à un Config Server pour un environnement Docker.
+</div>
+
+<h3>Pattern Config Server Spring Cloud (référence)</h3>
+<div class="grid-2">
+  <div class="code-block" style="margin:0">
+    <div class="code-header"><span class="lang-badge">java</span>Serveur</div>
+    <pre><span class="an">@SpringBootApplication</span>
+<span class="an">@EnableConfigServer</span>
+<span class="kw">public class</span> <span class="cl">ConfigServerApp</span> {}</pre>
+  </div>
+  <div class="code-block" style="margin:0">
+    <div class="code-header"><span class="lang-badge">properties</span>Client</div>
+    <pre><span class="pr">spring.config.import</span>=<span class="st">optional:configserver:</span>
+<span class="st">http://config-server:8888</span>
+<span class="pr">spring.application.name</span>=<span class="st">auth-service</span></pre>
+  </div>
+</div>
+
+<h3>Équivalent fonctionnel dans ce projet — Variables Docker Compose</h3>
+<p>Les variables d'environnement dans docker-compose.yml surchargent <code>application.properties</code> grâce aux conventions Spring Boot :</p>
+<table>
+  <tr><th>Variable Docker Compose</th><th>Propriété Spring Boot</th></tr>
+  <tr><td><code>SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/auth_db</code></td><td><code>spring.datasource.url</code></td></tr>
+  <tr><td><code>SPRING_DATASOURCE_USERNAME=root</code></td><td><code>spring.datasource.username</code></td></tr>
+  <tr><td><code>EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka/</code></td><td><code>eureka.client.service-url.defaultZone</code></td></tr>
+</table>
+
+<!-- ═══════════════════════════════════════════════ COMMUNICATION -->
+<div class="page-break"></div>
+<div class="section-header">
+  <div class="num">8</div>
+  <h2>Communication entre Microservices — OpenFeign</h2>
+  <span class="pts">2 pts</span>
+</div>
+
+<p>Dans ce projet, la communication inter-services se fait via <strong>OpenFeign</strong> (déclaratif) : le retake-service appelle le claim-service pour lier un retake à une réclamation.</p>
+
+<h3>Architecture de la communication</h3>
+<div class="arch-diagram">
+  <div style="display:flex;justify-content:center;align-items:center;gap:24px;flex-wrap:wrap;">
+    <div>
+      <span class="arch-box service">retake-service :8082</span>
+      <div style="margin-top:8px;font-size:10px;color:#8b949e;">RetakeRequestService</div>
+    </div>
+    <div>
+      <div style="color:#fcd34d;font-size:12px;margin-bottom:4px;">OpenFeign HTTP</div>
+      <div style="color:#58a6ff;font-size:20px;">→→→</div>
+      <div style="color:#58a6ff;font-size:9px;">via Eureka (service discovery)</div>
+    </div>
+    <div>
+      <span class="arch-box service">claim-service :8081</span>
+      <div style="margin-top:8px;font-size:10px;color:#8b949e;">ClaimController</div>
+    </div>
+  </div>
+</div>
+
+<h3>FeignClient — Interface déclarative dans retake-service</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="lang-badge">java</span>
+    backend/retake-service/src/main/java/tn/english/school/retakeservice/client/ClaimClient.java
+  </div>
+  <pre><span class="kw">package</span> <span class="cl">tn.english.school.retakeservice.client</span>;
+
+<span class="kw">import</span> <span class="cl">org.springframework.cloud.openfeign.FeignClient</span>;
+
+<span class="cm">// "claim-service" = nom enregistré sur Eureka (spring.application.name du claim-service)</span>
+<span class="cm">// Feign demande à Eureka l'adresse IP/port réelle de claim-service</span>
+<span class="an">@FeignClient</span>(name = <span class="st">"claim-service"</span>)
+<span class="kw">public interface</span> <span class="cl">ClaimClient</span> {
+
+    <span class="cm">// Récupère une réclamation par son ID — GET http://claim-service/api/claims/{id}</span>
+    <span class="an">@GetMapping</span>(<span class="st">"/api/claims/{id}"</span>)
+    <span class="cl">ClaimDTO</span> <span class="fn">getClaimById</span>(<span class="an">@PathVariable</span>(<span class="st">"id"</span>) Long id);
+
+    <span class="cm">// Lie un retake à une réclamation — PUT http://claim-service/api/claims/{claimId}/link-retake/{retakeId}</span>
+    <span class="an">@PutMapping</span>(<span class="st">"/api/claims/{claimId}/link-retake/{retakeRequestId}"</span>)
+    <span class="cl">ClaimDTO</span> <span class="fn">linkRetakeRequest</span>(
+        <span class="an">@PathVariable</span>(<span class="st">"claimId"</span>) Long claimId,
+        <span class="an">@PathVariable</span>(<span class="st">"retakeRequestId"</span>) Long retakeRequestId
+    );
+}</pre>
+</div>
+
+<div class="card success">
+  <strong>Avantage OpenFeign :</strong> Il suffit de déclarer une interface. Feign génère automatiquement le code HTTP, gère la sérialisation JSON, et utilise Eureka pour résoudre l'adresse du service cible. Pas besoin de <code>RestTemplate</code> manuel.
+</div>
+
+<h3>Activation de Feign dans retake-service</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="lang-badge">java</span>
+    backend/retake-service/src/main/java/tn/english/school/retakeservice/RetakeServiceApplication.java
+  </div>
+  <pre><span class="an">@SpringBootApplication</span>
+<span class="an">@EnableDiscoveryClient</span>
+<span class="an">@EnableFeignClients</span>    <span class="cm">// Active le scan des interfaces @FeignClient</span>
+<span class="kw">public class</span> <span class="cl">RetakeServiceApplication</span> { ... }</pre>
+</div>
+
+<h3>Tableau des types de communication</h3>
+<table>
+  <tr><th>Type</th><th>Outil</th><th>Quand l'utiliser</th><th>Dans ce projet</th></tr>
+  <tr><td>Synchrone REST</td><td>OpenFeign</td><td>Réponse immédiate nécessaire</td><td>retake → claim</td></tr>
+  <tr><td>Synchrone REST</td><td>RestTemplate / WebClient</td><td>Appels HTTP simples</td><td>claim → GROQ API</td></tr>
+  <tr><td>Asynchrone</td><td>Kafka / RabbitMQ</td><td>Découplage fort, events</td><td>—</td></tr>
+</table>
+
+<!-- ═══════════════════════════════════════════════ ML SERVICE -->
+<div class="page-break"></div>
+<div class="section-header">
+  <div class="num">9</div>
+  <h2>ML Service — Microservice Python FastAPI</h2>
+  <span class="pts">Technologie avancée 2 pts + Valeurs ajoutées 2 pts</span>
+</div>
+
+<p>Le ML Service est un microservice <strong>Python FastAPI</strong> qui expose une API REST pour prédire les performances académiques des étudiants via des modèles de Machine Learning (Random Forest + K-Means).</p>
+
+<h3>Endpoints exposés par le ML Service</h3>
+<table>
+  <tr><th>Méthode</th><th>Endpoint ML</th><th>Via Gateway</th><th>Description</th></tr>
+  <tr><td>GET</td><td>/health</td><td>/api/ml/health</td><td>Vérification santé service</td></tr>
+  <tr><td>GET</td><td>/model-info</td><td>/api/ml/model-info</td><td>Métriques du modèle</td></tr>
+  <tr><td>POST</td><td>/predict</td><td>/api/ml/predict</td><td>Prédiction pass/fail (Random Forest)</td></tr>
+  <tr><td>POST</td><td>/cluster</td><td>/api/ml/cluster</td><td>Clustering K-Means (At-Risk/Average/High)</td></tr>
+  <tr><td>POST</td><td>/analyze</td><td>/api/ml/analyze</td><td>predict + cluster en un seul appel</td></tr>
+</table>
+
+<h3>Point d'entrée — app/main.py</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="lang-badge">python</span>
+    backend/ml-service/app/main.py
+  </div>
+  <pre><span class="kw">from</span> <span class="cl">fastapi</span> <span class="kw">import</span> <span class="cl">FastAPI</span>, <span class="cl">HTTPException</span>
+<span class="kw">from</span> <span class="cl">pydantic</span> <span class="kw">import</span> <span class="cl">BaseModel</span>
+<span class="kw">import</span> joblib, numpy <span class="kw">as</span> np
+
+<span class="cm"># Modèle de données d'entrée (Pydantic valide automatiquement)</span>
+<span class="kw">class</span> <span class="cl">StudentInput</span>(<span class="cl">BaseModel</span>):
+    age: int = <span class="nm">17</span>
+    studytime: int = <span class="nm">2</span>    <span class="cm"># 1-4 (heures/semaine)</span>
+    failures: int = <span class="nm">0</span>    <span class="cm"># Nombre d'échecs passés</span>
+    absences: int = <span class="nm">6</span>    <span class="cm"># Absences</span>
+    G1: int = <span class="nm">10</span>          <span class="cm"># Note 1er trimestre</span>
+    G2: int = <span class="nm">10</span>          <span class="cm"># Note 2ème trimestre</span>
+    <span class="cm"># + autres champs (school, sex, address...)</span>
+
+<span class="cm"># Chargement des modèles au démarrage (lifespan)</span>
+<span class="an">@asynccontextmanager</span>
+<span class="kw">async def</span> <span class="fn">lifespan</span>(app):
+    ensure_model()                                <span class="cm"># Entraîne si absent</span>
+    _models[<span class="st">"rf"</span>]     = joblib.<span class="fn">load</span>(<span class="st">"models/rf_classifier.pkl"</span>)
+    _models[<span class="st">"kmeans"</span>] = joblib.<span class="fn">load</span>(<span class="st">"models/kmeans.pkl"</span>)
+    _models[<span class="st">"scaler"</span>] = joblib.<span class="fn">load</span>(<span class="st">"models/scaler.pkl"</span>)
+    <span class="kw">yield</span>
+
+app = <span class="cl">FastAPI</span>(title=<span class="st">"ML Service"</span>, lifespan=lifespan)
+
+<span class="cm"># Endpoint predict — Random Forest Classifier</span>
+<span class="an">@app.post</span>(<span class="st">"/predict"</span>)
+<span class="kw">def</span> <span class="fn">predict</span>(student: <span class="cl">StudentInput</span>):
+    X = <span class="fn">_to_pca_vector</span>(student)           <span class="cm"># Normalisation + PCA</span>
+    pred  = <span class="fn">int</span>(_models[<span class="st">"rf"</span>].<span class="fn">predict</span>(X)[<span class="nm">0</span>])
+    proba = _models[<span class="st">"rf"</span>].<span class="fn">predict_proba</span>(X)[<span class="nm">0</span>]
+    <span class="kw">return</span> {
+        <span class="st">"prediction"</span>:       <span class="st">"pass"</span> <span class="kw">if</span> pred == <span class="nm">1</span> <span class="kw">else</span> <span class="st">"fail"</span>,
+        <span class="st">"probability_pass"</span>: <span class="fn">round</span>(<span class="fn">float</span>(proba[<span class="nm">1</span>]), <span class="nm">4</span>),
+        <span class="st">"probability_fail"</span>: <span class="fn">round</span>(<span class="fn">float</span>(proba[<span class="nm">0</span>]), <span class="nm">4</span>),
+    }
+
+<span class="cm"># Endpoint cluster — K-Means (k=3)</span>
+<span class="an">@app.post</span>(<span class="st">"/cluster"</span>)
+<span class="kw">def</span> <span class="fn">cluster</span>(student: <span class="cl">StudentInput</span>):
+    X = <span class="fn">_to_pca_vector</span>(student)
+    cluster_id = <span class="fn">int</span>(_models[<span class="st">"kmeans"</span>].<span class="fn">predict</span>(X)[<span class="nm">0</span>])
+    labels = [<span class="st">"At-Risk"</span>, <span class="st">"Average"</span>, <span class="st">"High-Performing"</span>]
+    <span class="kw">return</span> { <span class="st">"cluster"</span>: cluster_id, <span class="st">"label"</span>: labels[cluster_id] }
+
+<span class="cm"># Endpoint analyze — predict + cluster en une seule requête</span>
+<span class="an">@app.post</span>(<span class="st">"/analyze"</span>)
+<span class="kw">def</span> <span class="fn">analyze</span>(student: <span class="cl">StudentInput</span>):
+    <span class="kw">return</span> { <span class="st">"prediction"</span>: <span class="fn">predict</span>(student), <span class="st">"profile"</span>: <span class="fn">cluster</span>(student) }</pre>
+</div>
+
+<h3>Modèles ML utilisés</h3>
+<table>
+  <tr><th>Modèle</th><th>Algorithme</th><th>Rôle</th><th>Output</th></tr>
+  <tr><td>rf_classifier.pkl</td><td>Random Forest</td><td>Prédiction résultat (pass/fail)</td><td>pass | fail + probabilités</td></tr>
+  <tr><td>kmeans.pkl</td><td>K-Means (k=3)</td><td>Clustering profil étudiant</td><td>At-Risk / Average / High-Performing</td></tr>
+  <tr><td>scaler.pkl</td><td>StandardScaler</td><td>Normalisation des features</td><td>Valeurs normalisées</td></tr>
+  <tr><td>pca.pkl</td><td>PCA</td><td>Réduction dimensionnelle</td><td>Vecteur compact</td></tr>
+</table>
+
+<!-- ═══════════════════════════════════════════════ FRONTEND -->
+<div class="page-break"></div>
+<div class="section-header">
+  <div class="num">10</div>
+  <h2>Frontend Angular — Communication avec les Microservices</h2>
+  <span class="pts">1.5 pts</span>
+</div>
+
+<p>Le frontend Angular communique exclusivement avec le <strong>Gateway (:8080)</strong>. Il n'appelle jamais directement les microservices. Les URLs sont centralisées dans le fichier d'environnement.</p>
+
+<h3>Configuration centralisée — environment.ts</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="lang-badge">typescript</span>
+    frontend/src/environments/environment.ts
+  </div>
+  <pre><span class="kw">export const</span> <span class="cl">environment</span> = {
+  production: <span class="va">false</span>,
+  baseUrl:      <span class="st">'http://localhost:8080'</span>,   <span class="cm">// Gateway — point d'entrée unique</span>
+  claimApiUrl:  <span class="st">'http://localhost:8080/api'</span>, <span class="cm">// → /api/claims/** → claim-service:8081</span>
+  retakeApiUrl: <span class="st">'http://localhost:8080/api'</span>, <span class="cm">// → /api/retake-requests/** → retake-service:8082</span>
+  mlApiUrl:     <span class="st">'http://localhost:8080/api/ml'</span>,<span class="cm">// → /api/ml/** (StripPrefix=2) → ml-service:5000</span>
+  studentApiUrl:<span class="st">'http://localhost:8080'</span>,     <span class="cm">// → /api/students/** → auth-service:8083</span>
+};</pre>
+</div>
+
+<h3>ClaimService — Communication avec claim-service et retake-service</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="lang-badge">typescript</span>
+    frontend/src/app/routes/claims/services/claim.service.ts
+  </div>
+  <pre><span class="an">@Injectable</span>({ providedIn: <span class="st">'root'</span> })
+<span class="kw">export class</span> <span class="cl">ClaimService</span> {
+  <span class="kw">private readonly</span> claimApi  = environment.claimApiUrl;   <span class="cm">// http://localhost:8080/api</span>
+  <span class="kw">private readonly</span> retakeApi = environment.retakeApiUrl;  <span class="cm">// http://localhost:8080/api</span>
+
+  <span class="cm">// GET /api/claims → Gateway → claim-service:8081/api/claims</span>
+  <span class="fn">getAllClaims</span>(studentId?: number) {
+    <span class="kw">const</span> url = studentId
+      ? <span class="st">`${this.claimApi}/claims?studentId=${studentId}`</span>
+      : <span class="st">`${this.claimApi}/claims`</span>;
+    <span class="kw">return</span> this.http.<span class="fn">get</span>&lt;Claim[]&gt;(url);
+  }
+
+  <span class="cm">// POST /api/claims → crée une réclamation</span>
+  <span class="fn">createClaim</span>(claim: Partial&lt;Claim&gt;) {
+    <span class="kw">return</span> this.http.<span class="fn">post</span>&lt;Claim&gt;(<span class="st">`${this.claimApi}/claims`</span>, claim);
+  }
+
+  <span class="cm">// PATCH /api/claims/{id}/authorize-retake → autorise le rattrapage</span>
+  <span class="fn">authorizeRetake</span>(id: number) {
+    <span class="kw">return</span> this.http.<span class="fn">patch</span>&lt;Claim&gt;(<span class="st">`${this.claimApi}/claims/${id}/authorize-retake`</span>, {});
+  }
+
+  <span class="cm">// POST /api/retake-requests/from-claim/{claimId} → retake-service</span>
+  <span class="fn">createRetakeFromClaim</span>(claimId: number, courseName: string, reason: string, file: File) {
+    <span class="kw">const</span> formData = <span class="kw">new</span> FormData();
+    formData.<span class="fn">append</span>(<span class="st">'retakeRequest'</span>, <span class="kw">new</span> Blob([JSON.<span class="fn">stringify</span>({courseName, reason})],
+                   { type: <span class="st">'application/json'</span> }));
+    formData.<span class="fn">append</span>(<span class="st">'attachment'</span>, file);
+    <span class="kw">return</span> this.http.<span class="fn">post</span>(<span class="st">`${this.retakeApi}/retake-requests/from-claim/${claimId}`</span>, formData);
+  }
+}</pre>
+</div>
+
+<h3>MlService — Communication avec le ML Service</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="lang-badge">typescript</span>
+    frontend/src/app/routes/claims/services/ml.service.ts
+  </div>
+  <pre><span class="an">@Injectable</span>({ providedIn: <span class="st">'root'</span> })
+<span class="kw">export class</span> <span class="cl">MlService</span> {
+  <span class="kw">private readonly</span> mlApi      = environment.mlApiUrl;      <span class="cm">// http://localhost:8080/api/ml</span>
+  <span class="kw">private readonly</span> studentApi = environment.studentApiUrl;  <span class="cm">// http://localhost:8080</span>
+
+  <span class="cm">// Étape 1 : récupère le profil académique depuis auth-service</span>
+  <span class="cm">// GET /api/students/{userId}/academic-profile → Gateway → auth-service:8083</span>
+  <span class="fn">getAcademicProfile</span>(userId: number): Observable&lt;AcademicProfile&gt; {
+    <span class="kw">return</span> this.http.<span class="fn">get</span>&lt;AcademicProfile&gt;(
+      <span class="st">`${this.studentApi}/api/students/${userId}/academic-profile`</span>
+    );
+  }
+
+  <span class="cm">// Étape 2 : analyse ML complète (pipe RxJS — chaîne les deux appels)</span>
+  <span class="cm">// 1) GET profil → 2) POST /api/ml/analyze → Gateway (StripPrefix=2) → ml-service:5000/analyze</span>
+  <span class="fn">analyzeStudent</span>(userId: number): Observable&lt;MlAnalysis&gt; {
+    <span class="kw">return</span> this.<span class="fn">getAcademicProfile</span>(userId).<span class="fn">pipe</span>(
+      <span class="fn">switchMap</span>(profile =>
+        this.http.<span class="fn">post</span>&lt;MlAnalysis&gt;(<span class="st">`${this.mlApi}/analyze`</span>, {
+          G1: profile.g1, G2: profile.g2,
+          age: profile.age, failures: profile.failures,
+          absences: profile.absences, studytime: profile.studytime,
+        })
+      )
+    );
+  }
+}</pre>
+</div>
+
+<h3>Flux complet — Analyse ML depuis le Frontend</h3>
+<div class="flow" style="flex-direction:column; align-items:flex-start; gap:8px;">
+  <div style="display:flex;align-items:center;gap:8px;">
+    <div class="flow-step" style="background:#1d4ed8">1. Angular</div>
+    <span class="flow-arrow">→</span>
+    <div>GET <code>http://localhost:8080/api/students/1/academic-profile</code></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <div class="flow-step">2. Gateway</div>
+    <span class="flow-arrow">→</span>
+    <div>Path=/api/students/** → route vers <code>auth-service:8083</code></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <div class="flow-step">3. auth-service</div>
+    <span class="flow-arrow">→</span>
+    <div>Retourne {age:19, g1:12, g2:14, failures:0, absences:3, studytime:2}</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <div class="flow-step" style="background:#1d4ed8">4. Angular (switchMap)</div>
+    <span class="flow-arrow">→</span>
+    <div>POST <code>http://localhost:8080/api/ml/analyze</code> avec le profil</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <div class="flow-step">5. Gateway</div>
+    <span class="flow-arrow">→</span>
+    <div>Path=/api/ml/** + <strong>StripPrefix=2</strong> → <code>ml-service:5000/analyze</code></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <div class="flow-step" style="background:#e94560">6. ml-service</div>
+    <span class="flow-arrow">→</span>
+    <div>Retourne {prediction:{prediction:"pass", probability_pass:0.87}, profile:{cluster:2, label:"High-Performing"}}</div>
+  </div>
+</div>
+
+<h3>Intercepteur HTTP — Injection automatique du JWT</h3>
+<p>Angular injecte automatiquement le token JWT dans toutes les requêtes HTTP grâce à un intercepteur :</p>
+<div class="code-block">
+  <div class="code-header">
+    <span class="lang-badge">typescript</span>
+    Pattern — intercepteur JWT Angular
+  </div>
+  <pre><span class="cm">// L'intercepteur récupère le token du localStorage et l'ajoute au header</span>
+<span class="kw">export const</span> <span class="fn">authInterceptor</span>: HttpInterceptorFn = (req, next) => {
+  <span class="kw">const</span> token = localStorage.<span class="fn">getItem</span>(<span class="st">'token'</span>);
+  <span class="kw">if</span> (token) {
+    <span class="kw">const</span> cloned = req.<span class="fn">clone</span>({
+      headers: req.headers.<span class="fn">set</span>(<span class="st">'Authorization'</span>, <span class="st">`Bearer ${token}`</span>)
+    });
+    <span class="kw">return</span> <span class="fn">next</span>(cloned);
+  }
+  <span class="kw">return</span> <span class="fn">next</span>(req);
+};</pre>
+</div>
+
+<!-- ═══════════════════════════════════════════════ DATA INIT -->
+<div class="page-break"></div>
+<div class="section-header">
+  <div class="num">11</div>
+  <h2>DataInitializer — Seed automatique au démarrage</h2>
+  <span class="pts">Valeurs ajoutées</span>
+</div>
+
+<p>Au démarrage d'auth-service, un <strong>CommandLineRunner</strong> crée automatiquement les utilisateurs de test et génère les profils académiques pour chaque étudiant.</p>
+
+<div class="code-block">
+  <div class="code-header">
+    <span class="lang-badge">java</span>
+    backend/auth-service/src/main/java/tn/english/school/authservice/config/DataInitializer.java
+  </div>
+  <pre><span class="an">@Slf4j</span>
+<span class="an">@Component</span>
+<span class="an">@RequiredArgsConstructor</span>
+<span class="kw">public class</span> <span class="cl">DataInitializer</span> <span class="kw">implements</span> <span class="cl">CommandLineRunner</span> {
+
+    <span class="kw">private final</span> UserRepository userRepository;
+    <span class="kw">private final</span> PasswordEncoder passwordEncoder;       <span class="cm">// BCrypt</span>
+    <span class="kw">private final</span> StudentAcademicProfileService profileService;
+
+    <span class="an">@Override</span>
+    <span class="kw">public void</span> <span class="fn">run</span>(String... args) {
+        <span class="fn">seedUsers</span>();           <span class="cm">// 1. Créer les users</span>
+        profileService.<span class="fn">seedProfiles</span>();  <span class="cm">// 2. Générer les profils ML</span>
+    }
+
+    <span class="kw">private void</span> <span class="fn">seedUsers</span>() {
+        <span class="cm">// Idempotent : ne recrée pas si déjà présent</span>
+        <span class="kw">if</span> (!userRepository.<span class="fn">existsByEmail</span>(<span class="st">"zeinebnecib@gmail.com"</span>)) {
+            userRepository.<span class="fn">save</span>(AppUser.<span class="fn">builder</span>()
+                .firstName(<span class="st">"Zeineb"</span>).lastName(<span class="st">"Necib"</span>)
+                .email(<span class="st">"zeinebnecib@gmail.com"</span>)
+                .password(passwordEncoder.<span class="fn">encode</span>(<span class="st">"123456"</span>))  <span class="cm">// BCrypt hash</span>
+                .role(<span class="cl">Role</span>.STUDENT)
+                .<span class="fn">build</span>());
+        }
+        <span class="kw">if</span> (!userRepository.<span class="fn">existsByEmail</span>(<span class="st">"admin@gmail.com"</span>)) {
+            userRepository.<span class="fn">save</span>(AppUser.<span class="fn">builder</span>()
+                .firstName(<span class="st">"Admin"</span>).lastName(<span class="st">"Platform"</span>)
+                .email(<span class="st">"admin@gmail.com"</span>)
+                .password(passwordEncoder.<span class="fn">encode</span>(<span class="st">"123456"</span>))
+                .role(<span class="cl">Role</span>.ADMIN)
+                .<span class="fn">build</span>());
+        }
+    }
+}</pre>
+</div>
+
+<div class="card success">
+  <strong>Utilisateurs disponibles après démarrage :</strong><br>
+  <code>zeinebnecib@gmail.com</code> / <code>123456</code> → rôle STUDENT<br>
+  <code>admin@gmail.com</code> / <code>123456</code> → rôle ADMIN
+</div>
+
+<!-- ═══════════════════════════════════════════════ RÉCAP FINAL -->
+<div class="page-break"></div>
+<div class="section-header">
+  <div class="num">12</div>
+  <h2>Récapitulatif — Points à Retenir</h2>
+</div>
+
+<h3>Ordre de démarrage Docker</h3>
+<div class="flow" style="flex-direction:column; align-items:flex-start; gap:6px;">
+  <div style="display:flex;align-items:center;gap:8px;"><span class="flow-step" style="width:40px;text-align:center">1</span> <strong>MySQL</strong> — Base de données, attend healthcheck OK</div>
+  <div style="display:flex;align-items:center;gap:8px;"><span class="flow-step" style="width:40px;text-align:center">2</span> <strong>PHPMyAdmin</strong> — Interface DB (http://localhost:8888)</div>
+  <div style="display:flex;align-items:center;gap:8px;"><span class="flow-step" style="width:40px;text-align:center">3</span> <strong>Eureka Server</strong> — Service discovery, attend healthcheck OK</div>
+  <div style="display:flex;align-items:center;gap:8px;"><span class="flow-step" style="width:40px;text-align:center">4</span> <strong>Gateway, Auth, Claim, Retake services</strong> — Démarrent après Eureka + MySQL</div>
+  <div style="display:flex;align-items:center;gap:8px;"><span class="flow-step" style="width:40px;text-align:center">5</span> <strong>ML Service</strong> — Entraîne les modèles au premier démarrage</div>
+  <div style="display:flex;align-items:center;gap:8px;"><span class="flow-step" style="width:40px;text-align:center">6</span> <strong>Frontend Angular</strong> — Lancé localement, tape sur localhost:8080</div>
+</div>
+
+<h3>URLs d'accès</h3>
+<table>
+  <tr><th>Service</th><th>URL</th><th>Description</th></tr>
+  <tr><td>Frontend</td><td>http://localhost:4200</td><td>Application Angular (local)</td></tr>
+  <tr><td>Gateway</td><td>http://localhost:8080</td><td>Point d'entrée API</td></tr>
+  <tr><td>Eureka Dashboard</td><td>http://localhost:8761</td><td>Services enregistrés</td></tr>
+  <tr><td>PHPMyAdmin</td><td>http://localhost:8888</td><td>Interface base de données</td></tr>
+  <tr><td>ML Service (direct)</td><td>http://localhost:5001</td><td>API Python FastAPI</td></tr>
+  <tr><td>Auth Service</td><td>http://localhost:8083</td><td>Authentification</td></tr>
+</table>
+
+<h3>Commandes de déploiement</h3>
+<div class="code-block">
+  <div class="code-header"><span class="lang-badge">bash</span>Déploiement complet</div>
+  <pre><span class="cm"># 1. Compiler tous les services Java (depuis le dossier backend/)</span>
+cd backend && mvn clean package -DskipTests
+
+<span class="cm"># 2. Démarrer tous les containers Docker</span>
+cd .. && docker compose up --build
+
+<span class="cm"># 3. Vérifier les logs d'un service</span>
+docker compose logs -f auth-service
+docker compose logs -f claim-service
+
+<span class="cm"># 4. Lancer le frontend (dans un autre terminal)</span>
+cd frontend && ng serve</pre>
+</div>
+
+<div class="divider"></div>
+
+<h3>Tableau de synthèse — Ce que chaque service contient obligatoirement</h3>
+<table>
+  <tr><th>Élément</th><th>Eureka Server</th><th>Services Spring Boot</th><th>Gateway</th><th>ML Service</th></tr>
+  <tr><td>Annotation principale</td><td><span class="tag">@EnableEurekaServer</span></td><td><span class="tag">@EnableDiscoveryClient</span></td><td><span class="tag">@EnableDiscoveryClient</span></td><td>FastAPI app</td></tr>
+  <tr><td>spring.application.name</td><td>eureka-server</td><td>Nom unique du service</td><td>gateway-service</td><td>—</td></tr>
+  <tr><td>eureka.client.*</td><td>register=false, fetch=false</td><td>defaultZone configuré</td><td>defaultZone configuré</td><td>—</td></tr>
+  <tr><td>Base de données</td><td>Non</td><td>Oui (JPA + MySQL)</td><td>Non</td><td>Fichiers pkl</td></tr>
+  <tr><td>Sécurité</td><td>Non</td><td>Spring Security + JWT</td><td>CORS global</td><td>Non</td></tr>
+  <tr><td>Port</td><td>8761</td><td>8081/8082/8083</td><td>8080</td><td>5000</td></tr>
+</table>
+
+<footer>
+  <strong>Platform Education 4SAE9 — Équipe Fluency</strong><br>
+  Zeineb Necib — Sprint 2 — Microservices Validation Guide<br>
+  <em>Pour imprimer en PDF : Ctrl+P / Cmd+P → Enregistrer en PDF</em>
+</footer>
+
+</div>
+</body>
+</html>

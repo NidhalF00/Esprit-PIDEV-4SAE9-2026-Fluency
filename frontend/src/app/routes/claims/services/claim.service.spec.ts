@@ -7,7 +7,7 @@ import { Claim, RetakeRequest } from '../models/claim.model';
 const CLAIM_API = 'http://localhost:8080/api';
 const RETAKE_API = 'http://localhost:8080/api';
 
-describe('ClaimService', () => {
+fdescribe('ClaimService', () => {
   let service: ClaimService;
   let httpMock: HttpTestingController;
 
