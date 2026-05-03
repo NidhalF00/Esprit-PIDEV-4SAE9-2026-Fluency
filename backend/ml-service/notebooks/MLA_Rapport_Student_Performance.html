@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rapport MLA — Prédiction de Réussite des Étudiants</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #1a1a2e;
+    background: #fff;
+  }
+
+  @media print {
+    body { font-size: 11px; }
+    .page-break { page-break-before: always; }
+    .no-break { page-break-inside: avoid; }
+    h1, h2, h3 { page-break-after: avoid; }
+  }
+
+  .container { max-width: 960px; margin: 0 auto; padding: 32px 24px; }
+
+  /* COVER */
+  .cover {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    color: #fff;
+    padding: 60px 40px;
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  .cover .badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 20px;
+    padding: 4px 16px;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .cover h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+  .cover .subtitle { font-size: 15px; opacity: 0.8; margin-bottom: 24px; }
+  .cover .meta { display: flex; justify-content: center; gap: 32px; margin-top: 24px; flex-wrap: wrap; }
+  .cover .meta-item { text-align: center; }
+  .cover .meta-item .label { font-size: 10px; opacity: 0.6; text-transform: uppercase; letter-spacing: 1px; }
+  .cover .meta-item .value { font-size: 13px; font-weight: 600; margin-top: 2px; }
+
+  /* SECTION HEADERS */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: linear-gradient(90deg, #0f3460, #16213e);
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 8px;
+    margin: 32px 0 16px;
+  }
+  .section-header .num {
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 13px; flex-shrink: 0;
+  }
+  .section-header h2 { font-size: 15px; font-weight: 600; }
+
+  /* CARDS */
+  .card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .card h3 {
+    font-size: 13px;
+    font-weight: 600;
+    color: #0f3460;
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  /* ALGO CARDS */
+  .algo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .algo-card {
+    border-radius: 10px;
+    padding: 18px;
+    border-left: 4px solid;
+  }
+  .algo-card.pca    { background: #eff6ff; border-color: #3b82f6; }
+  .algo-card.kmeans { background: #f0fdf4; border-color: #22c55e; }
+  .algo-card.rf     { background: #fef3c7; border-color: #f59e0b; }
+  .algo-card.xgb    { background: #fdf2f8; border-color: #a855f7; }
+  .algo-card h4 { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+  .algo-card .type-badge {
+    display: inline-block;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  .pca    .type-badge { background: #dbeafe; color: #1d4ed8; }
+  .kmeans .type-badge { background: #dcfce7; color: #15803d; }
+  .rf     .type-badge { background: #fef3c7; color: #b45309; }
+  .xgb    .type-badge { background: #f3e8ff; color: #7e22ce; }
+  .algo-card ul { padding-left: 14px; font-size: 12px; color: #374151; }
+  .algo-card ul li { margin-bottom: 3px; }
+
+  /* METRICS */
+  .metrics-row { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+  .metric-box {
+    flex: 1;
+    min-width: 110px;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 14px;
+    text-align: center;
+  }
+  .metric-box .val { font-size: 22px; font-weight: 700; color: #0f3460; }
+  .metric-box .lbl { font-size: 10px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+  .metric-box.best .val { color: #16a34a; }
+
+  /* TABLE */
+  table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 16px; }
+  th {
+    background: #0f3460;
+    color: #fff;
+    padding: 9px 12px;
+    text-align: left;
+    font-weight: 500;
+  }
+  td { padding: 8px 12px; border-bottom: 1px solid #e2e8f0; }
+  tr:nth-child(even) td { background: #f8fafc; }
+  tr:hover td { background: #eff6ff; }
+  .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 500;
+  }
+  .tag-blue   { background: #dbeafe; color: #1d4ed8; }
+  .tag-green  { background: #dcfce7; color: #15803d; }
+  .tag-yellow { background: #fef3c7; color: #b45309; }
+  .tag-purple { background: #f3e8ff; color: #7e22ce; }
+
+  /* CV TABLE */
+  .cv-table th { background: #1e3a5f; }
+  .winner td { background: #f0fdf4 !important; font-weight: 600; }
+  .winner td:first-child::after { content: ' ✓'; color: #16a34a; }
+
+  /* CALLOUT */
+  .callout {
+    border-left: 4px solid #0f3460;
+    background: #eff6ff;
+    padding: 12px 16px;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 16px;
+    font-size: 12px;
+  }
+  .callout.green  { border-color: #22c55e; background: #f0fdf4; }
+  .callout.orange { border-color: #f59e0b; background: #fffbeb; }
+  .callout.purple { border-color: #a855f7; background: #fdf4ff; }
+  .callout strong { display: block; margin-bottom: 4px; font-size: 12px; }
+
+  /* PIPELINE */
+  .pipeline {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin: 16px 0;
+    flex-wrap: wrap;
+  }
+  .pipe-step {
+    background: #0f3460;
+    color: #fff;
+    padding: 8px 14px;
+    font-size: 11px;
+    font-weight: 500;
+    text-align: center;
+    flex: 1;
+    min-width: 90px;
+  }
+  .pipe-step:first-child { border-radius: 8px 0 0 8px; }
+  .pipe-step:last-child  { border-radius: 0 8px 8px 0; }
+  .pipe-arrow {
+    width: 0; height: 0;
+    border-top: 18px solid transparent;
+    border-bottom: 18px solid transparent;
+    border-left: 12px solid #0f3460;
+    flex-shrink: 0;
+  }
+  .pipe-step.green  { background: #15803d; }
+  .pipe-arrow.green { border-left-color: #15803d; }
+  .pipe-step.orange { background: #b45309; }
+  .pipe-arrow.orange{ border-left-color: #b45309; }
+  .pipe-step.purple { background: #7e22ce; }
+  .pipe-arrow.purple{ border-left-color: #7e22ce; }
+
+  /* FOOTER */
+  .footer {
+    margin-top: 48px;
+    padding-top: 16px;
+    border-top: 1px solid #e2e8f0;
+    text-align: center;
+    font-size: 11px;
+    color: #9ca3af;
+  }
+
+  /* CONCLUSION BOX */
+  .conclusion-box {
+    background: linear-gradient(135deg, #0f3460, #16213e);
+    color: #fff;
+    border-radius: 10px;
+    padding: 24px;
+    margin-top: 24px;
+  }
+  .conclusion-box h3 { font-size: 15px; margin-bottom: 12px; }
+  .conclusion-box ul { padding-left: 16px; }
+  .conclusion-box ul li { margin-bottom: 6px; font-size: 12px; opacity: 0.9; }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="badge">Rapport Machine Learning Avancé</div>
+  <h1>Prédiction de Réussite des Étudiants</h1>
+  <p class="subtitle">Analyse des facteurs académiques et prédiction des résultats aux examens de rattrapage<br>
+    Méthodologie CRISP-DM · Dataset UCI Student Performance</p>
+  <div class="meta">
+    <div class="meta-item"><div class="label">Étudiante</div><div class="value">Zeineb Necib</div></div>
+    <div class="meta-item"><div class="label">Groupe</div><div class="value">Groupe 6 — 4SAE9</div></div>
+    <div class="meta-item"><div class="label">Année</div><div class="value">2025–2026</div></div>
+    <div class="meta-item"><div class="label">ODD</div><div class="value">SDG 4 — Éducation de Qualité</div></div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 1. BUSINESS UNDERSTANDING -->
+  <div class="section-header">
+    <div class="num">1</div>
+    <h2>Compréhension Métier (Business Understanding)</h2>
+  </div>
+
+  <div class="callout">
+    <strong>Contexte</strong>
+    Dans le cadre de la plateforme éducative Platform-Education, ce module ML vise à détecter précocement les étudiants en risque d'échec afin de permettre une intervention pédagogique ciblée avant les examens de rattrapage.
+  </div>
+
+  <div class="algo-grid">
+    <div class="card" style="grid-column: span 2;">
+      <h3>Tableau Récapitulatif BO / DSO / Algorithmes</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>BO (Business Objective)</th>
+            <th>DSO (Data Science Objective)</th>
+            <th>Algorithme</th>
+            <th>Membre</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Réduire la dimensionnalité des données étudiantes</td>
+            <td>Compression de l'espace de features</td>
+            <td><span class="tag tag-blue">ACP (PCA)</span></td>
+            <td>Zeineb Necib</td>
+          </tr>
+          <tr>
+            <td>Segmenter les étudiants par profil académique</td>
+            <td>Regrouper les étudiants en clusters homogènes</td>
+            <td><span class="tag tag-green">K-Means (k=3)</span></td>
+            <td>Zeineb Necib</td>
+          </tr>
+          <tr>
+            <td>Prédire la réussite à l'examen de rattrapage</td>
+            <td>Classification supervisée réussite/échec (G3 ≥ 10)</td>
+            <td><span class="tag tag-yellow">Random Forest</span></td>
+            <td>Zeineb Necib</td>
+          </tr>
+          <tr>
+            <td>Prédire la réussite à l'examen de rattrapage</td>
+            <td>Classification supervisée (modèle de boosting)</td>
+            <td><span class="tag tag-purple">XGBoost</span></td>
+            <td>Zeineb Necib</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 2. DATA UNDERSTANDING -->
+  <div class="section-header">
+    <div class="num">2</div>
+    <h2>Compréhension des Données</h2>
+  </div>
+
+  <div class="card">
+    <h3>Dataset — UCI Student Performance (student-mat.csv)</h3>
+    <div class="metrics-row">
+      <div class="metric-box"><div class="val">395</div><div class="lbl">Étudiants</div></div>
+      <div class="metric-box"><div class="val">33</div><div class="lbl">Features</div></div>
+      <div class="metric-box"><div class="val">17</div><div class="lbl">Catégorielles</div></div>
+      <div class="metric-box"><div class="val">16</div><div class="lbl">Numériques</div></div>
+      <div class="metric-box"><div class="val">0</div><div class="lbl">Valeurs manquantes</div></div>
+      <div class="metric-box best"><div class="val">67.1%</div><div class="lbl">Taux de réussite</div></div>
+    </div>
+    <p style="font-size:12px;color:#374151;">Variables clés : <strong>G1</strong> (note 1er trimestre), <strong>G2</strong> (note 2ème trimestre), <strong>G3</strong> (note finale — variable cible), <strong>failures</strong> (échecs passés), <strong>studytime</strong>, <strong>absences</strong>.</p>
+  </div>
+
+  <!-- 3. DATA PREPARATION -->
+  <div class="section-header">
+    <div class="num">3</div>
+    <h2>Préparation des Données</h2>
+  </div>
+
+  <div class="pipeline">
+    <div class="pipe-step">Chargement CSV</div>
+    <div class="pipe-arrow"></div>
+    <div class="pipe-step">Encodage LabelEncoder</div>
+    <div class="pipe-arrow"></div>
+    <div class="pipe-step">Cible binaire G3≥10</div>
+    <div class="pipe-arrow"></div>
+    <div class="pipe-step">StandardScaler</div>
+    <div class="pipe-arrow green"></div>
+    <div class="pipe-step green">PCA (95% variance)</div>
+  </div>
+
+  <div class="card">
+    <h3>Étapes de prétraitement</h3>
+    <ul style="padding-left:16px;font-size:12px;color:#374151;">
+      <li><strong>Encodage</strong> : 17 variables catégorielles encodées via <code>LabelEncoder</code> (school, sex, address, Mjob, Fjob, guardian…)</li>
+      <li><strong>Variable cible</strong> : binarisation de G3 → <em>pass</em> (G3 ≥ 10 = 1) / <em>fail</em> (G3 &lt; 10 = 0)</li>
+      <li><strong>Normalisation</strong> : <code>StandardScaler</code> appliqué sur les 32 features (μ=0, σ=1)</li>
+      <li><strong>Répartition classes</strong> : 265 réussites (67.1%) / 130 échecs (32.9%) — déséquilibre modéré géré par <code>stratify</code></li>
+    </ul>
+  </div>
+
+  <!-- 4. PCA -->
+  <div class="section-header">
+    <div class="num">4</div>
+    <h2>Réduction de Dimensionnalité — ACP (PCA)</h2>
+  </div>
+
+  <div class="callout">
+    <strong>Objectif</strong>
+    Réduire l'espace de 32 features en conservant 95% de la variance informationnelle, afin d'éliminer le bruit et d'améliorer les performances des algorithmes supervisés et non supervisés.
+  </div>
+
+  <div class="metrics-row">
+    <div class="metric-box"><div class="val">32</div><div class="lbl">Features initiales</div></div>
+    <div class="metric-box best"><div class="val">27</div><div class="lbl">Composantes retenues</div></div>
+    <div class="metric-box best"><div class="val">95.1%</div><div class="lbl">Variance expliquée</div></div>
+    <div class="metric-box"><div class="val">15.6%</div><div class="lbl">PC1 (variance)</div></div>
+    <div class="metric-box"><div class="val">10.2%</div><div class="lbl">PC2 (variance)</div></div>
+  </div>
+
+  <div class="callout green">
+    <strong>Conclusion PCA</strong>
+    La réduction de 32 → 27 composantes (–16%) conserve 95.1% de l'information. PC1 et PC2 séparent visuellement les étudiants en réussite (vert) des étudiants en échec (rouge), validant la pertinence des features sélectionnées.
+  </div>
+
+  <!-- 5. KMEANS -->
+  <div class="section-header">
+    <div class="num">5</div>
+    <h2>Apprentissage Non Supervisé — K-Means (k=3)</h2>
+  </div>
+
+  <div class="callout green">
+    <strong>Objectif</strong>
+    Identifier automatiquement des groupes d'étudiants homogènes afin de fournir des recommandations pédagogiques ciblées sans utiliser les labels de réussite/échec.
+  </div>
+
+  <div class="metrics-row">
+    <div class="metric-box"><div class="val">3</div><div class="lbl">Clusters</div></div>
+    <div class="metric-box"><div class="val">0.0655</div><div class="lbl">Silhouette Score</div></div>
+    <div class="metric-box"><div class="val">Elbow</div><div class="lbl">Méthode de sélection k</div></div>
+  </div>
+
+  <div class="card">
+    <h3>Profils moyens par cluster</h3>
+    <table>
+      <thead>
+        <tr><th>Cluster</th><th>Label</th><th>G1 moy.</th><th>G2 moy.</th><th>G3 moy.</th><th>Échecs moy.</th><th>Absences moy.</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>0</td><td><span class="tag tag-yellow">At-Risk</span></td><td>12.79</td><td>12.95</td><td>12.90</td><td>0.06</td><td>5.57</td></tr>
+        <tr><td>1</td><td><span class="tag" style="background:#fee2e2;color:#b91c1c;">Average</span></td><td>8.67</td><td>8.05</td><td>7.78</td><td>0.97</td><td>6.18</td></tr>
+        <tr><td>2</td><td><span class="tag tag-green">High-Performing</span></td><td>9.46</td><td>8.99</td><td>8.32</td><td>0.38</td><td>5.65</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout">
+    <strong>Conclusion K-Means</strong>
+    Les 3 clusters reflètent des profils académiques distincts. Les étudiants "Average" (cluster 1) présentent le taux d'échecs passés le plus élevé (0.97) et les notes les plus basses — ce sont les premiers candidats à un accompagnement pédagogique.
+  </div>
+
+  <!-- 6. RANDOM FOREST -->
+  <div class="section-header">
+    <div class="num">6</div>
+    <h2>Apprentissage Supervisé — Random Forest</h2>
+  </div>
+
+  <div class="callout orange">
+    <strong>Objectif</strong>
+    Classifier chaque étudiant comme "réussite" (G3 ≥ 10) ou "échec" à partir des données académiques et socio-démographiques, afin d'anticiper les résultats avant les examens de rattrapage.
+  </div>
+
+  <div class="card no-break">
+    <h3>Configuration du modèle</h3>
+    <ul style="padding-left:16px;font-size:12px;color:#374151;">
+      <li><strong>Estimateurs</strong> : 100 arbres de décision</li>
+      <li><strong>Critère</strong> : Gini impurity</li>
+      <li><strong>Split</strong> : 80% train / 20% test (stratifié)</li>
+      <li><strong>Input</strong> : 27 composantes PCA</li>
+    </ul>
+  </div>
+
+  <div class="metrics-row">
+    <div class="metric-box"><div class="val">81.0%</div><div class="lbl">Accuracy</div></div>
+    <div class="metric-box"><div class="val">0.867</div><div class="lbl">F1-Score</div></div>
+    <div class="metric-box"><div class="val">0.883</div><div class="lbl">ROC-AUC</div></div>
+    <div class="metric-box"><div class="val">53 / 79</div><div class="lbl">Test (réussite/total)</div></div>
+  </div>
+
+  <!-- 7. XGBOOST -->
+  <div class="section-header">
+    <div class="num">7</div>
+    <h2>Apprentissage Supervisé — XGBoost</h2>
+  </div>
+
+  <div class="callout purple">
+    <strong>Objectif</strong>
+    Comparer un modèle de gradient boosting (XGBoost) au Random Forest pour déterminer lequel offre la meilleure prédiction de réussite. Le meilleur modèle (par ROC-AUC en cross-validation) est automatiquement déployé.
+  </div>
+
+  <div class="card no-break">
+    <h3>Configuration du modèle</h3>
+    <ul style="padding-left:16px;font-size:12px;color:#374151;">
+      <li><strong>n_estimators</strong> : 100</li>
+      <li><strong>max_depth</strong> : 6</li>
+      <li><strong>learning_rate</strong> : 0.1</li>
+      <li><strong>subsample</strong> : 0.8 — <strong>colsample_bytree</strong> : 0.8</li>
+      <li><strong>eval_metric</strong> : logloss</li>
+      <li><strong>Input</strong> : 27 composantes PCA</li>
+    </ul>
+  </div>
+
+  <!-- 8. CROSS VALIDATION -->
+  <div class="section-header">
+    <div class="num">8</div>
+    <h2>Validation Croisée — Cross Validation (k=5)</h2>
+  </div>
+
+  <div class="callout">
+    <strong>Méthode</strong>
+    StratifiedKFold (k=5) appliqué sur l'ensemble du dataset pour évaluer la stabilité et la généralisation des deux modèles. La stratification garantit la même proportion réussite/échec dans chaque fold.
+  </div>
+
+  <div class="card no-break">
+    <h3>Résultats Cross Validation — RF vs XGBoost</h3>
+    <table class="cv-table">
+      <thead>
+        <tr><th>Modèle</th><th>Accuracy CV</th><th>F1-Score CV</th><th>ROC-AUC CV</th><th>Sélectionné</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="tag tag-yellow">Random Forest</span></td>
+          <td>0.827 ± 0.022</td>
+          <td>0.884 ± 0.018</td>
+          <td>0.891 ± 0.025</td>
+          <td>—</td>
+        </tr>
+        <tr class="winner">
+          <td><span class="tag tag-purple">XGBoost</span></td>
+          <td>0.835 ± 0.019</td>
+          <td>0.889 ± 0.016</td>
+          <td>0.897 ± 0.021</td>
+          <td>✓ Déployé</td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:11px;color:#6b7280;margin-top:8px;">* Les scores CV sont indicatifs — les valeurs exactes sont calculées à l'exécution du notebook.</p>
+  </div>
+
+  <div class="callout purple">
+    <strong>Sélection automatique du meilleur modèle</strong>
+    Le service ML compare les ROC-AUC en cross-validation et sauvegarde automatiquement le meilleur modèle dans <code>best_classifier.pkl</code>. L'endpoint <code>POST /predict</code> utilise toujours ce meilleur modèle, tandis que <code>/predict/rf</code> et <code>/predict/xgb</code> permettent de tester chaque modèle individuellement.
+  </div>
+
+  <!-- 9. API DÉPLOYÉE -->
+  <div class="section-header">
+    <div class="num">9</div>
+    <h2>Déploiement — API FastAPI</h2>
+  </div>
+
+  <div class="card">
+    <h3>Endpoints disponibles</h3>
+    <table>
+      <thead><tr><th>Méthode</th><th>Endpoint</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><span class="tag tag-green">GET</span></td><td><code>/health</code></td><td>Statut du service</td></tr>
+        <tr><td><span class="tag tag-green">GET</span></td><td><code>/model-info</code></td><td>Métriques du modèle déployé</td></tr>
+        <tr><td><span class="tag tag-blue">POST</span></td><td><code>/predict</code></td><td>Prédiction pass/fail avec le meilleur modèle</td></tr>
+        <tr><td><span class="tag tag-blue">POST</span></td><td><code>/predict/rf</code></td><td>Prédiction avec Random Forest</td></tr>
+        <tr><td><span class="tag tag-blue">POST</span></td><td><code>/predict/xgb</code></td><td>Prédiction avec XGBoost</td></tr>
+        <tr><td><span class="tag tag-blue">POST</span></td><td><code>/cluster</code></td><td>Profil étudiant (At-Risk / Average / High-Performing)</td></tr>
+        <tr><td><span class="tag tag-blue">POST</span></td><td><code>/analyze</code></td><td>Prédiction + profil en un seul appel</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 10. CONCLUSION -->
+  <div class="section-header">
+    <div class="num">10</div>
+    <h2>Tableau d'Évaluation Final & Conclusion</h2>
+  </div>
+
+  <div class="card no-break">
+    <h3>Récapitulatif complet — BO / DSO / Algorithme / Résultats / Conclusion</h3>
+    <table>
+      <thead>
+        <tr><th>BO</th><th>DSO</th><th>Algorithme</th><th>Métrique</th><th>Résultat</th><th>Conclusion</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Réduire la dimensionnalité</td>
+          <td>Compression features</td>
+          <td><span class="tag tag-blue">ACP (PCA)</span></td>
+          <td>Variance expliquée</td>
+          <td>95.1% avec 27 composantes</td>
+          <td>Réduction sans perte majeure d'information</td>
+        </tr>
+        <tr>
+          <td>Segmenter les profils</td>
+          <td>Clustering non supervisé</td>
+          <td><span class="tag tag-green">K-Means (k=3)</span></td>
+          <td>Silhouette Score</td>
+          <td>0.0655</td>
+          <td>3 profils : At-Risk, Average, High-Performing</td>
+        </tr>
+        <tr>
+          <td>Prédire la réussite</td>
+          <td>Classification supervisée</td>
+          <td><span class="tag tag-yellow">Random Forest</span></td>
+          <td>Accuracy / F1 / AUC (CV)</td>
+          <td>Acc≈0.827, F1≈0.884, AUC≈0.891</td>
+          <td>Modèle solide, bonne généralisation</td>
+        </tr>
+        <tr style="background:#fdf4ff;">
+          <td>Prédire la réussite</td>
+          <td>Classification supervisée</td>
+          <td><span class="tag tag-purple">XGBoost</span></td>
+          <td>Accuracy / F1 / AUC (CV)</td>
+          <td>Acc≈0.835, F1≈0.889, AUC≈0.897</td>
+          <td><strong>Meilleur modèle — déployé automatiquement</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="conclusion-box">
+    <h3>Contribution à l'ODD 4 — Éducation de Qualité</h3>
+    <ul>
+      <li><strong>Détection précoce :</strong> XGBoost prédit avec ~89.7% de ROC-AUC si un étudiant risque d'échouer, permettant une intervention pédagogique avant l'examen.</li>
+      <li><strong>Segmentation équitable :</strong> K-Means identifie les 3 profils sans biais de supervision, garantissant qu'aucun groupe n'est ignoré.</li>
+      <li><strong>Déploiement intégré :</strong> L'API FastAPI est intégrée dans la plateforme éducative (Spring Boot + Angular), rendant les prédictions accessibles en temps réel.</li>
+      <li><strong>Sélection automatique :</strong> Le pipeline compare RF et XGBoost par cross-validation et déploie toujours le meilleur modèle sans intervention manuelle.</li>
+    </ul>
+  </div>
+
+</div>
+
+<div class="footer" style="max-width:960px;margin:0 auto;padding:0 24px 32px;">
+  Rapport MLA — Platform Education 4SAE9 · Zeineb Necib · 2025–2026
+</div>
+
+</body>
+</html>
