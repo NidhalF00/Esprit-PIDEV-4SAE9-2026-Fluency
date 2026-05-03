@@ -1,0 +1,33 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+
+  - job_name: 'claim-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['claim-service:8081']
+        labels:
+          application: 'claim-service'
+
+  - job_name: 'retake-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['retake-service:8082']
+        labels:
+          application: 'retake-service'
+
+  - job_name: 'auth-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['auth-service:8083']
+        labels:
+          application: 'auth-service'
+
+  - job_name: 'gateway-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['gateway-service:8080']
+        labels:
+          application: 'gateway-service'

@@ -31,6 +31,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/login", "/auth/register", "/auth/logout").permitAll()
+                        .requestMatchers("/actuator/**").permitAll()
                         .requestMatchers("/api/students/*/academic-profile").authenticated()
                         .anyRequest().authenticated()
                 )
