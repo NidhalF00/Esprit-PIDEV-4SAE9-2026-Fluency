@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <style>
+    @page { size: A4; margin: 22mm 20mm; }
+    body {
+      margin: 0;
+      font-family: "DejaVu Sans", sans-serif;
+      color: #1A202C;
+      font-size: 13px;
+    }
+    .center { text-align: center; }
+    .logo {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 10px;
+      border-radius: 50%;
+      background-color: #6366F1;
+      color: #ffffff;
+      font-size: 22px;
+      font-weight: bold;
+      line-height: 64px;
+    }
+    .brand {
+      color: #718096;
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    h1 {
+      margin: 0 0 14px;
+      font-size: 26px;
+      font-weight: bold;
+      color: #1A202C;
+    }
+    .subtitle {
+      color: #718096;
+      font-size: 12px;
+      line-height: 1.55;
+      max-width: 440px;
+      margin: 0 auto 18px;
+    }
+    .subtitle strong { color: #1A202C; }
+    .divider {
+      border: 0;
+      border-top: 1px dashed #E2E8F0;
+      margin: 20px 0 18px;
+    }
+    table.grid {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 16px;
+    }
+    table.grid td {
+      width: 50%;
+      vertical-align: top;
+      padding: 8px 16px 14px 0;
+    }
+    .lbl {
+      color: #718096;
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+    .val {
+      font-size: 17px;
+      font-weight: bold;
+      color: #1A202C;
+    }
+    .val-code { color: #4C51BF; }
+    .badges { margin: 6px 0 4px; }
+    .badge {
+      display: inline-block;
+      padding: 5px 11px;
+      border-radius: 999px;
+      font-size: 11px;
+      margin: 0 8px 8px 0;
+    }
+    .badge-grey {
+      background-color: #F7FAFC;
+      color: #4A5568;
+      border: 1px solid #E2E8F0;
+    }
+    .badge-yellow {
+      background-color: #FEFCE8;
+      color: #A16207;
+      border: 1px solid #FDE68A;
+    }
+    .path-box {
+      background-color: #0F172A;
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-top: 14px;
+    }
+    .path-box .lbl {
+      color: #94A3B8;
+      margin-bottom: 6px;
+    }
+    .path-box .path {
+      color: #F8FAFC;
+      font-family: monospace;
+      font-size: 12px;
+      word-wrap: break-word;
+    }
+    .foot {
+      text-align: center;
+      color: #94A3B8;
+      font-size: 10px;
+      margin-top: 26px;
+    }
+    .eval-line { margin-top: 4px; font-size: 11px; color: #718096; }
+  </style>
+</head>
+<body>
+<div class="center">
+  <div class="logo">FL</div>
+  <div class="brand">Fluency • E-learning</div>
+  <h1>Certificat de réussite</h1>
+  <p class="subtitle">
+    <strong>{{TITULAIRE}}</strong> a obtenu ce certificat suite à la réussite de l'évaluation suivante :
+    <strong>{{TITRE_EVALUATION}}</strong>.
+  </p>
+  <p class="eval-line">{{DETAIL_EVALUATION}}</p>
+</div>
+<hr class="divider"/>
+<table class="grid">
+  <tr>
+    <td>
+      <div class="lbl">Score</div>
+      <div class="val">{{SCORE}}</div>
+    </td>
+    <td>
+      <div class="lbl">Pourcentage</div>
+      <div class="val">{{POURCENTAGE}}</div>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <div class="lbl">Code certificat</div>
+      <div class="val val-code">{{CODE}}</div>
+    </td>
+    <td>
+      <div class="lbl">Date d'obtention</div>
+      <div class="val">{{DATE_ISO}}</div>
+    </td>
+  </tr>
+</table>
+<div class="badges">
+  <span class="badge badge-grey">{{BADGE_EMAIL}}</span>
+  <span class="badge badge-yellow">PDF disponible</span>
+</div>
+<div class="path-box">
+  <div class="lbl">Chemin PDF</div>
+  <div class="path">{{PDF_PATH}}</div>
+</div>
+<p class="foot">Document généré automatiquement — vérifiable grâce au code certificat.</p>
+</body>
+</html>
