@@ -40,7 +40,8 @@ services:
   # ── Eureka Server ─────────────────────────────────────────────────────────────
   eureka-server:
     build:
-      context: ./backend/eureka-server
+      context: ./backend
+      dockerfile: eureka-server/Dockerfile
     container_name: eureka-server
     ports:
       - "8761:8761"
@@ -55,7 +56,8 @@ services:
   # ── API Gateway ───────────────────────────────────────────────────────────────
   gateway-service:
     build:
-      context: ./backend/gateway-service
+      context: ./backend
+      dockerfile: gateway-service/Dockerfile
     container_name: gateway-service
     ports:
       - "8080:8080"
@@ -70,7 +72,8 @@ services:
   # ── Auth Service ──────────────────────────────────────────────────────────────
   auth-service:
     build:
-      context: ./backend/auth-service
+      context: ./backend
+      dockerfile: auth-service/Dockerfile
     container_name: auth-service
     ports:
       - "8083:8083"
@@ -90,7 +93,8 @@ services:
   # ── Claim Service ─────────────────────────────────────────────────────────────
   claim-service:
     build:
-      context: ./backend/claim-service
+      context: ./backend
+      dockerfile: claim-service/Dockerfile
     container_name: claim-service
     ports:
       - "8081:8081"
@@ -110,12 +114,34 @@ services:
   # ── Retake Service ────────────────────────────────────────────────────────────
   retake-service:
     build:
-      context: ./backend/retake-service
+      context: ./backend
+      dockerfile: retake-service/Dockerfile
     container_name: retake-service
     ports:
       - "8082:8082"
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/retake_db?createDatabaseIfNotExist=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+    networks:
+      - platform-network
+
+  # ── Course Service ───────────────────────────────────────────────────────────
+  course-service:
+    build:
+      context: ./backend
+      dockerfile: course-service/Dockerfile
+    container_name: course-service
+    ports:
+      - "8086:8086"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/course_db?createDatabaseIfNotExist=true&useLegacyDatetimeCode=false&serverTimezone=UTC
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
       - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka/

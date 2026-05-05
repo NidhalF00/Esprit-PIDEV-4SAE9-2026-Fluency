@@ -43,6 +43,12 @@ spring:
           predicates:
             - Path=/api/retake-requests/**
 
+        # ── Course Service (port 8086) ───────────────────────────────────────
+        - id: course-service
+          uri: http://course-service:8086
+          predicates:
+            - Path=/api/cours/**, /api/modules/**, /api/quizzes/**, /api/certificats/**, /api/questions/**, /api/reponses/**, /api/recommandations/**, /api/statistiques/**, /api/recherche/**
+
         # ── ML Service (Python FastAPI, port 5000) ────────────────────────────
         # /api/ml/predict  →  http://ml-service:5000/predict
         # /api/ml/cluster  →  http://ml-service:5000/cluster

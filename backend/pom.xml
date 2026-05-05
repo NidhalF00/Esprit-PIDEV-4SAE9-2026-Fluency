@@ -23,6 +23,7 @@
         <module>claim-service</module>
         <module>retake-service</module>
         <module>auth-service</module>
+        <module>course-service</module>
     </modules>
 
     <properties>
