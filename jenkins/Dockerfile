@@ -17,4 +17,7 @@ RUN apt-get update && \
 # Give jenkins user access to Docker socket
 RUN groupadd -f docker && usermod -aG docker jenkins
 
-USER jenkins
+# Trust all directories for git (needed when running as root)
+RUN git config --global --add safe.directory '*'
+
+USER root

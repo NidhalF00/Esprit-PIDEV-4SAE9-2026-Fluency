@@ -8,6 +8,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
+                deleteDir()
                 checkout([
                     $class: 'GitSCM',
                     branches: [[name: '*/main']],
