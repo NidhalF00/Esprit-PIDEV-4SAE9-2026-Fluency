@@ -1,0 +1,448 @@
+{
+  "info": {
+    "name": "Fluency Platform API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "gateway", "value": "http://localhost:8080" },
+    { "key": "token", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{gateway}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"password\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{gateway}}/auth/register",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"password\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Modules",
+      "item": [
+        {
+          "name": "Get All Modules",
+          "request": {
+            "method": "GET",
+            "url": "{{gateway}}/api/modules"
+          }
+        },
+        {
+          "name": "Get Module by ID",
+          "request": {
+            "method": "GET",
+            "url": "{{gateway}}/api/modules/1"
+          }
+        },
+        {
+          "name": "Create Module",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{gateway}}/api/modules",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titre\": \"Nouveau Module\",\n  \"description\": \"Description\",\n  \"niveau\": \"Débutant\",\n  \"categorie\": \"Français\",\n  \"actif\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Module",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{gateway}}/api/modules/1",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titre\": \"Module mis à jour\",\n  \"description\": \"Description mise à jour\",\n  \"niveau\": \"Intermédiaire\",\n  \"categorie\": \"Français\",\n  \"actif\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Module",
+          "request": {
+            "method": "DELETE",
+            "url": "{{gateway}}/api/modules/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cours",
+      "item": [
+        {
+          "name": "Get All Cours",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{gateway}}/api/cours",
+              "host": ["{{gateway}}"],
+              "path": ["api", "cours"]
+            }
+          }
+        },
+        {
+          "name": "Get Cours by ID",
+          "request": {
+            "method": "GET",
+            "url": "{{gateway}}/api/cours/1"
+          }
+        },
+        {
+          "name": "Get Cours by Module",
+          "request": {
+            "method": "GET",
+            "url": "{{gateway}}/api/cours/module/1"
+          }
+        },
+        {
+          "name": "Create Cours",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{gateway}}/api/cours",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titre\": \"Nouveau cours\",\n  \"contenu\": \"Contenu du cours\",\n  \"ordreCours\": 1,\n  \"typeContenu\": \"TEXTE\",\n  \"publie\": true,\n  \"gratuit\": false,\n  \"module\": { \"id\": 1 }\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Cours",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{gateway}}/api/cours/1",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titre\": \"Cours mis à jour\",\n  \"contenu\": \"Nouveau contenu\",\n  \"ordreCours\": 1,\n  \"typeContenu\": \"VIDEO\",\n  \"publie\": true,\n  \"gratuit\": false,\n  \"module\": { \"id\": 1 }\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Cours",
+          "request": {
+            "method": "DELETE",
+            "url": "{{gateway}}/api/cours/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Quizzes",
+      "item": [
+        {
+          "name": "Get All Quizzes",
+          "request": {
+            "method": "GET",
+            "url": "{{gateway}}/api/quizzes"
+          }
+        },
+        {
+          "name": "Get Quiz by ID",
+          "request": {
+            "method": "GET",
+            "url": "{{gateway}}/api/quizzes/1"
+          }
+        },
+        {
+          "name": "Submit Quiz",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{gateway}}/api/quizzes/1/submit",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": 1,\n  \"reponses\": {\n    \"1\": 2,\n    \"2\": 5\n  }\n}"
+            }
+          }
+        },
+        {
+          "name": "Create Quiz",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{gateway}}/api/quizzes",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titre\": \"Quiz test\",\n  \"description\": \"Description quiz\",\n  \"cours\": { \"id\": 1 }\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Questions",
+      "item": [
+        {
+          "name": "Get All Questions",
+          "request": {
+            "method": "GET",
+            "url": "{{gateway}}/api/questions"
+          }
+        },
+        {
+          "name": "Get Questions by Quiz",
+          "request": {
+            "method": "GET",
+            "url": "{{gateway}}/api/quizzes/1/questions"
+          }
+        },
+        {
+          "name": "Create Question",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{gateway}}/api/questions",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"enonce\": \"Quelle est la bonne réponse ?\",\n  \"typeQuestion\": \"QCM\",\n  \"points\": 1.0,\n  \"quiz\": { \"id\": 1 }\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Certificats",
+      "item": [
+        {
+          "name": "Get All Certificats",
+          "request": {
+            "method": "GET",
+            "url": "{{gateway}}/api/certificats"
+          }
+        },
+        {
+          "name": "Get Certificat by ID",
+          "request": {
+            "method": "GET",
+            "url": "{{gateway}}/api/certificats/1"
+          }
+        },
+        {
+          "name": "Get Certificats by User",
+          "request": {
+            "method": "GET",
+            "url": "{{gateway}}/api/certificats/user/1"
+          }
+        },
+        {
+          "name": "Download Certificat PDF",
+          "request": {
+            "method": "GET",
+            "url": "{{gateway}}/api/certificats/1/pdf"
+          }
+        },
+        {
+          "name": "Generer Certificat",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{gateway}}/api/certificats/generer",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": 1,\n  \"quizId\": 1,\n  \"moduleId\": 1\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Statistiques",
+      "item": [
+        {
+          "name": "Stats Globales",
+          "request": {
+            "method": "GET",
+            "url": "{{gateway}}/api/statistiques/global"
+          }
+        },
+        {
+          "name": "Count Modules",
+          "request": {
+            "method": "GET",
+            "url": "{{gateway}}/api/statistiques/modules/count"
+          }
+        },
+        {
+          "name": "Count Cours",
+          "request": {
+            "method": "GET",
+            "url": "{{gateway}}/api/statistiques/cours/count"
+          }
+        },
+        {
+          "name": "Count Quizzes",
+          "request": {
+            "method": "GET",
+            "url": "{{gateway}}/api/statistiques/quizzes/count"
+          }
+        },
+        {
+          "name": "Count Quiz par Module",
+          "request": {
+            "method": "GET",
+            "url": "{{gateway}}/api/statistiques/modules/1/quizzes/count"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Recherche",
+      "item": [
+        {
+          "name": "Rechercher Modules",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{gateway}}/api/recherche/modules?motCle=grammaire",
+              "host": ["{{gateway}}"],
+              "path": ["api", "recherche", "modules"],
+              "query": [{ "key": "motCle", "value": "grammaire" }]
+            }
+          }
+        },
+        {
+          "name": "Rechercher Cours",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{gateway}}/api/recherche/cours?titre=leçon",
+              "host": ["{{gateway}}"],
+              "path": ["api", "recherche", "cours"],
+              "query": [{ "key": "titre", "value": "leçon" }]
+            }
+          }
+        },
+        {
+          "name": "Cours par Type",
+          "request": {
+            "method": "GET",
+            "url": "{{gateway}}/api/recherche/cours/type/VIDEO"
+          }
+        },
+        {
+          "name": "Modules par Niveau",
+          "request": {
+            "method": "GET",
+            "url": "{{gateway}}/api/recherche/modules/niveau/Débutant"
+          }
+        },
+        {
+          "name": "Modules par Catégorie",
+          "request": {
+            "method": "GET",
+            "url": "{{gateway}}/api/recherche/modules/categorie/Grammaire"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Claims",
+      "item": [
+        {
+          "name": "Get All Claims",
+          "request": {
+            "method": "GET",
+            "url": "{{gateway}}/api/claims"
+          }
+        },
+        {
+          "name": "Get Claim by ID",
+          "request": {
+            "method": "GET",
+            "url": "{{gateway}}/api/claims/1"
+          }
+        },
+        {
+          "name": "Create Claim",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{gateway}}/api/claims",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Problème connexion\",\n  \"description\": \"Je ne peux pas me connecter\",\n  \"userId\": 1\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Retakes",
+      "item": [
+        {
+          "name": "Get All Retake Requests",
+          "request": {
+            "method": "GET",
+            "url": "{{gateway}}/api/retake-requests"
+          }
+        },
+        {
+          "name": "Get Retake by ID",
+          "request": {
+            "method": "GET",
+            "url": "{{gateway}}/api/retake-requests/1"
+          }
+        },
+        {
+          "name": "Create Retake Request",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{gateway}}/api/retake-requests",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"studentId\": 1,\n  \"examId\": 1,\n  \"reason\": \"Maladie\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Health Checks",
+      "item": [
+        {
+          "name": "Gateway Health",
+          "request": { "method": "GET", "url": "{{gateway}}/actuator/health" }
+        },
+        {
+          "name": "Auth Health",
+          "request": { "method": "GET", "url": "http://localhost:8083/actuator/health" }
+        },
+        {
+          "name": "Course Health",
+          "request": { "method": "GET", "url": "http://localhost:8086/actuator/health" }
+        },
+        {
+          "name": "Claim Health",
+          "request": { "method": "GET", "url": "http://localhost:8081/actuator/health" }
+        },
+        {
+          "name": "Retake Health",
+          "request": { "method": "GET", "url": "http://localhost:8082/actuator/health" }
+        }
+      ]
+    }
+  ]
+}
