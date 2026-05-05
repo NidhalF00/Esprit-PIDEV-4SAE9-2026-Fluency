@@ -56,7 +56,7 @@ public class Cours {
     private Module module;
 
     @OneToMany(mappedBy = "cours", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonIgnore
     private List<Quiz> quizzes = new ArrayList<>();
 
     public Cours() {

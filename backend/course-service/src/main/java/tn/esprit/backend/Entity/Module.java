@@ -1,6 +1,6 @@
 package tn.esprit.backend.Entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ public class Module {
     private Boolean actif;
 
     @OneToMany(mappedBy = "module", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonIgnore
     private List<Cours> cours = new ArrayList<>();
 
     public Module() {
