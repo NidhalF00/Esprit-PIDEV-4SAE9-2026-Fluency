@@ -17,7 +17,7 @@ pipeline {
             steps {
                 dir('backEnd/eureka') {
                     sh 'chmod +x mvnw'
-                    sh './mvnw clean package -DskipTests'
+                    sh './mvnw clean package'
                 }
             }
         }
@@ -44,7 +44,7 @@ pipeline {
             steps {
                 dir('backEnd/microservices/Quiz') {
                     sh 'chmod +x mvnw'
-                    sh './mvnw clean package -DskipTests'
+                    sh './mvnw clean package'
                 }
             }
         }
@@ -57,9 +57,21 @@ pipeline {
                 }
             }
         }
+
+        stage('Test Angular Quiz Service') {
+            steps {
+                dir('frontEnd/EnglishPlateforme') {
+                    sh 'npx ng test --watch=false --browsers=ChromeHeadlessNoSandbox --karma-config=karma.conf.js --include=src/app/services/quiz.service.spec.ts'
+                }
+            }
+        }
     }
 
     post {
+        always {
+            junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml'
+        }
+
         success {
             echo 'CI build completed successfully.'
         }
