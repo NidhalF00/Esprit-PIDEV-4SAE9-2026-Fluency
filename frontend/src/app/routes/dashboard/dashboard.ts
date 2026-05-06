@@ -1,192 +1,147 @@
-import { AfterViewInit, Component, NgZone, OnDestroy, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
-import { MatTableModule } from '@angular/material/table';
-import { MatTabsModule } from '@angular/material/tabs';
-import { SettingsService } from '@core';
-import { MtxAlertModule } from '@ng-matero/extensions/alert';
-import { MtxProgressModule } from '@ng-matero/extensions/progress';
-import { Subscription } from 'rxjs';
-import { CHARTS, ELEMENT_DATA, MESSAGES, STATS } from './data';
+import { MatButtonModule } from '@angular/material/button';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { AuthService } from '@core';
 import { StatistiqueService, GlobalStats } from '../courses/services/statistique.service';
+import { ClaimService } from '../claims/services/claim.service';
+import { ForumTopicService } from '../forum/services/topic.service';
+import { ForumResourceService } from '../forum/services/resource.service';
+import { ForumReportService } from '../forum/services/report.service';
+import { CertificatService } from '../courses/services/certificat.service';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
-  imports: [
-    CommonModule,
-    RouterModule,
-    MatButtonModule,
-    MatCardModule,
-    MatChipsModule,
-    MatListModule,
-    MatGridListModule,
-    MatTableModule,
-    MatTabsModule,
-    MatIconModule,
-    MtxProgressModule,
-    MtxAlertModule,
-  ],
+  imports: [CommonModule, RouterModule, MatIconModule, MatButtonModule],
 })
-export class Dashboard implements OnInit, AfterViewInit, OnDestroy {
-  private readonly ngZone = inject(NgZone);
-  private readonly settings = inject(SettingsService);
-  private readonly statSvc = inject(StatistiqueService);
+export class Dashboard implements OnInit {
+  private auth = inject(AuthService);
+  private cdr = inject(ChangeDetectorRef);
+  private statSvc = inject(StatistiqueService);
+  private claimSvc = inject(ClaimService);
+  private topicSvc = inject(ForumTopicService);
+  private resourceSvc = inject(ForumResourceService);
+  private reportSvc = inject(ForumReportService);
+  private certSvc = inject(CertificatService);
 
-  displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
-  dataSource = ELEMENT_DATA;
+  isAdmin = false;
+  userName = '';
+  userEmail = '';
+  loading = true;
+  today = new Date();
 
-  messages = MESSAGES;
+  // Admin — aggregated platform stats
+  courseStats: GlobalStats | null = null;
+  totalClaims = 0;
+  openClaims = 0;
+  totalRetakes = 0;
+  pendingRetakes = 0;
+  totalTopics = 0;
+  totalResources = 0;
+  pendingReports = 0;
+  totalCertificates = 0;
+  recentClaims: any[] = [];
+  recentRetakes: any[] = [];
 
-  charts = CHARTS;
-  chart1?: ApexCharts;
-  chart2?: ApexCharts;
-
-  stats = STATS;
-
-  elearningStats: GlobalStats | null = null;
-
-  elearningCards = [
-    { label: 'Modules',   key: 'totalModules',   icon: 'school',       color: '#7c3aed', bg: '#ede9fe' },
-    { label: 'Courses',   key: 'totalCours',      icon: 'menu_book',    color: '#1d4ed8', bg: '#dbeafe' },
-    { label: 'Quizzes',   key: 'totalQuiz',       icon: 'quiz',         color: '#b45309', bg: '#fef3c7' },
-    { label: 'Questions', key: 'totalQuestions',  icon: 'help_outline', color: '#059669', bg: '#d1fae5' },
-    { label: 'Answers',   key: 'totalReponses',   icon: 'check_circle', color: '#0891b2', bg: '#cffafe' },
-    { label: 'Avg Score', key: 'moyenneScoreMaxQuiz', icon: 'emoji_events', color: '#be185d', bg: '#fce7f3' },
-  ] as const;
-
-  notifySubscription = Subscription.EMPTY;
-
-  isShowAlert = true;
-
-  introducingItems = [
-    {
-      name: 'Acrodata GUI',
-      description: 'A JSON powered GUI for configurable panels.',
-      link: 'https://github.com/acrodata/gui',
-    },
-    {
-      name: 'Code Editor',
-      description: 'The CodeMirror 6 wrapper for Angular.',
-      link: 'https://github.com/acrodata/code-editor',
-    },
-    {
-      name: 'Watermark',
-      description: 'A watermark component that can prevent deletion.',
-      link: 'https://github.com/acrodata/watermark',
-    },
-    {
-      name: 'RnD Dialog',
-      description: 'Resizable and draggable dialog based on CDK dialog.',
-      link: 'https://github.com/acrodata/rnd-dialog',
-    },
-    {
-      name: 'Gradient Picker',
-      description: 'A powerful and beautiful gradient picker.',
-      link: 'https://github.com/acrodata/gradient-picker',
-    },
-    {
-      name: 'Color Picker',
-      description: 'Another beautiful color picker.',
-      link: 'https://github.com/acrodata/color-picker',
-    },
-    {
-      name: 'NG DnD',
-      description: 'A toolkit for building complex drag and drop and very similar to react-dnd.',
-      link: 'https://github.com/ng-dnd/ng-dnd',
-    },
-  ];
-
-  introducingItem = this.introducingItems[this.getRandom(0, 6)];
-
-  get isDark() {
-    return this.settings.getThemeColor() == 'dark';
-  }
+  // Student — personal data
+  myClaims: any[] = [];
+  myRetakes: any[] = [];
+  myCertificates: any[] = [];
+  myTopics: any[] = [];
 
   ngOnInit() {
-    this.notifySubscription = this.settings.notify.subscribe(opts => {
-      console.log(opts);
-      this.updateCharts();
-    });
-    this.statSvc.getGlobal().subscribe({
-      next: s => { setTimeout(() => { this.elearningStats = s; }); },
-    });
-  }
-
-  ngAfterViewInit() {
-    this.ngZone.runOutsideAngular(() => this.initCharts());
-  }
-
-  ngOnDestroy() {
-    this.chart1?.destroy();
-    this.chart2?.destroy();
-
-    this.notifySubscription.unsubscribe();
-  }
-
-  initCharts() {
-    this.chart1 = new ApexCharts(document.querySelector('#chart1'), this.charts[0]);
-    this.chart1?.render();
-    this.chart2 = new ApexCharts(document.querySelector('#chart2'), this.charts[1]);
-    this.chart2?.render();
-
-    this.updateCharts();
-  }
-
-  updateCharts() {
-    this.chart1?.updateOptions({
-      chart: {
-        foreColor: this.isDark ? '#ccc' : '#333',
-        background: 'transparent',
-      },
-      tooltip: {
-        theme: this.isDark ? 'dark' : 'light',
-      },
-      grid: {
-        borderColor: this.isDark ? '#5a5a5a' : '#e1e1e1',
-      },
-      theme: {
-        mode: this.isDark ? 'dark' : 'light',
-      },
-    });
-
-    this.chart2?.updateOptions({
-      chart: {
-        foreColor: this.isDark ? '#ccc' : '#333',
-        background: 'transparent',
-      },
-      plotOptions: {
-        radar: {
-          polygons: {
-            strokeColors: this.isDark ? '#5a5a5a' : '#e1e1e1',
-            connectorColors: this.isDark ? '#5a5a5a' : '#e1e1e1',
-            fill: {
-              colors: this.isDark ? ['#2c2c2c', '#222'] : ['#f2f2f2', '#fff'],
-            },
-          },
-        },
-      },
-      tooltip: {
-        theme: this.isDark ? 'dark' : 'light',
-      },
-      theme: {
-        mode: this.isDark ? 'dark' : 'light',
-      },
+    this.auth.user().subscribe(u => {
+      const role: string = (u as any)['role'] ?? '';
+      this.isAdmin = role === 'ADMIN' || role === 'ROLE_ADMIN';
+      this.userName = (u as any)['name'] ?? '';
+      this.userEmail = (u as any)['email'] ?? '';
+      this.cdr.markForCheck();
+      this.isAdmin ? this.loadAdminData() : this.loadStudentData();
     });
   }
 
-  onAlertDismiss() {
-    this.isShowAlert = false;
+  private loadAdminData() {
+    forkJoin({
+      courses: this.statSvc.getGlobal().pipe(catchError(() => of(null))),
+      claims: this.claimSvc.getAllClaims().pipe(catchError(() => of([]))),
+      retakes: this.claimSvc.getAllRetakeRequests().pipe(catchError(() => of([]))),
+      topics: this.topicSvc.getAll().pipe(catchError(() => of([]))),
+      resources: this.resourceSvc.getAll().pipe(catchError(() => of([]))),
+      reports: this.reportSvc.getAll().pipe(catchError(() => of([]))),
+      certs: this.certSvc.getAll().pipe(catchError(() => of([]))),
+    }).subscribe(({ courses, claims, retakes, topics, resources, reports, certs }) => {
+      this.courseStats = courses;
+      const claimsArr = claims as any[];
+      const retakesArr = retakes as any[];
+      this.totalClaims = claimsArr.length;
+      this.openClaims = claimsArr.filter(c => c.status === 'OPEN' || c.status === 'IN_PROGRESS').length;
+      this.recentClaims = claimsArr.slice(-4).reverse();
+      this.totalRetakes = retakesArr.length;
+      this.pendingRetakes = retakesArr.filter(r => r.status === 'PENDING').length;
+      this.recentRetakes = retakesArr.filter(r => r.status === 'PENDING').slice(0, 4);
+      this.totalTopics = (topics as any[]).length;
+      this.totalResources = (resources as any[]).length;
+      this.pendingReports = (reports as any[]).filter(r => r.status === 'PENDING').length;
+      this.totalCertificates = (certs as any[]).length;
+      this.loading = false;
+      this.cdr.markForCheck();
+    });
   }
 
-  getRandom(min: number, max: number) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+  private loadStudentData() {
+    forkJoin({
+      claims: this.claimSvc.getAllClaims().pipe(catchError(() => of([]))),
+      retakes: this.claimSvc.getAllRetakeRequests().pipe(catchError(() => of([]))),
+      topics: this.topicSvc.getAll().pipe(catchError(() => of([]))),
+      certs: this.certSvc.getAll().pipe(catchError(() => of([]))),
+    }).subscribe(({ claims, retakes, topics, certs }) => {
+      this.myClaims = (claims as any[]).filter(c =>
+        !this.userEmail || c.student?.email === this.userEmail
+      ).slice(0, 5);
+      this.myRetakes = (retakes as any[]).slice(0, 5);
+      this.myTopics = (topics as any[]).filter(t => t.authorEmail === this.userEmail).slice(0, 5);
+      this.myCertificates = (certs as any[]).slice(0, 5);
+      this.loading = false;
+      this.cdr.markForCheck();
+    });
+  }
+
+  get greeting(): string {
+    const h = new Date().getHours();
+    if (h < 12) return 'Good morning';
+    if (h < 17) return 'Good afternoon';
+    return 'Good evening';
+  }
+
+  get displayName(): string {
+    if (this.userName) return this.userName;
+    if (this.userEmail) return this.userEmail.split('@')[0];
+    return 'there';
+  }
+
+  claimStatusLabel(status: string): string {
+    const map: Record<string, string> = {
+      OPEN: 'Open', IN_PROGRESS: 'In Progress', RESOLVED: 'Resolved',
+      REJECTED: 'Rejected', RETAKE_AUTHORIZED: 'Authorized', CANCELED: 'Canceled',
+    };
+    return map[status] ?? status;
+  }
+
+  claimStatusColor(status: string): string {
+    const map: Record<string, string> = {
+      OPEN: '#d97706', IN_PROGRESS: '#2563eb', RESOLVED: '#059669',
+      REJECTED: '#dc2626', RETAKE_AUTHORIZED: '#7c3aed', CANCELED: '#94a3b8',
+    };
+    return map[status] ?? '#94a3b8';
+  }
+
+  retakeStatusColor(status: string): string {
+    const map: Record<string, string> = { PENDING: '#d97706', APPROVED: '#059669', REJECTED: '#dc2626' };
+    return map[status] ?? '#94a3b8';
   }
 }

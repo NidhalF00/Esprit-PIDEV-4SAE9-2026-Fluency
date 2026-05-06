@@ -1,256 +1,445 @@
-@if (isShowAlert) {
-  <mtx-alert type="info" dismissible (closed)="onAlertDismiss()">
-    🎉 Introducing
-    <a [href]="introducingItem.link" target="_blank">{{ introducingItem.name }}</a>
-    - {{ introducingItem.description }}
-    <a [href]="introducingItem.link" target="_blank">Learn more!</a>
-  </mtx-alert>
+@if (loading) {
+  <div class="fl-loading">
+    <div class="fl-loading-mark">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="40" height="40" rx="10" fill="#0d1b35"/>
+        <rect x="12" y="10" width="3" height="20" rx="1" fill="#c49a3c"/>
+        <rect x="12" y="10" width="16" height="3" rx="1" fill="#c49a3c"/>
+        <rect x="12" y="18" width="12" height="3" rx="1" fill="#c49a3c"/>
+      </svg>
+    </div>
+    <p class="fl-loading-text">Loading your dashboard…</p>
+  </div>
 }
 
-<div class="row">
-  <!-- Statistics -->
-  @for (stat of stats; track $index) {
-    <div class="col-sm-6 col-md-3">
-      <mat-card [class]="['text-white', 'b-0', stat.color]">
-        <mat-card-header>
-          <mat-card-subtitle class="text-white">{{ stat.title }}</mat-card-subtitle>
-        </mat-card-header>
-        <mat-card-content>
-          <h2 class="m-t-0 m-b-8">{{ stat.amount }}</h2>
-          <mtx-progress
-            [value]="stat.progress.value"
-            height="2px"
-            foreground="rgba(255,255,255,1)"
-            background="rgba(0,0,0,.4)"
-          />
-          <small class="text-muted">Monthly</small>
-        </mat-card-content>
-      </mat-card>
-    </div>
-  }
+<!-- ══════════════════════════════════════════════════════════
+     ADMIN DASHBOARD
+     ══════════════════════════════════════════════════════════ -->
+@if (!loading && isAdmin) {
+  <div class="fl-admin">
 
-  <!-- E-Learning Stats -->
-  <div class="col-12">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin:8px 0 14px;">
-      <div style="display:flex;align-items:center;gap:10px;">
-        <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#4f46e5,#7c3aed);display:flex;align-items:center;justify-content:center;">
-          <mat-icon style="color:#fff;font-size:20px;width:20px;height:20px;">school</mat-icon>
+    <!-- Hero command band -->
+    <div class="fl-hero">
+      <div class="fl-hero-grain"></div>
+      <div class="fl-hero-inner">
+        <div class="fl-hero-head">
+          <div>
+            <p class="fl-hero-eyebrow">Platform Command</p>
+            <h1 class="fl-hero-title">Fluency Academy</h1>
+            <p class="fl-hero-sub">{{ today | date:'EEEE, MMMM d, y' }}</p>
+          </div>
+          <div class="fl-hero-badge">
+            <mat-icon>admin_panel_settings</mat-icon>
+            <span>Administrator</span>
+          </div>
         </div>
-        <div>
-          <div style="font-size:1rem;font-weight:700;color:#0f172a;line-height:1.2;">E-Learning</div>
-          <div style="font-size:0.75rem;color:#94a3b8;">Platform overview</div>
+
+        <!-- Stats grid -->
+        <div class="fl-stat-grid">
+          <div class="fl-stat-tile" routerLink="/courses/overview">
+            <div class="fl-stat-icon"><mat-icon>menu_book</mat-icon></div>
+            <div class="fl-stat-num">{{ courseStats?.totalCours ?? '—' }}</div>
+            <div class="fl-stat-label">Courses</div>
+          </div>
+          <div class="fl-stat-tile" routerLink="/courses/overview">
+            <div class="fl-stat-icon"><mat-icon>layers</mat-icon></div>
+            <div class="fl-stat-num">{{ courseStats?.totalModules ?? '—' }}</div>
+            <div class="fl-stat-label">Modules</div>
+          </div>
+          <div class="fl-stat-tile" routerLink="/courses/overview">
+            <div class="fl-stat-icon"><mat-icon>quiz</mat-icon></div>
+            <div class="fl-stat-num">{{ courseStats?.totalQuiz ?? '—' }}</div>
+            <div class="fl-stat-label">Quizzes</div>
+          </div>
+          <div class="fl-stat-tile">
+            <div class="fl-stat-icon"><mat-icon>workspace_premium</mat-icon></div>
+            <div class="fl-stat-num">{{ totalCertificates }}</div>
+            <div class="fl-stat-label">Certificates</div>
+          </div>
+          <div class="fl-stat-tile" [class.fl-stat-tile--alert]="openClaims > 0" routerLink="/claims">
+            <div class="fl-stat-icon"><mat-icon>support_agent</mat-icon></div>
+            <div class="fl-stat-num">{{ totalClaims }}</div>
+            <div class="fl-stat-label">Claims</div>
+            @if (openClaims > 0) {
+              <div class="fl-stat-badge">{{ openClaims }} open</div>
+            }
+          </div>
+          <div class="fl-stat-tile" [class.fl-stat-tile--alert]="pendingRetakes > 0" routerLink="/claims">
+            <div class="fl-stat-icon"><mat-icon>rate_review</mat-icon></div>
+            <div class="fl-stat-num">{{ totalRetakes }}</div>
+            <div class="fl-stat-label">Retake Requests</div>
+            @if (pendingRetakes > 0) {
+              <div class="fl-stat-badge">{{ pendingRetakes }} pending</div>
+            }
+          </div>
+          <div class="fl-stat-tile" routerLink="/forum">
+            <div class="fl-stat-icon"><mat-icon>forum</mat-icon></div>
+            <div class="fl-stat-num">{{ totalTopics }}</div>
+            <div class="fl-stat-label">Forum Topics</div>
+          </div>
+          <div class="fl-stat-tile" [class.fl-stat-tile--warn]="pendingReports > 0" routerLink="/forum/admin">
+            <div class="fl-stat-icon"><mat-icon>flag</mat-icon></div>
+            <div class="fl-stat-num">{{ pendingReports }}</div>
+            <div class="fl-stat-label">Pending Reports</div>
+          </div>
         </div>
       </div>
-      <a routerLink="/courses/overview" style="font-size:0.8rem;color:#4f46e5;font-weight:600;text-decoration:none;display:flex;align-items:center;gap:3px;">
-        Manage content <mat-icon style="font-size:14px;width:14px;height:14px;">arrow_forward</mat-icon>
-      </a>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:20px;">
-      @for (card of elearningCards; track card.key) {
-        <div style="background:#fff;border-radius:12px;padding:14px;border:1px solid #e2e8f0;display:flex;flex-direction:column;gap:8px;">
-          <div style="display:flex;align-items:center;justify-content:space-between;">
-            <div [style]="'width:32px;height:32px;border-radius:8px;background:' + card.bg + ';display:flex;align-items:center;justify-content:center;'">
-              <mat-icon [style]="'font-size:17px;width:17px;height:17px;color:' + card.color">{{ card.icon }}</mat-icon>
+
+    <!-- Content panels -->
+    <div class="fl-panels">
+
+      <!-- LEFT: Learning platform detail -->
+      <div class="fl-panel fl-panel--learning">
+        <div class="fl-panel-header">
+          <div class="fl-panel-icon fl-panel-icon--sage"><mat-icon>school</mat-icon></div>
+          <div>
+            <h2 class="fl-panel-title">Learning Platform</h2>
+            <p class="fl-panel-sub">Course service metrics</p>
+          </div>
+          <a routerLink="/courses/overview" class="fl-link">Manage <mat-icon>arrow_forward</mat-icon></a>
+        </div>
+
+        <div class="fl-rule"></div>
+
+        @if (courseStats) {
+          <div class="fl-metrics">
+            <div class="fl-metric-row">
+              <span class="fl-metric-label"><mat-icon>help_outline</mat-icon> Questions</span>
+              <span class="fl-metric-val">{{ courseStats.totalQuestions | number }}</span>
+            </div>
+            <div class="fl-metric-row">
+              <span class="fl-metric-label"><mat-icon>check_circle_outline</mat-icon> Answers</span>
+              <span class="fl-metric-val">{{ courseStats.totalReponses | number }}</span>
+            </div>
+            <div class="fl-metric-row">
+              <span class="fl-metric-label"><mat-icon>emoji_events</mat-icon> Avg Quiz Score</span>
+              <span class="fl-metric-val fl-metric-val--gold">{{ courseStats.moyenneScoreMaxQuiz | number:'1.0-1' }}</span>
+            </div>
+            <div class="fl-metric-row">
+              <span class="fl-metric-label"><mat-icon>library_books</mat-icon> Resources</span>
+              <span class="fl-metric-val">{{ totalResources }}</span>
             </div>
           </div>
-          <div [style]="'font-size:1.4rem;font-weight:800;color:' + card.color + ';line-height:1;'">
-            {{ elearningStats ? (elearningStats[card.key] | number:'1.0-1') : '—' }}
+
+          <!-- Visual bar: score -->
+          <div class="fl-score-bar-wrap">
+            <div class="fl-score-bar-label">
+              <span>Average Score Performance</span>
+              <span class="fl-score-pct">{{ courseStats.moyenneScoreMaxQuiz | number:'1.0-1' }} pts</span>
+            </div>
+            <div class="fl-score-bar-track">
+              <div class="fl-score-bar-fill" [style.width.%]="(courseStats.moyenneScoreMaxQuiz / 20) * 100"></div>
+            </div>
           </div>
-          <div style="font-size:0.72rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;">
-            {{ card.label }}
+        } @else {
+          <div class="fl-empty-metric">
+            <mat-icon>cloud_off</mat-icon>
+            <span>Course service unavailable</span>
+          </div>
+        }
+      </div>
+
+      <!-- RIGHT: Attention needed -->
+      <div class="fl-panel fl-panel--ops">
+        <div class="fl-panel-header">
+          <div class="fl-panel-icon fl-panel-icon--terra"><mat-icon>notification_important</mat-icon></div>
+          <div>
+            <h2 class="fl-panel-title">Needs Attention</h2>
+            <p class="fl-panel-sub">Pending actions across services</p>
           </div>
         </div>
-      }
-    </div>
-  </div>
 
-  <!-- Charts -->
-  <div class="col-md-7">
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title>Traffic</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <div id="chart1"></div>
-      </mat-card-content>
-    </mat-card>
-  </div>
-  <div class="col-md-5">
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title>Weekly Revenue</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <div id="chart2"></div>
-      </mat-card-content>
-    </mat-card>
-  </div>
+        <div class="fl-rule"></div>
 
-  <!-- Others -->
-  <div class="col-md-6">
-    <mat-card>
-      <mat-tab-group>
-        <mat-tab label="First">
-          <div class="m-16">
-            <img class="d-block w-full" src="images/pixabay/2.jpg" alt="" />
-            <h3>
-              Aenean viverra arcu nec pellentesque ultrices. In erat purus, adipiscing nec lacinia
-              at, ornare ac eros.
-            </h3>
-            <p>
-              Nullam at risus metus. Quisque nisl purus, pulvinar ut mauris vel, elementum suscipit
-              eros. Praesent ornare ante massa, egestas pellentesque orci convallis ut. Curabitur
-              consequat convallis est, id luctus mauris lacinia vel. Nullam tristique lobortis
-              mauris, ultricies fermentum lacus bibendum id. Proin non ante tortor. Suspendisse
-              pulvinar ornare tellus nec pulvinar. Nam pellentesque accumsan mi, non pellentesque
-              sem convallis sed. Quisque rutrum erat id auctor gravida.
-            </p>
+        <!-- Pending retake requests -->
+        <div class="fl-ops-section">
+          <div class="fl-ops-header">
+            <mat-icon>rate_review</mat-icon>
+            <span>Pending Retake Requests</span>
+            <span class="fl-ops-count" [class.fl-ops-count--alert]="pendingRetakes > 0">{{ pendingRetakes }}</span>
           </div>
-        </mat-tab>
-        <mat-tab label="Second">
-          <div class="m-16">
-            <img class="d-block w-full" src="images/pixabay/8.jpg" alt="" />
-            <h3>Vestibulum vitae diam nec odio dapibus placerat. Ut ut lorem justo.</h3>
-            <p>
-              Fusce bibendum augue nec fermentum tempus. Sed laoreet dictum tempus. Aenean ac sem
-              quis nulla malesuada volutpat. Nunc vitae urna pulvinar velit commodo cursus. Nullam
-              eu felis quis diam adipiscing hendrerit vel ac turpis. Nam mattis fringilla euismod.
-              Donec eu ipsum sit amet mauris iaculis aliquet. Quisque sit amet feugiat odio. Cras
-              convallis lorem at libero lobortis, placerat lobortis sapien lacinia. Duis sit amet
-              elit bibendum sapien dignissim bibendum.
-            </p>
-          </div>
-        </mat-tab>
-        <mat-tab label="Third">
-          <div class="m-16">
-            <img class="d-block w-full" src="images/pixabay/16.jpg" alt="" />
-            <h3>
-              Maecenas eget turpis luctus, scelerisque arcu id, iaculis urna. Interdum et malesuada
-              fames ac ante ipsum primis in faucibus.
-            </h3>
-            <p>
-              Morbi placerat est nec pharetra placerat. Ut laoreet nunc accumsan orci aliquam
-              accumsan. Maecenas volutpat dolor vitae sapien ultricies fringilla. Suspendisse vitae
-              orci sed nibh ultrices tristique. Aenean in ante eget urna semper imperdiet.
-              Pellentesque sagittis a nulla at scelerisque. Nam augue nulla, accumsan quis nisi a,
-              facilisis eleifend nulla. Praesent aliquet odio non imperdiet fringilla.
-            </p>
-          </div>
-        </mat-tab>
-      </mat-tab-group>
-    </mat-card>
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title>Album</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <mat-grid-list cols="2">
-          <mat-grid-tile class="bg-violet-95">1</mat-grid-tile>
-          <mat-grid-tile class="bg-magenta-95">2</mat-grid-tile>
-          <mat-grid-tile class="bg-orange-95">3</mat-grid-tile>
-          <mat-grid-tile class="bg-azure-95">4</mat-grid-tile>
-        </mat-grid-list>
-      </mat-card-content>
-    </mat-card>
-  </div>
-
-  <div class="col-md-6">
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title>Avatar List</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <mat-list>
-          @for (message of messages; track $index) {
-            <mat-list-item>
-              <img matListItemAvatar [src]="message.img" alt="Avatar" />
-              <h3 matListItemTitle>{{ message.subject }}</h3>
-              <p matListItemLine>{{ message.content }}</p>
-            </mat-list-item>
+          @if (recentRetakes.length > 0) {
+            <div class="fl-ops-list">
+              @for (r of recentRetakes; track r.id) {
+                <div class="fl-ops-item">
+                  <div class="fl-ops-dot" [style.background]="retakeStatusColor(r.status)"></div>
+                  <div class="fl-ops-info">
+                    <span class="fl-ops-name">{{ r.courseName }}</span>
+                    <span class="fl-ops-meta">{{ r.requestDate | date:'MMM d' }}</span>
+                  </div>
+                </div>
+              }
+            </div>
+            <a routerLink="/claims" class="fl-ops-cta">View all retakes <mat-icon>arrow_forward</mat-icon></a>
+          } @else {
+            <p class="fl-ops-empty">No pending retakes</p>
           }
-        </mat-list>
-      </mat-card-content>
-    </mat-card>
-
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title>Revenue Table</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <table class="w-full" mat-table [dataSource]="dataSource">
-          <ng-container matColumnDef="position">
-            <th mat-header-cell *matHeaderCellDef>No.</th>
-            <td mat-cell *matCellDef="let element">{{ element.position }}</td>
-          </ng-container>
-          <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef>Name</th>
-            <td mat-cell *matCellDef="let element">{{ element.name }}</td>
-          </ng-container>
-          <ng-container matColumnDef="weight">
-            <th mat-header-cell *matHeaderCellDef>Weight</th>
-            <td mat-cell *matCellDef="let element">{{ element.weight }}</td>
-          </ng-container>
-          <ng-container matColumnDef="symbol">
-            <th mat-header-cell *matHeaderCellDef>Symbol</th>
-            <td mat-cell *matCellDef="let element">{{ element.symbol }}</td>
-          </ng-container>
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-        </table>
-      </mat-card-content>
-    </mat-card>
-
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title>Chips & Buttons</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <h3 class="m-t-0">Chips</h3>
-        <mat-chip-listbox>
-          <mat-chip-option selected>One fish</mat-chip-option>
-          <mat-chip-option color="primary">Primary fish</mat-chip-option>
-          <mat-chip-option color="accent">Accent fish</mat-chip-option>
-          <mat-chip-option color="warn">Two fish</mat-chip-option>
-        </mat-chip-listbox>
-        <h4>Custom chip colors</h4>
-        <mat-chip-listbox>
-          <mat-chip-option class="bg-orange-{{ isDark ? 50 : 90 }}">Orange fish</mat-chip-option>
-          <mat-chip-option class="bg-blue-{{ isDark ? 50 : 90 }}">Blue fish</mat-chip-option>
-          <mat-chip-option class="bg-cyan-{{ isDark ? 50 : 90 }}">Cyan fish</mat-chip-option>
-          <mat-chip-option class="bg-red-{{ isDark ? 50 : 90 }}" selected>Red fish</mat-chip-option>
-          <mat-chip-option class="bg-green-{{ isDark ? 50 : 90 }}">Green fish</mat-chip-option>
-        </mat-chip-listbox>
-
-        <h3>Buttons</h3>
-        <div class="d-flex flex-wrap align-items-center gap-8">
-          <button matButton>Text</button>
-          <button matButton="elevated">Elevated</button>
-          <button matButton="outlined">Outlined</button>
-          <button matButton="filled">Filled</button>
-          <button matButton="tonal">Tonal</button>
-          <button matIconButton>
-            <mat-icon>more_vert</mat-icon>
-          </button>
-          <button matFab>
-            <mat-icon>delete</mat-icon>
-          </button>
-          <button matMiniFab>
-            <mat-icon>menu</mat-icon>
-          </button>
-          <button matFab extended>
-            <mat-icon>favorite</mat-icon>
-            Basic
-          </button>
         </div>
-        <h4>Custom button colors</h4>
-        <div class="d-flex flex-wrap align-items-center gap-8">
-          <button matButton="filled" class="bg-orange-90 text-dark">Orange</button>
-          <button matButton="filled" class="bg-blue-90 text-dark">Teal</button>
-          <button matButton="filled" class="bg-cyan-90 text-dark">Cyan</button>
-          <button matButton="filled" class="bg-red-90 text-dark">Purple</button>
-          <button matButton="filled" class="bg-green-90 text-dark">Green</button>
+
+        <div class="fl-rule fl-rule--light"></div>
+
+        <!-- Recent claims -->
+        <div class="fl-ops-section">
+          <div class="fl-ops-header">
+            <mat-icon>support_agent</mat-icon>
+            <span>Recent Claims</span>
+            <span class="fl-ops-count" [class.fl-ops-count--alert]="openClaims > 0">{{ openClaims }} open</span>
+          </div>
+          @if (recentClaims.length > 0) {
+            <div class="fl-ops-list">
+              @for (c of recentClaims; track c.id) {
+                <div class="fl-ops-item">
+                  <div class="fl-ops-dot" [style.background]="claimStatusColor(c.status)"></div>
+                  <div class="fl-ops-info">
+                    <span class="fl-ops-name">{{ c.subject }}</span>
+                    <span class="fl-ops-status" [style.color]="claimStatusColor(c.status)">{{ claimStatusLabel(c.status) }}</span>
+                  </div>
+                </div>
+              }
+            </div>
+            <a routerLink="/claims" class="fl-ops-cta">View all claims <mat-icon>arrow_forward</mat-icon></a>
+          } @else {
+            <p class="fl-ops-empty">No claims yet</p>
+          }
         </div>
-      </mat-card-content>
-    </mat-card>
+
+        <div class="fl-rule fl-rule--light"></div>
+
+        <!-- Forum reports -->
+        <div class="fl-ops-section">
+          <div class="fl-ops-header">
+            <mat-icon>flag</mat-icon>
+            <span>Forum Reports</span>
+            <span class="fl-ops-count" [class.fl-ops-count--warn]="pendingReports > 0">{{ pendingReports }} pending</span>
+          </div>
+          @if (pendingReports > 0) {
+            <a routerLink="/forum/admin" class="fl-ops-cta fl-ops-cta--warn">
+              Review {{ pendingReports }} report{{ pendingReports !== 1 ? 's' : '' }}
+              <mat-icon>arrow_forward</mat-icon>
+            </a>
+          } @else {
+            <p class="fl-ops-empty">No pending reports</p>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Forum overview strip -->
+    <div class="fl-forum-strip">
+      <div class="fl-forum-strip-inner">
+        <div class="fl-forum-stat">
+          <mat-icon>forum</mat-icon>
+          <div>
+            <span class="fl-forum-num">{{ totalTopics }}</span>
+            <span class="fl-forum-label">Discussion Topics</span>
+          </div>
+        </div>
+        <div class="fl-forum-divider"></div>
+        <div class="fl-forum-stat">
+          <mat-icon>library_books</mat-icon>
+          <div>
+            <span class="fl-forum-num">{{ totalResources }}</span>
+            <span class="fl-forum-label">Learning Resources</span>
+          </div>
+        </div>
+        <div class="fl-forum-divider"></div>
+        <div class="fl-forum-stat">
+          <mat-icon>workspace_premium</mat-icon>
+          <div>
+            <span class="fl-forum-num">{{ totalCertificates }}</span>
+            <span class="fl-forum-label">Certificates Issued</span>
+          </div>
+        </div>
+        <a routerLink="/forum" class="fl-forum-action">
+          <mat-icon>arrow_forward</mat-icon>
+          Go to Forum
+        </a>
+        <a routerLink="/forum/admin" class="fl-forum-action fl-forum-action--secondary">
+          <mat-icon>shield</mat-icon>
+          Admin Panel
+        </a>
+      </div>
+    </div>
+
   </div>
-</div>
+}
+
+<!-- ══════════════════════════════════════════════════════════
+     STUDENT DASHBOARD
+     ══════════════════════════════════════════════════════════ -->
+@if (!loading && !isAdmin) {
+  <div class="fl-student">
+
+    <!-- Personal greeting hero -->
+    <div class="fl-greeting">
+      <div class="fl-greeting-grain"></div>
+      <div class="fl-greeting-inner">
+        <div class="fl-greeting-left">
+          <p class="fl-greeting-eyebrow">{{ today | date:'EEEE, MMMM d' }}</p>
+          <h1 class="fl-greeting-title">
+            <em>{{ greeting }},</em><br>{{ displayName }}.
+          </h1>
+          <p class="fl-greeting-tagline">Keep learning — fluency is a journey, not a destination.</p>
+        </div>
+        <div class="fl-greeting-right">
+          <div class="fl-greeting-ring">
+            <svg viewBox="0 0 120 120" class="fl-ring-svg">
+              <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(196,154,60,0.15)" stroke-width="10"/>
+              <circle cx="60" cy="60" r="50" fill="none" stroke="#c49a3c" stroke-width="10"
+                stroke-dasharray="314"
+                [attr.stroke-dashoffset]="314 - (myCertificates.length * 15)"
+                stroke-linecap="round"
+                transform="rotate(-90 60 60)"/>
+            </svg>
+            <div class="fl-ring-center">
+              <span class="fl-ring-num">{{ myCertificates.length }}</span>
+              <span class="fl-ring-sub">certs</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Three-column cards -->
+    <div class="fl-student-grid">
+
+      <!-- Certificates & Learning -->
+      <div class="fl-scard">
+        <div class="fl-scard-header">
+          <div class="fl-scard-icon fl-scard-icon--gold"><mat-icon>workspace_premium</mat-icon></div>
+          <div>
+            <h2 class="fl-scard-title">My Certificates</h2>
+            <p class="fl-scard-sub">Achievements earned</p>
+          </div>
+        </div>
+        <div class="fl-rule"></div>
+        @if (myCertificates.length > 0) {
+          <div class="fl-scard-list">
+            @for (cert of myCertificates; track cert.id) {
+              <div class="fl-scard-item">
+                <div class="fl-scard-avatar fl-scard-avatar--gold">
+                  <mat-icon>emoji_events</mat-icon>
+                </div>
+                <div class="fl-scard-info">
+                  <span class="fl-scard-name">{{ cert.moduleName ?? cert.etudiantNom ?? 'Certificate' }}</span>
+                  <span class="fl-scard-meta">{{ cert.dateObtention | date:'MMM y' }}</span>
+                </div>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="fl-scard-empty">
+            <mat-icon>workspace_premium</mat-icon>
+            <p>No certificates yet.<br>Complete a course to earn one!</p>
+          </div>
+        }
+        <a routerLink="/courses/overview" class="fl-scard-cta">
+          Browse courses <mat-icon>arrow_forward</mat-icon>
+        </a>
+      </div>
+
+      <!-- Claims & Retakes -->
+      <div class="fl-scard">
+        <div class="fl-scard-header">
+          <div class="fl-scard-icon fl-scard-icon--terra"><mat-icon>support_agent</mat-icon></div>
+          <div>
+            <h2 class="fl-scard-title">My Requests</h2>
+            <p class="fl-scard-sub">Claims &amp; retake requests</p>
+          </div>
+        </div>
+        <div class="fl-rule"></div>
+
+        @if (myClaims.length > 0 || myRetakes.length > 0) {
+          <div class="fl-scard-list">
+            @for (c of myClaims; track c.id) {
+              <div class="fl-scard-item">
+                <div class="fl-ops-dot" [style.background]="claimStatusColor(c.status)"></div>
+                <div class="fl-scard-info">
+                  <span class="fl-scard-name">{{ c.subject }}</span>
+                  <span class="fl-scard-meta" [style.color]="claimStatusColor(c.status)">{{ claimStatusLabel(c.status) }}</span>
+                </div>
+              </div>
+            }
+            @for (r of myRetakes; track r.id) {
+              <div class="fl-scard-item">
+                <div class="fl-ops-dot" [style.background]="retakeStatusColor(r.status)"></div>
+                <div class="fl-scard-info">
+                  <span class="fl-scard-name">Retake — {{ r.courseName }}</span>
+                  <span class="fl-scard-meta" [style.color]="retakeStatusColor(r.status)">{{ r.status }}</span>
+                </div>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="fl-scard-empty">
+            <mat-icon>inbox</mat-icon>
+            <p>No open requests.<br>All clear!</p>
+          </div>
+        }
+        <a routerLink="/claims" class="fl-scard-cta">
+          View all requests <mat-icon>arrow_forward</mat-icon>
+        </a>
+      </div>
+
+      <!-- Forum activity -->
+      <div class="fl-scard">
+        <div class="fl-scard-header">
+          <div class="fl-scard-icon fl-scard-icon--sage"><mat-icon>forum</mat-icon></div>
+          <div>
+            <h2 class="fl-scard-title">Forum Activity</h2>
+            <p class="fl-scard-sub">Your topics &amp; discussions</p>
+          </div>
+        </div>
+        <div class="fl-rule"></div>
+        @if (myTopics.length > 0) {
+          <div class="fl-scard-list">
+            @for (t of myTopics; track t.id) {
+              <div class="fl-scard-item" style="cursor:pointer" routerLink="/forum">
+                <div class="fl-scard-avatar fl-scard-avatar--sage">
+                  <mat-icon>chat_bubble_outline</mat-icon>
+                </div>
+                <div class="fl-scard-info">
+                  <span class="fl-scard-name">{{ t.title }}</span>
+                  <span class="fl-scard-meta">{{ t.createdAt | date:'MMM d' }}</span>
+                </div>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="fl-scard-empty">
+            <mat-icon>forum</mat-icon>
+            <p>You haven't posted yet.<br>Start a discussion!</p>
+          </div>
+        }
+        <a routerLink="/forum" class="fl-scard-cta">
+          Go to forum <mat-icon>arrow_forward</mat-icon>
+        </a>
+      </div>
+    </div>
+
+    <!-- Quick actions -->
+    <div class="fl-quick">
+      <h2 class="fl-quick-title">Quick Actions</h2>
+      <div class="fl-quick-grid">
+        <a routerLink="/courses/overview" class="fl-quick-btn fl-quick-btn--primary">
+          <mat-icon>play_lesson</mat-icon>
+          <span>Browse Courses</span>
+        </a>
+        <a routerLink="/forum" class="fl-quick-btn fl-quick-btn--sage">
+          <mat-icon>forum</mat-icon>
+          <span>Forum</span>
+        </a>
+        <a routerLink="/forum/resources" class="fl-quick-btn fl-quick-btn--gold">
+          <mat-icon>library_books</mat-icon>
+          <span>Resources</span>
+        </a>
+        <a routerLink="/claims" class="fl-quick-btn fl-quick-btn--terra">
+          <mat-icon>add_circle_outline</mat-icon>
+          <span>New Claim</span>
+        </a>
+      </div>
+    </div>
+
+  </div>
+}

@@ -26,6 +26,7 @@ export class TopicListComponent implements OnInit {
   private cdr = inject(ChangeDetectorRef);
 
   topics: Topic[] = [];
+  private allTopics: Topic[] = [];
   categoryId!: number;
   isAdmin = false;
   userEmail = '';
@@ -49,12 +50,29 @@ export class TopicListComponent implements OnInit {
   }
 
   load() {
-    this.svc.getByCategory(this.categoryId).subscribe(data => { this.topics = data; this.cdr.markForCheck(); });
+    this.svc.getByCategory(this.categoryId).subscribe(data => {
+      this.allTopics = data;
+      this.applyFilters();
+      this.cdr.markForCheck();
+    });
   }
 
   onSearch() {
-    if (!this.searchTitle && !this.searchDateFrom) { this.load(); return; }
-    this.svc.search(this.searchTitle, this.categoryId, this.searchDateFrom).subscribe(data => { this.topics = data; this.cdr.markForCheck(); });
+    this.applyFilters();
+    this.cdr.markForCheck();
+  }
+
+  private applyFilters() {
+    let filtered = this.allTopics;
+    if (this.searchTitle) {
+      const q = this.searchTitle.toLowerCase();
+      filtered = filtered.filter(t => t.title?.toLowerCase().includes(q) || t.content?.toLowerCase().includes(q));
+    }
+    if (this.searchDateFrom) {
+      const from = new Date(this.searchDateFrom);
+      filtered = filtered.filter(t => t.createdAt ? new Date(t.createdAt) >= from : true);
+    }
+    this.topics = filtered;
   }
 
   openCreate() {
