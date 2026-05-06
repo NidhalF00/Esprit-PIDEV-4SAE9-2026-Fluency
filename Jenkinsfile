@@ -75,26 +75,14 @@ pipeline {
                     sh '''
                         echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
 
-                        docker tag platform-education4sae9--claim-service $DOCKER_USER/claim-service:latest
-                        docker push $DOCKER_USER/claim-service:latest
-
-                        docker tag platform-education4sae9--auth-service $DOCKER_USER/auth-service:latest
-                        docker push $DOCKER_USER/auth-service:latest
-
-                        docker tag platform-education4sae9--gateway-service $DOCKER_USER/gateway-service:latest
-                        docker push $DOCKER_USER/gateway-service:latest
-
-                        docker tag platform-education4sae9--course-service $DOCKER_USER/course-service:latest
-                        docker push $DOCKER_USER/course-service:latest
-
-                        docker tag platform-education4sae9--forum-service $DOCKER_USER/forum-service:latest
-                        docker push $DOCKER_USER/forum-service:latest
-
-                        docker tag platform-education4sae9--resource-service $DOCKER_USER/resource-service:latest
-                        docker push $DOCKER_USER/resource-service:latest
-
-                        docker tag platform-education4sae9--eureka-server $DOCKER_USER/eureka-server:latest
-                        docker push $DOCKER_USER/eureka-server:latest
+                        docker push zeinebnecib/eureka-server:latest
+                        docker push zeinebnecib/gateway-service:latest
+                        docker push zeinebnecib/auth-service:latest
+                        docker push zeinebnecib/claim-service:latest
+                        docker push zeinebnecib/retake-service:latest
+                        docker push zeinebnecib/course-service:latest
+                        docker push zeinebnecib/forum-service:latest
+                        docker push zeinebnecib/resource-service:latest
                     '''
                 }
             }
