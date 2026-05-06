@@ -151,6 +151,10 @@ public class Cours {
         this.fichierPdf = fichierPdf;
     }
 
+    public Long getModuleId() {
+        return module != null ? module.getId() : null;
+    }
+
     public Module getModule() {
         return module;
     }

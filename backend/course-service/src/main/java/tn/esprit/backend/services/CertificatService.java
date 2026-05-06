@@ -155,7 +155,7 @@ public class CertificatService {
     /**
      * Après correction du quiz : si réussi et {@code userId} fourni, crée le certificat (une seule fois par user/quiz) et envoie l’email.
      */
-    public void appliquerCertificatSiReussi(QuizResultDTO resultat, Long userId) {
+    public void appliquerCertificatSiReussi(QuizResultDTO resultat, Long userId, String userName, String userEmail) {
         resultat.setCertificatGenere(false);
         resultat.setCertificatDejaObtenu(false);
         resultat.setCertificatId(null);
@@ -170,6 +170,15 @@ public class CertificatService {
                 resultat.setMessageCertificat("Quiz réussi : indiquez userId dans le corps pour générer un certificat.");
             }
             return;
+        }
+
+        if (!userRepository.existsById(userId)) {
+            User u = new User();
+            u.setId(userId);
+            u.setNom(userName != null && !userName.isBlank() ? userName : "Étudiant");
+            u.setEmail(userEmail);
+            u.setRole("STUDENT");
+            userRepository.save(u);
         }
 
         if (certificatRepository.existsByUser_IdAndQuiz_Id(userId, resultat.getQuizId())) {
@@ -220,6 +229,9 @@ public class CertificatService {
                 c.getUser() != null ? c.getUser().getId() : null,
                 c.getQuiz() != null ? c.getQuiz().getId() : null,
                 c.getModule() != null ? c.getModule().getId() : null,
+                c.getUser() != null ? c.getUser().getNom() : null,
+                c.getQuiz() != null ? c.getQuiz().getTitre() : null,
+                c.getModule() != null ? c.getModule().getTitre() : null,
                 pdfDispo,
                 pdfUrl
         );

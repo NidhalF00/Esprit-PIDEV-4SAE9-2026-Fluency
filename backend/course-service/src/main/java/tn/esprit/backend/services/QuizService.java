@@ -42,6 +42,7 @@ public class QuizService {
         existing.setTitre(quiz.getTitre());
         existing.setDescription(quiz.getDescription());
         existing.setScoreMax(quiz.getScoreMax());
+        if (quiz.getActif() != null) existing.setActif(quiz.getActif());
 
         if (coursId != null) {
             Cours newCours = coursRepository.findById(coursId)

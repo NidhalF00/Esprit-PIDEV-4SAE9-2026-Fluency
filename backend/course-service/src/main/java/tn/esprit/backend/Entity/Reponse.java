@@ -50,6 +50,10 @@ public class Reponse {
         this.correcte = correcte;
     }
 
+    public Long getQuestionId() {
+        return question != null ? question.getId() : null;
+    }
+
     public Question getQuestion() {
         return question;
     }

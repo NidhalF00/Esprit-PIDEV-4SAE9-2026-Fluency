@@ -25,6 +25,9 @@ public class Quiz {
     @Column(name = "score_max")
     private Double scoreMax;
 
+    @Column(name = "actif")
+    private Boolean actif = false;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cours_id", nullable = false)
     @JsonBackReference
@@ -67,6 +70,18 @@ public class Quiz {
 
     public void setScoreMax(Double scoreMax) {
         this.scoreMax = scoreMax;
+    }
+
+    public Boolean getActif() {
+        return actif;
+    }
+
+    public void setActif(Boolean actif) {
+        this.actif = actif;
+    }
+
+    public Long getCoursId() {
+        return cours != null ? cours.getId() : null;
     }
 
     public Cours getCours() {

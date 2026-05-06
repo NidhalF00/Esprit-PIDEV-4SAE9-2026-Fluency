@@ -1,0 +1,170 @@
+<div class="qp-wrap">
+
+  <!-- Loading -->
+  @if (stage === 'loading') {
+    <div class="qp-center">
+      <mat-spinner diameter="52"></mat-spinner>
+      <p>Loading quiz…</p>
+    </div>
+  }
+
+  <!-- Error -->
+  @if (stage === 'error') {
+    <div class="qp-center">
+      <mat-icon class="qp-error-icon">error_outline</mat-icon>
+      <p>Failed to load quiz.</p>
+      <button class="btn-back" (click)="backToCatalog()">
+        <mat-icon>arrow_back</mat-icon> Back to catalog
+      </button>
+    </div>
+  }
+
+  <!-- Quiz taking -->
+  @if (stage === 'taking' || stage === 'submitting') {
+    <div class="qp-header">
+      <button class="btn-ghost" (click)="backToCatalog()">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <div class="qp-header-info">
+        <h1 class="qp-title">{{ quiz?.titre }}</h1>
+        <p class="qp-desc">{{ quiz?.description }}</p>
+      </div>
+      <div class="qp-score-max">{{ quiz?.scoreMax }}<span>pts</span></div>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="qp-progress-bar-wrap">
+      <div class="qp-progress-labels">
+        <span>{{ answered }} / {{ total }} answered</span>
+        <span>{{ progress }}%</span>
+      </div>
+      <div class="qp-progress-track">
+        <div class="qp-progress-fill" [style.width.%]="progress"></div>
+      </div>
+    </div>
+
+    <!-- Questions -->
+    <div class="qp-questions">
+      @for (qc of questions; track qc.data.id; let i = $index) {
+        <div class="question-card" [class.has-answer]="qc.selectedId !== null">
+          <div class="q-header">
+            <span class="q-num">Q{{ i + 1 }}</span>
+            <span class="q-pts">{{ qc.data.points }} pt{{ qc.data.points !== 1 ? 's' : '' }}</span>
+          </div>
+          <p class="q-enonce">{{ qc.data.enonce }}</p>
+          <div class="answers-grid">
+            @for (ac of qc.answers; track ac.data.id) {
+              <button class="answer-btn"
+                      [class.selected]="qc.selectedId === ac.data.id"
+                      (click)="select(qc, ac.data.id!)">
+                <span class="answer-dot"></span>
+                <span class="answer-text">{{ ac.data.texte }}</span>
+                @if (qc.selectedId === ac.data.id) {
+                  <mat-icon class="answer-check">check_circle</mat-icon>
+                }
+              </button>
+            }
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Submit -->
+    <div class="qp-footer">
+      @if (!allAnswered) {
+        <p class="qp-hint">Answer all {{ total }} questions to submit.</p>
+      }
+      <button class="btn-submit" [class.ready]="allAnswered" [disabled]="!allAnswered || stage === 'submitting'" (click)="submit()">
+        @if (stage === 'submitting') {
+          <mat-spinner diameter="18"></mat-spinner>
+          <span>Submitting…</span>
+        } @else {
+          <mat-icon>send</mat-icon>
+          <span>Submit quiz</span>
+        }
+      </button>
+    </div>
+  }
+
+  <!-- Result -->
+  @if (stage === 'result' && result) {
+    <div class="qp-result">
+      <button class="btn-ghost result-back" (click)="backToCatalog()">
+        <mat-icon>arrow_back</mat-icon> Back to catalog
+      </button>
+
+      <div class="result-card">
+        <!-- Score circle -->
+        <div class="score-circle-wrap">
+          <svg class="score-svg" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="52" class="score-track"/>
+            <circle cx="60" cy="60" r="52" class="score-arc"
+                    [style.stroke]="scoreColor()"
+                    [style.stroke-dasharray]="scoreDash()"
+                    stroke-dashoffset="0"/>
+          </svg>
+          <div class="score-text">
+            <span class="score-pct" [style.color]="scoreColor()">{{ result.pourcentage | number:'1.0-0' }}%</span>
+            <span class="score-label">{{ result.score }}/{{ result.scoreMax }}</span>
+          </div>
+        </div>
+
+        <!-- Pass/Fail banner -->
+        @if (result.valide) {
+          <div class="result-banner pass">
+            <mat-icon>verified</mat-icon>
+            <span>Quiz passed!</span>
+          </div>
+        } @else {
+          <div class="result-banner fail">
+            <mat-icon>cancel</mat-icon>
+            <span>Not passed — keep practicing!</span>
+          </div>
+        }
+
+        <!-- Stats -->
+        <div class="result-stats">
+          <div class="stat-item">
+            <mat-icon class="stat-icon correct">check_circle</mat-icon>
+            <span class="stat-val">{{ result.bonnesReponses }}</span>
+            <span class="stat-lbl">Correct</span>
+          </div>
+          <div class="stat-sep"></div>
+          <div class="stat-item">
+            <mat-icon class="stat-icon wrong">cancel</mat-icon>
+            <span class="stat-val">{{ result.mauvaisesReponses }}</span>
+            <span class="stat-lbl">Wrong</span>
+          </div>
+          <div class="stat-sep"></div>
+          <div class="stat-item">
+            <mat-icon class="stat-icon total">quiz</mat-icon>
+            <span class="stat-val">{{ result.totalQuestions }}</span>
+            <span class="stat-lbl">Total</span>
+          </div>
+        </div>
+
+        <!-- Certificate -->
+        @if (result.certificatGenere || result.certificatDejaObtenu) {
+          <div class="cert-section">
+            <mat-icon class="cert-icon">workspace_premium</mat-icon>
+            <div class="cert-info">
+              @if (result.certificatDejaObtenu) {
+                <p class="cert-msg">Certificate already obtained.</p>
+              } @else {
+                <p class="cert-msg">{{ result.messageCertificat }}</p>
+              }
+              @if (result.codeCertificat) {
+                <p class="cert-code">Code: <strong>{{ result.codeCertificat }}</strong></p>
+              }
+              @if (result.certificatPdfUrl) {
+                <a class="btn-cert" [href]="result.certificatPdfUrl" target="_blank">
+                  <mat-icon>download</mat-icon> Download certificate
+                </a>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

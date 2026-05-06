@@ -8,7 +8,6 @@ import tn.esprit.backend.services.StatistiqueService;
 
 @RestController
 @RequestMapping("/api/statistiques")
-@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class StatistiqueController {
 

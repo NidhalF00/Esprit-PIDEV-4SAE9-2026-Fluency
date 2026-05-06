@@ -6,4 +6,5 @@ export const environment = {
   retakeApiUrl: 'http://localhost:8080/api',
   mlApiUrl: 'http://localhost:8080/api/ml',
   studentApiUrl: 'http://localhost:8080',
+  courseApiUrl: 'http://localhost:8080/api',
 };

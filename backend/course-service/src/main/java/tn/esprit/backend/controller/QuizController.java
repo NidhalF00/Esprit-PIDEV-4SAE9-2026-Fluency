@@ -11,7 +11,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/quizzes")
-@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class QuizController {
 

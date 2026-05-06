@@ -1,4 +1,6 @@
 import { AfterViewInit, Component, NgZone, OnDestroy, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
@@ -12,12 +14,15 @@ import { MtxAlertModule } from '@ng-matero/extensions/alert';
 import { MtxProgressModule } from '@ng-matero/extensions/progress';
 import { Subscription } from 'rxjs';
 import { CHARTS, ELEMENT_DATA, MESSAGES, STATS } from './data';
+import { StatistiqueService, GlobalStats } from '../courses/services/statistique.service';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
   imports: [
+    CommonModule,
+    RouterModule,
     MatButtonModule,
     MatCardModule,
     MatChipsModule,
@@ -33,6 +38,7 @@ import { CHARTS, ELEMENT_DATA, MESSAGES, STATS } from './data';
 export class Dashboard implements OnInit, AfterViewInit, OnDestroy {
   private readonly ngZone = inject(NgZone);
   private readonly settings = inject(SettingsService);
+  private readonly statSvc = inject(StatistiqueService);
 
   displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
   dataSource = ELEMENT_DATA;
@@ -44,6 +50,17 @@ export class Dashboard implements OnInit, AfterViewInit, OnDestroy {
   chart2?: ApexCharts;
 
   stats = STATS;
+
+  elearningStats: GlobalStats | null = null;
+
+  elearningCards = [
+    { label: 'Modules',   key: 'totalModules',   icon: 'school',       color: '#7c3aed', bg: '#ede9fe' },
+    { label: 'Courses',   key: 'totalCours',      icon: 'menu_book',    color: '#1d4ed8', bg: '#dbeafe' },
+    { label: 'Quizzes',   key: 'totalQuiz',       icon: 'quiz',         color: '#b45309', bg: '#fef3c7' },
+    { label: 'Questions', key: 'totalQuestions',  icon: 'help_outline', color: '#059669', bg: '#d1fae5' },
+    { label: 'Answers',   key: 'totalReponses',   icon: 'check_circle', color: '#0891b2', bg: '#cffafe' },
+    { label: 'Avg Score', key: 'moyenneScoreMaxQuiz', icon: 'emoji_events', color: '#be185d', bg: '#fce7f3' },
+  ] as const;
 
   notifySubscription = Subscription.EMPTY;
 
@@ -96,8 +113,10 @@ export class Dashboard implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit() {
     this.notifySubscription = this.settings.notify.subscribe(opts => {
       console.log(opts);
-
       this.updateCharts();
+    });
+    this.statSvc.getGlobal().subscribe({
+      next: s => { setTimeout(() => { this.elearningStats = s; }); },
     });
   }
 

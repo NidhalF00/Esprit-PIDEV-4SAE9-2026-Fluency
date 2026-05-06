@@ -27,7 +27,7 @@ public class QuizCorrectionService {
      * @param reponsesEtudiant  questionId → reponseId choisie
      * @param userId            étudiant (optionnel ; requis pour le certificat)
      */
-    public QuizResultDTO corrigerQuiz(Long quizId, Map<Long, Long> reponsesEtudiant, Long userId) {
+    public QuizResultDTO corrigerQuiz(Long quizId, Map<Long, Long> reponsesEtudiant, Long userId, String userName, String userEmail) {
         QuizScoreService.DetailScore detail = quizScoreService.evaluerQuiz(quizId, reponsesEtudiant);
         double pourcentage = quizScoreService.calculerPourcentage(detail.getScoreObtenu(), detail.getScoreMax());
         boolean valide = quizScoreService.estQuizReussi(pourcentage);
@@ -43,7 +43,7 @@ public class QuizCorrectionService {
                 valide
         );
 
-        certificatService.appliquerCertificatSiReussi(resultat, userId);
+        certificatService.appliquerCertificatSiReussi(resultat, userId, userName, userEmail);
         return resultat;
     }
 

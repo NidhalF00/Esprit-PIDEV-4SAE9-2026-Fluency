@@ -11,7 +11,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/questions")
-@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class QuestionController {
 
@@ -20,6 +19,11 @@ public class QuestionController {
     @GetMapping
     public ResponseEntity<List<Question>> getAll() {
         return ResponseEntity.ok(questionService.getAll());
+    }
+
+    @GetMapping("/quiz/{quizId}")
+    public ResponseEntity<List<Question>> getByQuiz(@PathVariable Long quizId) {
+        return ResponseEntity.ok(questionService.getByQuizId(quizId));
     }
 
     @GetMapping("/{id}")

@@ -11,7 +11,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/quizzes")
-@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class QuizCorrectionController {
 
@@ -24,7 +23,9 @@ public class QuizCorrectionController {
         Map<Long, Long> reponses = QuizCorrectionService.toReponsesMap(
                 body != null ? body.getReponsesEtudiant() : null);
         Long userId = body != null ? body.getUserId() : null;
-        QuizResultDTO result = quizCorrectionService.corrigerQuiz(quizId, reponses, userId);
+        String userName = body != null ? body.getUserName() : null;
+        String userEmail = body != null ? body.getUserEmail() : null;
+        QuizResultDTO result = quizCorrectionService.corrigerQuiz(quizId, reponses, userId, userName, userEmail);
         return ResponseEntity.ok(result);
     }
 }
