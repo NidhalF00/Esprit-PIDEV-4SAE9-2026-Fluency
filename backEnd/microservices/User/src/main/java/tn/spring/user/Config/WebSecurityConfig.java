@@ -41,7 +41,9 @@ public class WebSecurityConfig {
                         // ✅ Endpoints publics (pas besoin de token)
                         .requestMatchers(
                                 "/api/auth/**",
-                                "/api/users/**"
+                                "/api/users/**",
+                                "/actuator/health",
+                                "/actuator/info"
 
 
                         )
