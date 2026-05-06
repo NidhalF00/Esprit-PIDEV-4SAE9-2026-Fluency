@@ -20,9 +20,9 @@ public class Reply {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
-    private String authorEmail;
-
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    private String authorEmail;
 
     @ManyToOne
     @JoinColumn(name = "topic_id", nullable = false)

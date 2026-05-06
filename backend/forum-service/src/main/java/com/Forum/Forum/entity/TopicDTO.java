@@ -4,10 +4,12 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 @Data
-public class ReplyDTO {
+public class TopicDTO {
     private Long id;
+    private String title;
     private String content;
     private LocalDateTime createdAt;
-    private Long topicId;
+    private Long categoryId;
     private String authorEmail;
+    private int replyCount;
 }

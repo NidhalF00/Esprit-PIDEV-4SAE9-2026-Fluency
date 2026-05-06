@@ -16,13 +16,12 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.crypto.SecretKey;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
-    @Value("${jwt.secret:3f8a2b9c1d4e5f6071829a3b4c5d6e7f8091a2b3c4d5e6f70819293a4b5c6d7e}")
+    @Value("${jwt.secret:5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437}")
     private String secret;
 
     @Override
@@ -34,7 +33,7 @@ public class JwtFilter extends OncePerRequestFilter {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
             try {
-                SecretKey key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+                SecretKey key = Keys.hmacShaKeyFor(secret.getBytes());
                 Claims claims = Jwts.parser()
                         .verifyWith(key)
                         .build()
@@ -44,7 +43,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 String username = claims.getSubject();
                 String role = (String) claims.get("role");
 
-                if (username != null && role != null) {
+                if (username != null) {
                     UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
                             username, null, Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role)));
                     SecurityContextHolder.getContext().setAuthentication(auth);

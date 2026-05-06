@@ -8,11 +8,11 @@ public class ReplyMapper {
         ReplyDTO dto = new ReplyDTO();
         dto.setId(reply.getId());
         dto.setContent(reply.getContent());
-        dto.setAuthorEmail(reply.getAuthorEmail());
         dto.setCreatedAt(reply.getCreatedAt());
         if (reply.getTopic() != null) {
             dto.setTopicId(reply.getTopic().getId());
         }
+        dto.setAuthorEmail(reply.getAuthorEmail());
         return dto;
     }
 }
