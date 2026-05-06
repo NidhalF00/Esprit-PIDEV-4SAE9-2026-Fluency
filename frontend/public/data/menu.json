@@ -21,6 +21,56 @@
       ]
     },
     {
+      "route": "courses",
+      "name": "E-Learning",
+      "type": "sub",
+      "icon": "school",
+      "children": [
+        {
+          "route": "statistiques",
+          "name": "Statistics",
+          "type": "link",
+          "icon": "bar_chart"
+        },
+        {
+          "route": "modules",
+          "name": "Modules",
+          "type": "link",
+          "icon": "folder"
+        },
+        {
+          "route": "cours",
+          "name": "Courses",
+          "type": "link",
+          "icon": "menu_book"
+        },
+        {
+          "route": "quizzes",
+          "name": "Quizzes",
+          "type": "link",
+          "icon": "quiz"
+        },
+        {
+          "route": "questions",
+          "name": "Questions",
+          "type": "link",
+          "icon": "help_outline"
+        },
+        {
+          "route": "reponses",
+          "name": "Answers",
+          "type": "link",
+          "icon": "check_circle_outline"
+        },
+        {
+          "route": "certificats",
+          "name": "Certificates",
+          "type": "link",
+          "icon": "workspace_premium"
+        }
+      ]
+    },
+    {
       "route": "dashboard",
       "name": "dashboard",
       "type": "link",
