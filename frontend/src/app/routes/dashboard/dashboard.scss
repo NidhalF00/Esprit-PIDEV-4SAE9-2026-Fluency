@@ -234,6 +234,61 @@
   border-radius: 50px;
 }
 
+// ── E-Learning cards row ──────────────────────────────────
+.fl-elearning-row {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1rem;
+  padding: 1.25rem 2rem;
+  max-width: 1280px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.fl-el-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 1.1rem 1rem;
+  border: 1px solid var(--fl-border);
+  box-shadow: var(--fl-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: .55rem;
+  transition: box-shadow .18s, transform .18s;
+
+  &:hover {
+    box-shadow: var(--fl-shadow-h);
+    transform: translateY(-2px);
+  }
+}
+
+.fl-el-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  mat-icon { font-size: 17px; width: 17px; height: 17px; }
+}
+
+.fl-el-num {
+  font-family: 'Cormorant Garamond', 'DM Serif Display', serif;
+  font-size: 1.7rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -.02em;
+}
+
+.fl-el-label {
+  font-size: .65rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--fl-muted);
+}
+
 // ── Panels row ────────────────────────────────────────────
 .fl-panels {
   display: grid;
@@ -865,6 +920,7 @@
 // ── Responsive ────────────────────────────────────────────
 @media (max-width: 1024px) {
   .fl-stat-grid { grid-template-columns: repeat(4, 1fr); }
+  .fl-elearning-row { grid-template-columns: repeat(3, 1fr); }
   .fl-panels { grid-template-columns: 1fr; }
   .fl-student-grid { grid-template-columns: 1fr 1fr; }
   .fl-quick-grid { grid-template-columns: repeat(2, 1fr); }
@@ -872,11 +928,11 @@
 
 @media (max-width: 640px) {
   .fl-hero, .fl-greeting { padding: 1.5rem 1rem 0; }
-  .fl-panels, .fl-student-grid, .fl-quick { padding: 1rem; }
+  .fl-panels, .fl-elearning-row, .fl-student-grid, .fl-quick { padding: 1rem; }
   .fl-stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .fl-elearning-row { grid-template-columns: repeat(2, 1fr); }
   .fl-student-grid { grid-template-columns: 1fr; }
   .fl-quick-grid { grid-template-columns: repeat(2, 1fr); }
-  .fl-greeting-right { display: none; }
   .fl-greeting-title { font-size: 1.8rem; }
   .fl-forum-strip { padding: 1rem; }
 }

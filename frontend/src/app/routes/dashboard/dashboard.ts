@@ -13,6 +13,15 @@ import { ForumResourceService } from '../forum/services/resource.service';
 import { ForumReportService } from '../forum/services/report.service';
 import { CertificatService } from '../courses/services/certificat.service';
 
+export const ELEARNING_CARDS = [
+  { label: 'Modules',   key: 'totalModules',         icon: 'layers',       color: '#7c3aed', bg: '#ede9fe' },
+  { label: 'Courses',   key: 'totalCours',            icon: 'menu_book',    color: '#1d4ed8', bg: '#dbeafe' },
+  { label: 'Quizzes',   key: 'totalQuiz',             icon: 'quiz',         color: '#b45309', bg: '#fef3c7' },
+  { label: 'Questions', key: 'totalQuestions',        icon: 'help_outline', color: '#059669', bg: '#d1fae5' },
+  { label: 'Answers',   key: 'totalReponses',         icon: 'check_circle', color: '#0891b2', bg: '#cffafe' },
+  { label: 'Avg Score', key: 'moyenneScoreMaxQuiz',   icon: 'emoji_events', color: '#be185d', bg: '#fce7f3' },
+] as const;
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.html',
@@ -35,6 +44,8 @@ export class Dashboard implements OnInit {
   loading = true;
   today = new Date();
 
+  readonly elearningCards = ELEARNING_CARDS;
+
   // Admin — aggregated platform stats
   courseStats: GlobalStats | null = null;
   totalClaims = 0;
@@ -44,7 +55,6 @@ export class Dashboard implements OnInit {
   totalTopics = 0;
   totalResources = 0;
   pendingReports = 0;
-  totalCertificates = 0;
   recentClaims: any[] = [];
   recentRetakes: any[] = [];
 
@@ -73,8 +83,7 @@ export class Dashboard implements OnInit {
       topics: this.topicSvc.getAll().pipe(catchError(() => of([]))),
       resources: this.resourceSvc.getAll().pipe(catchError(() => of([]))),
       reports: this.reportSvc.getAll().pipe(catchError(() => of([]))),
-      certs: this.certSvc.getAll().pipe(catchError(() => of([]))),
-    }).subscribe(({ courses, claims, retakes, topics, resources, reports, certs }) => {
+    }).subscribe(({ courses, claims, retakes, topics, resources, reports }) => {
       this.courseStats = courses;
       const claimsArr = claims as any[];
       const retakesArr = retakes as any[];
@@ -87,7 +96,6 @@ export class Dashboard implements OnInit {
       this.totalTopics = (topics as any[]).length;
       this.totalResources = (resources as any[]).length;
       this.pendingReports = (reports as any[]).filter(r => r.status === 'PENDING').length;
-      this.totalCertificates = (certs as any[]).length;
       this.loading = false;
       this.cdr.markForCheck();
     });

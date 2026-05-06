@@ -51,10 +51,10 @@
             <div class="fl-stat-num">{{ courseStats?.totalQuiz ?? '—' }}</div>
             <div class="fl-stat-label">Quizzes</div>
           </div>
-          <div class="fl-stat-tile">
-            <div class="fl-stat-icon"><mat-icon>workspace_premium</mat-icon></div>
-            <div class="fl-stat-num">{{ totalCertificates }}</div>
-            <div class="fl-stat-label">Certificates</div>
+          <div class="fl-stat-tile" routerLink="/courses/overview">
+            <div class="fl-stat-icon"><mat-icon>help_outline</mat-icon></div>
+            <div class="fl-stat-num">{{ courseStats?.totalQuestions ?? '—' }}</div>
+            <div class="fl-stat-label">Questions</div>
           </div>
           <div class="fl-stat-tile" [class.fl-stat-tile--alert]="openClaims > 0" routerLink="/claims">
             <div class="fl-stat-icon"><mat-icon>support_agent</mat-icon></div>
@@ -84,6 +84,21 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- E-Learning stat cards row -->
+    <div class="fl-elearning-row">
+      @for (card of elearningCards; track card.key) {
+        <div class="fl-el-card">
+          <div class="fl-el-icon" [style.background]="card.bg">
+            <mat-icon [style.color]="card.color">{{ card.icon }}</mat-icon>
+          </div>
+          <div class="fl-el-num" [style.color]="card.color">
+            {{ courseStats ? (courseStats[card.key] | number:'1.0-1') : '—' }}
+          </div>
+          <div class="fl-el-label">{{ card.label }}</div>
+        </div>
+      }
     </div>
 
     <!-- Content panels -->
@@ -245,10 +260,10 @@
         </div>
         <div class="fl-forum-divider"></div>
         <div class="fl-forum-stat">
-          <mat-icon>workspace_premium</mat-icon>
+          <mat-icon>emoji_events</mat-icon>
           <div>
-            <span class="fl-forum-num">{{ totalCertificates }}</span>
-            <span class="fl-forum-label">Certificates Issued</span>
+            <span class="fl-forum-num">{{ courseStats?.moyenneScoreMaxQuiz | number:'1.0-1' }}</span>
+            <span class="fl-forum-label">Avg Quiz Score</span>
           </div>
         </div>
         <a routerLink="/forum" class="fl-forum-action">
@@ -281,22 +296,6 @@
             <em>{{ greeting }},</em><br>{{ displayName }}.
           </h1>
           <p class="fl-greeting-tagline">Keep learning — fluency is a journey, not a destination.</p>
-        </div>
-        <div class="fl-greeting-right">
-          <div class="fl-greeting-ring">
-            <svg viewBox="0 0 120 120" class="fl-ring-svg">
-              <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(196,154,60,0.15)" stroke-width="10"/>
-              <circle cx="60" cy="60" r="50" fill="none" stroke="#c49a3c" stroke-width="10"
-                stroke-dasharray="314"
-                [attr.stroke-dashoffset]="314 - (myCertificates.length * 15)"
-                stroke-linecap="round"
-                transform="rotate(-90 60 60)"/>
-            </svg>
-            <div class="fl-ring-center">
-              <span class="fl-ring-num">{{ myCertificates.length }}</span>
-              <span class="fl-ring-sub">certs</span>
-            </div>
-          </div>
         </div>
       </div>
     </div>
