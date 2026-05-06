@@ -24,6 +24,8 @@
         <module>retake-service</module>
         <module>auth-service</module>
         <module>course-service</module>
+        <module>forum-service</module>
+        <module>resource-service</module>
     </modules>
 
     <properties>

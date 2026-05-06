@@ -51,7 +51,7 @@ spring:
 
         # ── Forum Service (port 8082) ─────────────────────────────────────────
         - id: forum-service
-          uri: http://forum-service:8082
+          uri: http://forum-service:8087
           predicates:
             - Path=/topic/**, /category/**, /reply/**, /report/**, /badword/**
 
