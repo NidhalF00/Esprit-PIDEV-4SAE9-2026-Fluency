@@ -1,0 +1,59 @@
+<page-header title="Certificates" subtitle="View and download issued certificates"></page-header>
+
+<div style="display:flex;align-items:center;margin-bottom:20px;">
+  <mat-form-field appearance="outline" style="flex:1;min-width:220px;max-width:380px;margin:0;">
+    <mat-icon matPrefix style="color:#9ca3af;font-size:18px;">search</mat-icon>
+    <mat-label>Search by code or student…</mat-label>
+    <input matInput [(ngModel)]="search" (ngModelChange)="applyFilter()">
+  </mat-form-field>
+</div>
+
+<div style="background:#fff;border-radius:16px;box-shadow:0 1px 4px rgba(0,0,0,0.07),0 6px 20px rgba(0,0,0,0.05);overflow:hidden;">
+  <div *ngIf="loading" style="display:flex;justify-content:center;padding:64px;"><mat-spinner diameter="44"></mat-spinner></div>
+  <table *ngIf="!loading" mat-table [dataSource]="dataSource" matSort style="width:100%;">
+    <ng-container matColumnDef="codeCertificat">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.6px;padding:14px 20px;border-bottom:1px solid #f1f5f9;">Code</th>
+      <td mat-cell *matCellDef="let c" style="padding:14px 20px;border-bottom:1px solid #f8fafc;font-family:monospace;font-size:13px;color:#6d28d9;font-weight:600;">{{ c.codeCertificat }}</td>
+    </ng-container>
+    <ng-container matColumnDef="etudiantNom">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.6px;padding:14px 16px;border-bottom:1px solid #f1f5f9;">Student</th>
+      <td mat-cell *matCellDef="let c" style="padding:14px 16px;border-bottom:1px solid #f8fafc;font-size:13px;color:#0f172a;font-weight:500;">{{ c.etudiantNom ?? '—' }}</td>
+    </ng-container>
+    <ng-container matColumnDef="moduleTitre">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.6px;padding:14px 16px;border-bottom:1px solid #f1f5f9;">Module</th>
+      <td mat-cell *matCellDef="let c" style="padding:14px 16px;border-bottom:1px solid #f8fafc;font-size:13px;color:#475569;">{{ c.moduleTitre ?? '—' }}</td>
+    </ng-container>
+    <ng-container matColumnDef="quizTitre">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.6px;padding:14px 16px;border-bottom:1px solid #f1f5f9;">Quiz</th>
+      <td mat-cell *matCellDef="let c" style="padding:14px 16px;border-bottom:1px solid #f8fafc;font-size:13px;color:#475569;">{{ c.quizTitre ?? '—' }}</td>
+    </ng-container>
+    <ng-container matColumnDef="score">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.6px;padding:14px 16px;border-bottom:1px solid #f1f5f9;">Score</th>
+      <td mat-cell *matCellDef="let c" style="padding:14px 16px;border-bottom:1px solid #f8fafc;">
+        <span *ngIf="c.pourcentage != null" style="font-size:13px;font-weight:600;color:#059669;">{{ c.pourcentage | number:'1.0-1' }}%</span>
+        <span *ngIf="c.pourcentage == null" style="color:#94a3b8;">—</span>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="dateObtention">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.6px;padding:14px 16px;border-bottom:1px solid #f1f5f9;">Date</th>
+      <td mat-cell *matCellDef="let c" style="padding:14px 16px;border-bottom:1px solid #f8fafc;font-size:13px;color:#64748b;">{{ c.dateObtention | date:'mediumDate' }}</td>
+    </ng-container>
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef style="border-bottom:1px solid #f1f5f9;padding:14px 20px;"></th>
+      <td mat-cell *matCellDef="let c" style="padding:10px 20px;border-bottom:1px solid #f8fafc;text-align:right;">
+        <button mat-stroked-button (click)="download(c)" style="border-color:#e2e8f0;color:#4f46e5;border-radius:7px;height:34px;font-size:12px;">
+          <mat-icon style="font-size:16px;width:16px;height:16px;line-height:16px;">download</mat-icon> PDF
+        </button>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns" style="background:#f8fafc;"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;" (mouseenter)="$any($event.currentTarget).style.background='#f8fafc'" (mouseleave)="$any($event.currentTarget).style.background=''"></tr>
+    <tr class="mat-row" *matNoDataRow>
+      <td colspan="7" style="padding:56px 32px;text-align:center;">
+        <mat-icon style="font-size:40px;width:40px;height:40px;color:#e2e8f0;display:block;margin:0 auto 12px;">workspace_premium</mat-icon>
+        <p style="font-size:14px;color:#94a3b8;margin:0;font-weight:500;">No certificates found</p>
+      </td>
+    </tr>
+  </table>
+  <mat-paginator *ngIf="!loading" [pageSizeOptions]="[10, 25, 50]" [pageSize]="10" showFirstLastButtons style="border-top:1px solid #f1f5f9;font-size:13px;"></mat-paginator>
+</div>

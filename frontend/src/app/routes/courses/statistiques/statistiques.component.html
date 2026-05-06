@@ -1,0 +1,17 @@
+<page-header title="Statistics" subtitle="E-learning platform overview"></page-header>
+
+<div *ngIf="loading" style="display:flex;justify-content:center;padding:64px;"><mat-spinner diameter="44"></mat-spinner></div>
+
+<div *ngIf="!loading" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;">
+  <div *ngFor="let card of cards"
+       style="background:#fff;border-radius:16px;padding:28px 24px;box-shadow:0 1px 4px rgba(0,0,0,0.07),0 6px 20px rgba(0,0,0,0.05);display:flex;align-items:center;gap:20px;">
+    <div [style.background]="card.bg" [style.color]="card.color"
+         style="width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+      <mat-icon style="font-size:28px;width:28px;height:28px;">{{ card.icon }}</mat-icon>
+    </div>
+    <div>
+      <p style="margin:0 0 4px;font-size:13px;color:#94a3b8;font-weight:500;">{{ card.label }}</p>
+      <p style="margin:0;font-size:32px;font-weight:700;color:#0f172a;line-height:1;">{{ card.value ?? '—' }}</p>
+    </div>
+  </div>
+</div>

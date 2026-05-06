@@ -1,0 +1,50 @@
+<page-header title="Answers" subtitle="Manage quiz answers"></page-header>
+
+<div style="display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px;flex-wrap:wrap;">
+  <mat-form-field appearance="outline" style="flex:1;min-width:220px;max-width:380px;margin:0;">
+    <mat-icon matPrefix style="color:#9ca3af;font-size:18px;">search</mat-icon>
+    <mat-label>Search answers…</mat-label>
+    <input matInput [(ngModel)]="search" (ngModelChange)="applyFilter()">
+  </mat-form-field>
+  <button mat-flat-button (click)="openForm()" style="background:#4f46e5;color:#fff;border-radius:8px;height:44px;font-weight:600;font-size:13px;padding:0 20px;">
+    <mat-icon style="font-size:18px;margin-right:4px;">add</mat-icon> New Answer
+  </button>
+</div>
+
+<div style="background:#fff;border-radius:16px;box-shadow:0 1px 4px rgba(0,0,0,0.07),0 6px 20px rgba(0,0,0,0.05);overflow:hidden;">
+  <div *ngIf="loading" style="display:flex;justify-content:center;padding:64px;"><mat-spinner diameter="44"></mat-spinner></div>
+  <table *ngIf="!loading" mat-table [dataSource]="dataSource" matSort style="width:100%;">
+    <ng-container matColumnDef="texte">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.6px;padding:14px 20px;border-bottom:1px solid #f1f5f9;">Answer</th>
+      <td mat-cell *matCellDef="let r" style="padding:14px 20px;border-bottom:1px solid #f8fafc;font-size:13px;color:#0f172a;max-width:500px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ r.texte }}</td>
+    </ng-container>
+    <ng-container matColumnDef="correcte">
+      <th mat-header-cell *matHeaderCellDef style="font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.6px;padding:14px 16px;border-bottom:1px solid #f1f5f9;">Correct</th>
+      <td mat-cell *matCellDef="let r" style="padding:14px 16px;border-bottom:1px solid #f8fafc;">
+        <span [style.background]="r.correcte ? '#d1fae5' : '#fee2e2'" [style.color]="r.correcte ? '#059669' : '#dc2626'" style="padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;">
+          {{ r.correcte ? 'Correct' : 'Wrong' }}
+        </span>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef style="border-bottom:1px solid #f1f5f9;padding:14px 20px;"></th>
+      <td mat-cell *matCellDef="let r" style="padding:10px 20px;border-bottom:1px solid #f8fafc;text-align:right;white-space:nowrap;">
+        <button mat-stroked-button (click)="openForm(r); $event.stopPropagation()" style="border-color:#e2e8f0;color:#475569;border-radius:7px;height:34px;font-size:12px;margin-right:8px;">
+          <mat-icon style="font-size:16px;width:16px;height:16px;line-height:16px;">edit</mat-icon> Edit
+        </button>
+        <button mat-stroked-button (click)="delete(r); $event.stopPropagation()" style="border-color:#fca5a5;color:#dc2626;border-radius:7px;height:34px;font-size:12px;">
+          <mat-icon style="font-size:16px;width:16px;height:16px;line-height:16px;">delete_outline</mat-icon> Delete
+        </button>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns" style="background:#f8fafc;"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;" style="cursor:pointer;" (mouseenter)="$any($event.currentTarget).style.background='#f8fafc'" (mouseleave)="$any($event.currentTarget).style.background=''"></tr>
+    <tr class="mat-row" *matNoDataRow>
+      <td colspan="3" style="padding:56px 32px;text-align:center;">
+        <mat-icon style="font-size:40px;width:40px;height:40px;color:#e2e8f0;display:block;margin:0 auto 12px;">check_circle_outline</mat-icon>
+        <p style="font-size:14px;color:#94a3b8;margin:0;font-weight:500;">No answers found</p>
+      </td>
+    </tr>
+  </table>
+  <mat-paginator *ngIf="!loading" [pageSizeOptions]="[10, 25, 50]" [pageSize]="10" showFirstLastButtons style="border-top:1px solid #f1f5f9;font-size:13px;"></mat-paginator>
+</div>
