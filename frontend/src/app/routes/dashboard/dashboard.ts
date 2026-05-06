@@ -164,6 +164,6 @@ export class Dashboard implements OnInit {
 
   getStat(key: string): number | null {
     if (!this.courseStats) return null;
-    return (this.courseStats as Record<string, number>)[key] ?? null;
+    return (this.courseStats as unknown as Record<string, number>)[key] ?? null;
   }
 }

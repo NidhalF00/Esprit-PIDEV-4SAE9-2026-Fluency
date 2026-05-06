@@ -36,7 +36,7 @@ export class CoursListComponent implements OnInit, AfterViewInit {
   search = '';
   displayedColumns = ['titre', 'typeContenu', 'duree', 'publie', 'gratuit', 'actions'];
 
-  typeLabels: Record<string, string> = { TEXTE: 'Text', VIDEO: 'Video', PDF: 'PDF', AUDIO: 'Audio' };
+  typeLabels: Record<string, string | undefined> = { TEXTE: 'Text', VIDEO: 'Video', PDF: 'PDF', AUDIO: 'Audio' };
 
   ngOnInit() {
     this.load();

@@ -71,7 +71,7 @@ export class RetakeRequestsComponent implements OnInit, AfterViewInit {
     { value: 'DENIED',   label: 'Denied' },
   ];
 
-  readonly statusLabels: Record<string, string> = {
+  readonly statusLabels: Record<string, string | undefined> = {
     PENDING: 'Pending Review',
     APPROVED: 'Approved',
     DENIED: 'Denied',

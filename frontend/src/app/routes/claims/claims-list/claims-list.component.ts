@@ -84,12 +84,12 @@ export class ClaimsListComponent implements OnInit, AfterViewInit {
     { value: 'OTHER',          label: 'Other' },
   ];
 
-  readonly statusLabels: Record<string, string> = {
+  readonly statusLabels: Record<string, string | undefined> = {
     OPEN: 'Open', IN_PROGRESS: 'In Progress', RETAKE_AUTHORIZED: 'Retake Authorized',
     RESOLVED: 'Resolved', REJECTED: 'Rejected', CANCELED: 'Canceled',
   };
 
-  readonly typeLabels: Record<string, string> = {
+  readonly typeLabels: Record<string, string | undefined> = {
     TECHNICAL: 'Technical', PEDAGOGICAL: 'Pedagogical',
     ADMINISTRATIVE: 'Administrative', OTHER: 'Other',
   };

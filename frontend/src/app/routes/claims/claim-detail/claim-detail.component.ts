@@ -70,14 +70,14 @@ export class ClaimDetailComponent implements OnInit {
   currentUserName = '';
   currentUserRole: 'ADMIN' | 'STUDENT' = 'STUDENT';
 
-  readonly typeLabels: Record<string, string> = {
+  readonly typeLabels: Record<string, string | undefined> = {
     TECHNICAL: 'Technical',
     PEDAGOGICAL: 'Pedagogical',
     ADMINISTRATIVE: 'Administrative',
     OTHER: 'Other',
   };
 
-  readonly statusLabels: Record<string, string> = {
+  readonly statusLabels: Record<string, string | undefined> = {
     OPEN: 'Open',
     IN_PROGRESS: 'In Progress',
     RETAKE_AUTHORIZED: 'Retake Authorized',

@@ -36,7 +36,7 @@ export class QuestionsListComponent implements OnInit, AfterViewInit {
   search = '';
   displayedColumns = ['enonce', 'typeQuestion', 'points', 'actions'];
 
-  typeLabels: Record<string, string> = { QCM: 'QCM', VRAI_FAUX: 'Vrai/Faux', TEXTE_LIBRE: 'Texte libre' };
+  typeLabels: Record<string, string | undefined> = { QCM: 'QCM', VRAI_FAUX: 'Vrai/Faux', TEXTE_LIBRE: 'Texte libre' };
 
   ngOnInit() {
     this.load();
