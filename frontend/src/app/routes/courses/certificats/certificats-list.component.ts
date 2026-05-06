@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild, inject } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -23,6 +23,7 @@ import { Certificat } from '../models/certificat.model';
 export class CertificatsListComponent implements OnInit, AfterViewInit {
   private svc = inject(CertificatService);
   private snack = inject(MatSnackBar);
+  private cdr = inject(ChangeDetectorRef);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -47,8 +48,8 @@ export class CertificatsListComponent implements OnInit, AfterViewInit {
   load() {
     this.loading = true;
     this.svc.getAll().subscribe({
-      next: data => { this.dataSource.data = data; this.loading = false; setTimeout(() => { this.dataSource.paginator = this.paginator; this.dataSource.sort = this.sort; }); },
-      error: () => { this.loading = false; this.snack.open('Error loading certificates.', 'Close', { duration: 3000 }); },
+      next: data => { this.dataSource.data = data; this.loading = false; this.cdr.detectChanges(); setTimeout(() => { this.dataSource.paginator = this.paginator; this.dataSource.sort = this.sort; }); },
+      error: () => { this.loading = false; this.cdr.detectChanges(); this.snack.open('Error loading certificates.', 'Close', { duration: 3000 }); },
     });
   }
 
