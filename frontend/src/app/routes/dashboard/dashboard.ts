@@ -66,10 +66,14 @@ export class Dashboard implements OnInit {
 
   ngOnInit() {
     this.auth.user().subscribe(u => {
+      const email: string = (u as any)['email'] ?? '';
+      if (!email) return; // skip initial empty BehaviorSubject emission
+
       const roles: string[] = (u as any)['roles'] ?? [];
       this.isAdmin = roles.includes('ADMIN') || roles.includes('ROLE_ADMIN');
       this.userName = (u as any)['name'] ?? '';
-      this.userEmail = (u as any)['email'] ?? '';
+      this.userEmail = email;
+      this.loading = true; // reset so the correct dashboard renders
       this.cdr.markForCheck();
       this.isAdmin ? this.loadAdminData() : this.loadStudentData();
     });
@@ -151,6 +155,11 @@ export class Dashboard implements OnInit {
   retakeStatusColor(status: string): string {
     const map: Record<string, string> = { PENDING: '#d97706', APPROVED: '#059669', REJECTED: '#dc2626' };
     return map[status] ?? '#94a3b8';
+  }
+
+  get certRingOffset(): number {
+    // Always show at least a small arc; each cert fills ~45° more
+    return Math.max(40, 300 - this.myCertificates.length * 45);
   }
 
   getStat(key: string): number | null {
