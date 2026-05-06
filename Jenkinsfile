@@ -64,5 +64,28 @@ pipeline {
                 sh 'docker compose -f docker-compose.yml build'
             }
         }
+
+        stage('Docker Push') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-credentials',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    sh '''
+                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+
+                        docker push zeinebnecib/eureka-server:latest
+                        docker push zeinebnecib/gateway-service:latest
+                        docker push zeinebnecib/auth-service:latest
+                        docker push zeinebnecib/claim-service:latest
+                        docker push zeinebnecib/retake-service:latest
+                        docker push zeinebnecib/course-service:latest
+                        docker push zeinebnecib/forum-service:latest
+                        docker push zeinebnecib/resource-service:latest
+                    '''
+                }
+            }
+        }
     }
 }

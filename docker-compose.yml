@@ -42,6 +42,7 @@ services:
     build:
       context: ./backend
       dockerfile: eureka-server/Dockerfile
+    image: zeinebnecib/eureka-server:latest
     container_name: eureka-server
     ports:
       - "8761:8761"
@@ -58,6 +59,7 @@ services:
     build:
       context: ./backend
       dockerfile: gateway-service/Dockerfile
+    image: zeinebnecib/gateway-service:latest
     container_name: gateway-service
     ports:
       - "8080:8080"
@@ -74,6 +76,7 @@ services:
     build:
       context: ./backend
       dockerfile: auth-service/Dockerfile
+    image: zeinebnecib/auth-service:latest
     container_name: auth-service
     ports:
       - "8083:8083"
@@ -95,6 +98,7 @@ services:
     build:
       context: ./backend
       dockerfile: claim-service/Dockerfile
+    image: zeinebnecib/claim-service:latest
     container_name: claim-service
     ports:
       - "8081:8081"
@@ -116,6 +120,7 @@ services:
     build:
       context: ./backend
       dockerfile: retake-service/Dockerfile
+    image: zeinebnecib/retake-service:latest
     container_name: retake-service
     ports:
       - "8082:8082"
@@ -137,6 +142,7 @@ services:
     build:
       context: ./backend
       dockerfile: course-service/Dockerfile
+    image: zeinebnecib/course-service:latest
     container_name: course-service
     ports:
       - "8086:8086"
@@ -158,6 +164,7 @@ services:
     build:
       context: ./backend
       dockerfile: forum-service/Dockerfile
+    image: zeinebnecib/forum-service:latest
     container_name: forum-service
     ports:
       - "8087:8087"
@@ -179,6 +186,7 @@ services:
     build:
       context: ./backend
       dockerfile: resource-service/Dockerfile
+    image: zeinebnecib/resource-service:latest
     container_name: resource-service
     ports:
       - "8078:8078"
