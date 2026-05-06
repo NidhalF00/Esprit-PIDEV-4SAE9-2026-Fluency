@@ -32,7 +32,8 @@ export function normalizeCertificat(raw: unknown): Certificat {
     userId: num(o['userId'] ?? o['user_id']),
     quizId: num(o['quizId'] ?? o['quiz_id']),
     moduleId: num(o['moduleId'] ?? o['module_id']),
-    quizTitre: str((o['quiz'] as Record<string,unknown>)?.['titre'] ?? o['quizTitre']),
-    moduleTitre: str((o['module'] as Record<string,unknown>)?.['titre'] ?? o['moduleTitre']),
+    quizTitre: str(o['quizTitre'] ?? (o['quiz'] as Record<string,unknown>)?.['titre']),
+    moduleTitre: str(o['moduleTitre'] ?? (o['module'] as Record<string,unknown>)?.['titre']),
+    etudiantNom: str(o['etudiantNom'] ?? (o['user'] as Record<string,unknown>)?.['nom']),
   };
 }

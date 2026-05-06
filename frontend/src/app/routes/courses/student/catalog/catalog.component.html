@@ -1,0 +1,84 @@
+<div class="catalog-wrap">
+
+  <!-- Header -->
+  <div class="catalog-header">
+    <div class="catalog-header-icon"><mat-icon>school</mat-icon></div>
+    <div>
+      <h1 class="catalog-title">My Learning</h1>
+      <p class="catalog-sub">Browse available modules and test your knowledge</p>
+    </div>
+  </div>
+
+  @if (loading) {
+    <div class="catalog-loading">
+      <mat-spinner diameter="44"></mat-spinner>
+      <span>Loading catalog…</span>
+    </div>
+  }
+
+  @if (!loading && modules.length === 0) {
+    <div class="catalog-empty">
+      <mat-icon>menu_book</mat-icon>
+      <p>No modules available yet. Check back soon!</p>
+    </div>
+  }
+
+  @if (!loading && modules.length > 0) {
+    <div class="modules-grid">
+      @for (mvm of modules; track mvm.data.id) {
+        <div class="module-card">
+          <div class="module-card-top" [style.borderColor]="levelColor(mvm.data.niveau)">
+            <div class="module-badge-row">
+              <span class="level-badge"
+                    [style.background]="levelBg(mvm.data.niveau)"
+                    [style.color]="levelColor(mvm.data.niveau)">
+                {{ mvm.data.niveau }}
+              </span>
+              @if (mvm.data.categorie) {
+                <span class="cat-badge">{{ mvm.data.categorie }}</span>
+              }
+            </div>
+            <h2 class="module-name">{{ mvm.data.titre }}</h2>
+            @if (mvm.data.description) {
+              <p class="module-desc">{{ mvm.data.description }}</p>
+            }
+            <div class="module-stats">
+              <span><mat-icon>menu_book</mat-icon>{{ mvm.cours.length }} course{{ mvm.cours.length !== 1 ? 's' : '' }}</span>
+              <span><mat-icon>quiz</mat-icon>{{ totalQuizzes(mvm) }} live quiz{{ totalQuizzes(mvm) !== 1 ? 'zes' : '' }}</span>
+            </div>
+          </div>
+
+          <!-- Courses -->
+          <div class="courses-list">
+            @for (cvm of mvm.cours; track cvm.data.id) {
+              <div class="cours-row">
+                <div class="cours-icon" [style.background]="typeColor(cvm.data.typeContenu) + '18'">
+                  <mat-icon [style.color]="typeColor(cvm.data.typeContenu)">{{ typeIcon(cvm.data.typeContenu) }}</mat-icon>
+                </div>
+                <div class="cours-info">
+                  <span class="cours-title">{{ cvm.data.titre }}</span>
+                  @if (cvm.data.duree) {
+                    <span class="cours-duration"><mat-icon>schedule</mat-icon>{{ cvm.data.duree }} min</span>
+                  }
+                </div>
+                <!-- Quizzes -->
+                <div class="quiz-btns">
+                  @for (qvm of cvm.quizzes; track qvm.data.id) {
+                    <button class="start-btn" (click)="startQuiz(qvm.data.id!)">
+                      <mat-icon>play_circle</mat-icon>
+                      <span>{{ qvm.data.titre }}</span>
+                      <span class="score-badge">{{ qvm.data.scoreMax }}pts</span>
+                    </button>
+                  }
+                  @if (cvm.quizzes.length === 0) {
+                    <span class="no-quiz">No quiz yet</span>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

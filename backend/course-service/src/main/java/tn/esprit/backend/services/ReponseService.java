@@ -23,6 +23,10 @@ public class ReponseService {
         return reponseRepository.findAll();
     }
 
+    public List<Reponse> getByQuestionId(Long questionId) {
+        return reponseRepository.findByQuestion_Id(questionId);
+    }
+
     public Reponse getById(Long id) {
         return reponseRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Réponse introuvable avec l'id : " + id));

@@ -3,5 +3,6 @@ export interface Quiz {
   titre: string;
   description: string;
   scoreMax: number;
+  actif?: boolean;
   coursId?: number;
 }

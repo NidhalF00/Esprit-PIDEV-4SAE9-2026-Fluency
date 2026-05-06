@@ -21,6 +21,11 @@ public class ReponseController {
         return ResponseEntity.ok(reponseService.getAll());
     }
 
+    @GetMapping("/question/{questionId}")
+    public ResponseEntity<List<Reponse>> getByQuestion(@PathVariable Long questionId) {
+        return ResponseEntity.ok(reponseService.getByQuestionId(questionId));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Reponse> getById(@PathVariable Long id) {
         return ResponseEntity.ok(reponseService.getById(id));

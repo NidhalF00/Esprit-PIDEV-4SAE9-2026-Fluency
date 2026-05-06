@@ -16,7 +16,7 @@ import { Quiz } from '../models/quiz.model';
   selector: 'app-question-form-dialog',
   imports: [CommonModule, FormsModule, MatButtonModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatSnackBarModule],
   template: `
-    <h2 mat-dialog-title style="font-weight:700;color:#0f172a;">{{ data ? 'Edit Question' : 'New Question' }}</h2>
+    <h2 mat-dialog-title style="font-weight:700;color:#0f172a;">{{ data?.id ? 'Edit Question' : 'New Question' }}</h2>
     <mat-dialog-content style="min-width:460px;padding-top:8px;">
       <div style="display:flex;flex-direction:column;gap:14px;">
         <mat-form-field appearance="outline" style="width:100%">
@@ -64,8 +64,9 @@ export class QuestionFormDialogComponent implements OnInit {
   quizzes: Quiz[] = [];
   form: Question;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: Question | null) {
-    this.form = data ? { ...data } : { enonce: '', typeQuestion: 'QCM', points: 1, quizId: undefined };
+  constructor(@Inject(MAT_DIALOG_DATA) public data: Partial<Question> | null) {
+    const defaults: Question = { enonce: '', typeQuestion: 'QCM', points: 1, quizId: undefined };
+    this.form = data ? { ...defaults, ...data } as Question : defaults;
   }
 
   ngOnInit() {

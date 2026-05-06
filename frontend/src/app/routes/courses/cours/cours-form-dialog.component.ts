@@ -17,7 +17,7 @@ import { Module } from '../models/module.model';
   selector: 'app-cours-form-dialog',
   imports: [CommonModule, FormsModule, MatButtonModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatSlideToggleModule, MatSnackBarModule],
   template: `
-    <h2 mat-dialog-title style="font-weight:700;color:#0f172a;">{{ data ? 'Edit Course' : 'New Course' }}</h2>
+    <h2 mat-dialog-title style="font-weight:700;color:#0f172a;">{{ data?.id ? 'Edit Course' : 'New Course' }}</h2>
     <mat-dialog-content style="min-width:500px;padding-top:8px;">
       <div style="display:flex;flex-direction:column;gap:14px;">
         <mat-form-field appearance="outline" style="width:100%">
@@ -82,10 +82,9 @@ export class CoursFormDialogComponent implements OnInit {
   modules: Module[] = [];
   form: Cours;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: Cours | null) {
-    this.form = data
-      ? { ...data }
-      : { titre: '', contenu: '', ordreCours: 1, duree: 0, typeContenu: 'TEXTE', urlRessource: '', gratuit: false, publie: false };
+  constructor(@Inject(MAT_DIALOG_DATA) public data: Partial<Cours> | null) {
+    const defaults: Cours = { titre: '', contenu: '', ordreCours: 1, duree: 0, typeContenu: 'TEXTE', urlRessource: '', gratuit: false, publie: false };
+    this.form = data ? { ...defaults, ...data } as Cours : defaults;
   }
 
   ngOnInit() {
@@ -94,7 +93,7 @@ export class CoursFormDialogComponent implements OnInit {
 
   save() {
     this.saving = true;
-    const obs = this.data?.id ? this.svc.update(this.data.id, this.form) : this.svc.create(this.form);
+    const obs = this.data?.id ? this.svc.update(this.data.id!, this.form) : this.svc.create(this.form);
     obs.subscribe({
       next: () => { this.snack.open('Course saved.', 'Close', { duration: 3000 }); this.ref.close(true); },
       error: () => { this.snack.open('Error saving course.', 'Close', { duration: 3000 }); this.saving = false; },

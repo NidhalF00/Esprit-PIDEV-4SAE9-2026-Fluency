@@ -69,6 +69,10 @@ public class Question {
         this.points = points;
     }
 
+    public Long getQuizId() {
+        return quiz != null ? quiz.getId() : null;
+    }
+
     public Quiz getQuiz() {
         return quiz;
     }

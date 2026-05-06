@@ -15,6 +15,10 @@ export class QuestionService {
     return this.http.get<unknown>(`${this.api}/questions`).pipe(map(r => unwrapArray<Question>(r)));
   }
 
+  getByQuizId(quizId: number): Observable<Question[]> {
+    return this.http.get<unknown>(`${this.api}/questions/quiz/${quizId}`).pipe(map(r => unwrapArray<Question>(r)));
+  }
+
   getById(id: number): Observable<Question> {
     return this.http.get<Question>(`${this.api}/questions/${id}`);
   }

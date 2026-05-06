@@ -13,9 +13,10 @@ public class CertificatResponseDTO {
     private Long userId;
     private Long quizId;
     private Long moduleId;
-    /** Indique si un PDF est stocké et téléchargeable. */
+    private String etudiantNom;
+    private String quizTitre;
+    private String moduleTitre;
     private Boolean pdfDisponible;
-    /** Chemin relatif API pour télécharger le PDF (préfixer avec l’URL du serveur côté client). */
     private String certificatPdfUrl;
 
     public CertificatResponseDTO() {
@@ -24,6 +25,7 @@ public class CertificatResponseDTO {
     public CertificatResponseDTO(Long id, String codeCertificat, LocalDateTime dateObtention,
                                  Double score, Double pourcentage, Boolean emailEnvoye,
                                  Long userId, Long quizId, Long moduleId,
+                                 String etudiantNom, String quizTitre, String moduleTitre,
                                  Boolean pdfDisponible, String certificatPdfUrl) {
         this.id = id;
         this.codeCertificat = codeCertificat;
@@ -34,9 +36,19 @@ public class CertificatResponseDTO {
         this.userId = userId;
         this.quizId = quizId;
         this.moduleId = moduleId;
+        this.etudiantNom = etudiantNom;
+        this.quizTitre = quizTitre;
+        this.moduleTitre = moduleTitre;
         this.pdfDisponible = pdfDisponible;
         this.certificatPdfUrl = certificatPdfUrl;
     }
+
+    public String getEtudiantNom() { return etudiantNom; }
+    public void setEtudiantNom(String etudiantNom) { this.etudiantNom = etudiantNom; }
+    public String getQuizTitre() { return quizTitre; }
+    public void setQuizTitre(String quizTitre) { this.quizTitre = quizTitre; }
+    public String getModuleTitre() { return moduleTitre; }
+    public void setModuleTitre(String moduleTitre) { this.moduleTitre = moduleTitre; }
 
     public Long getId() {
         return id;

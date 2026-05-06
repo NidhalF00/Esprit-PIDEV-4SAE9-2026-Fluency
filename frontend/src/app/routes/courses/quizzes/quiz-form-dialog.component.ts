@@ -16,7 +16,7 @@ import { Cours } from '../models/cours.model';
   selector: 'app-quiz-form-dialog',
   imports: [CommonModule, FormsModule, MatButtonModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatSnackBarModule],
   template: `
-    <h2 mat-dialog-title style="font-weight:700;color:#0f172a;">{{ data ? 'Edit Quiz' : 'New Quiz' }}</h2>
+    <h2 mat-dialog-title style="font-weight:700;color:#0f172a;">{{ data?.id ? 'Edit Quiz' : 'New Quiz' }}</h2>
     <mat-dialog-content style="min-width:460px;padding-top:8px;">
       <div style="display:flex;flex-direction:column;gap:14px;">
         <mat-form-field appearance="outline" style="width:100%">
@@ -58,8 +58,9 @@ export class QuizFormDialogComponent implements OnInit {
   cours: Cours[] = [];
   form: Quiz;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: Quiz | null) {
-    this.form = data ? { ...data } : { titre: '', description: '', scoreMax: 20, coursId: undefined };
+  constructor(@Inject(MAT_DIALOG_DATA) public data: Partial<Quiz> | null) {
+    const defaults: Quiz = { titre: '', description: '', scoreMax: 20, coursId: undefined };
+    this.form = data ? { ...defaults, ...data } as Quiz : defaults;
   }
 
   ngOnInit() {
@@ -68,7 +69,7 @@ export class QuizFormDialogComponent implements OnInit {
 
   save() {
     this.saving = true;
-    const obs = this.data?.id ? this.svc.update(this.data.id, this.form) : this.svc.create(this.form);
+    const obs = this.data?.id ? this.svc.update(this.data.id!, this.form) : this.svc.create(this.form);
     obs.subscribe({
       next: () => { this.snack.open('Quiz saved.', 'Close', { duration: 3000 }); this.ref.close(true); },
       error: () => { this.snack.open('Error saving quiz.', 'Close', { duration: 3000 }); this.saving = false; },

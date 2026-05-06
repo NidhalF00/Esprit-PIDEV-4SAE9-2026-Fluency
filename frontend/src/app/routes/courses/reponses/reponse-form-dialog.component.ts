@@ -52,8 +52,9 @@ export class ReponseFormDialogComponent implements OnInit {
   questions: Question[] = [];
   form: Reponse;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: Reponse | null) {
-    this.form = data ? { ...data } : { texte: '', correcte: false, questionId: undefined };
+  constructor(@Inject(MAT_DIALOG_DATA) public data: Partial<Reponse> | null) {
+    const defaults: Reponse = { texte: '', correcte: false, questionId: undefined };
+    this.form = data ? { ...defaults, ...data } as Reponse : defaults;
   }
 
   ngOnInit() {

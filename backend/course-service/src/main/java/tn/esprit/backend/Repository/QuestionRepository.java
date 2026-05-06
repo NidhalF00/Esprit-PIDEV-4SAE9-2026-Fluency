@@ -8,4 +8,6 @@ import tn.esprit.backend.Entity.Question;
 public interface QuestionRepository extends JpaRepository<Question, Long> {
 
     long countByQuiz_Id(Long quizId);
+
+    java.util.List<Question> findByQuiz_Id(Long quizId);
 }

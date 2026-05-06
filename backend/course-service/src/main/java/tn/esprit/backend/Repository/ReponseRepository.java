@@ -6,4 +6,6 @@ import tn.esprit.backend.Entity.Reponse;
 
 @RepositoryRestResource(exported = false)
 public interface ReponseRepository extends JpaRepository<Reponse, Long> {
+
+    java.util.List<Reponse> findByQuestion_Id(Long questionId);
 }

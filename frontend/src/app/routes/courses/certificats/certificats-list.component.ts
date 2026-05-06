@@ -36,7 +36,9 @@ export class CertificatsListComponent implements OnInit, AfterViewInit {
     this.load();
     this.dataSource.filterPredicate = (d, f) =>
       (d.codeCertificat?.toLowerCase().includes(f) ?? false) ||
-      (d.etudiantNom?.toLowerCase().includes(f) ?? false);
+      (d.etudiantNom?.toLowerCase().includes(f) ?? false) ||
+      (d.quizTitre?.toLowerCase().includes(f) ?? false) ||
+      (d.moduleTitre?.toLowerCase().includes(f) ?? false);
   }
 
   ngAfterViewInit() {

@@ -1,0 +1,183 @@
+<div class="elm-wrap">
+
+  <!-- Header -->
+  <div class="elm-header">
+    <div class="elm-header-left">
+      <div class="elm-header-icon"><mat-icon>school</mat-icon></div>
+      <div>
+        <h1 class="elm-title">Content Manager</h1>
+        <p class="elm-subtitle">Modules · Courses · Quizzes · Questions</p>
+      </div>
+    </div>
+    <div class="elm-header-right">
+      <div class="search-box">
+        <mat-icon class="search-icon">search</mat-icon>
+        <input class="search-input" [(ngModel)]="searchTerm" placeholder="Search modules or courses…">
+        @if (searchTerm) {
+          <button class="search-clear" (click)="searchTerm=''"><mat-icon>close</mat-icon></button>
+        }
+      </div>
+      <button class="btn-add-module" (click)="addModule()">
+        <mat-icon>add</mat-icon>New Module
+      </button>
+    </div>
+  </div>
+
+  @if (loading) {
+    <div class="elm-loading"><mat-spinner diameter="44"></mat-spinner><span>Loading…</span></div>
+  }
+
+  @if (!loading && filtered.length === 0) {
+    <div class="elm-empty">
+      <div class="elm-empty-icon-wrap"><mat-icon>menu_book</mat-icon></div>
+      <p class="elm-empty-title">{{ searchTerm ? 'No results for "' + searchTerm + '"' : 'No modules yet' }}</p>
+      @if (!searchTerm) {
+        <button class="btn-add-module" (click)="addModule()"><mat-icon>add</mat-icon>Create Module</button>
+      }
+    </div>
+  }
+
+  @if (!loading && filtered.length > 0) {
+    <div class="elm-tree">
+      @for (mvm of filtered; track mvm.data.id) {
+        <div class="module-card" [class.expanded]="mvm.expanded">
+
+          <!-- Module row -->
+          <div class="module-row" (click)="mvm.expanded = !mvm.expanded">
+            <span class="level-bar" [style.background]="levelColor(mvm.data.niveau)"></span>
+            <div class="module-body">
+              <span class="module-title">{{ mvm.data.titre }}</span>
+              <div class="module-meta">
+                <span class="level-badge" [style.background]="levelBg(mvm.data.niveau)" [style.color]="levelColor(mvm.data.niveau)">{{ mvm.data.niveau }}</span>
+                <span class="meta-chip"><mat-icon>menu_book</mat-icon>{{ mvm.cours.length }} courses</span>
+                <span class="meta-chip"><mat-icon>quiz</mat-icon>{{ totalQuizzes(mvm) }} quizzes</span>
+                @if (mvm.data.categorie) { <span class="meta-chip"><mat-icon>label</mat-icon>{{ mvm.data.categorie }}</span> }
+              </div>
+            </div>
+            <div class="module-actions" (click)="$event.stopPropagation()">
+              <button class="act-btn primary" matTooltip="Add course" (click)="addCours(mvm, $event)"><mat-icon>add</mat-icon></button>
+              <button class="act-btn" matTooltip="Edit" (click)="editModule(mvm, $event)"><mat-icon>edit</mat-icon></button>
+              <button class="act-btn danger" matTooltip="Delete" (click)="deleteModule(mvm, $event)"><mat-icon>delete_outline</mat-icon></button>
+            </div>
+            <mat-icon class="chevron" [class.open]="mvm.expanded">expand_more</mat-icon>
+          </div>
+
+          <!-- Courses -->
+          @if (mvm.expanded) {
+            <div class="courses-section">
+              @if (mvm.cours.length === 0) {
+                <div class="inner-empty">
+                  <mat-icon>menu_book</mat-icon><span>No courses yet.</span>
+                  <button class="inline-add" (click)="addCours(mvm, $event)">+ Add course</button>
+                </div>
+              }
+              @for (cvm of mvm.cours; track cvm.data.id) {
+                <div class="cours-card">
+                  <div class="cours-row">
+                    <div class="cours-icon-wrap" [style.background]="typeColor(cvm.data.typeContenu) + '18'">
+                      <mat-icon [style.color]="typeColor(cvm.data.typeContenu)">{{ typeIcon(cvm.data.typeContenu) }}</mat-icon>
+                    </div>
+                    <div class="cours-body">
+                      <span class="cours-title">{{ cvm.data.titre }}</span>
+                      <div class="cours-meta">
+                        <span class="type-badge">{{ cvm.data.typeContenu }}</span>
+                        @if (cvm.data.duree) { <span class="mini-chip">{{ cvm.data.duree }} min</span> }
+                        @if (cvm.data.gratuit) { <span class="mini-chip free">FREE</span> }
+                        @if (!cvm.data.publie) { <span class="mini-chip draft">DRAFT</span> }
+                      </div>
+                    </div>
+                    <div class="cours-actions">
+                      <button class="act-btn primary sm" matTooltip="Add quiz" (click)="addQuiz(cvm)"><mat-icon>add</mat-icon></button>
+                      <button class="act-btn sm" matTooltip="Edit" (click)="editCours(cvm)"><mat-icon>edit</mat-icon></button>
+                      <button class="act-btn danger sm" matTooltip="Delete" (click)="deleteCours(mvm, cvm)"><mat-icon>delete_outline</mat-icon></button>
+                    </div>
+                  </div>
+
+                  <!-- Quiz pills -->
+                  @if (cvm.quizzes.length > 0) {
+                    <div class="quiz-area">
+                      @for (qvm of cvm.quizzes; track qvm.data.id) {
+                        <div class="quiz-block" [class.quiz-expanded]="qvm.expanded">
+
+                          <!-- Quiz header pill -->
+                          <div class="quiz-pill-row" (click)="toggleQuiz(qvm)">
+                            <div class="quiz-live-dot" [class.live]="qvm.data.actif" [matTooltip]="qvm.data.actif ? 'Live' : 'Draft'"></div>
+                            <mat-icon class="quiz-icon">quiz</mat-icon>
+                            <span class="quiz-label">{{ qvm.data.titre }}</span>
+                            <span class="quiz-pts">{{ qvm.data.scoreMax }}pts</span>
+                            <div class="quiz-pill-actions" (click)="$event.stopPropagation()">
+                              <button class="live-toggle" [class.is-live]="qvm.data.actif"
+                                      [matTooltip]="qvm.data.actif ? 'Set draft' : 'Go live'"
+                                      (click)="toggleLive(qvm, $event)">
+                                {{ qvm.data.actif ? 'Live' : 'Draft' }}
+                              </button>
+                              <button class="act-btn sm" matTooltip="Edit quiz" (click)="editQuiz(qvm, $event)"><mat-icon>edit</mat-icon></button>
+                              <button class="act-btn danger sm" matTooltip="Delete quiz" (click)="deleteQuiz(cvm, qvm, $event)"><mat-icon>close</mat-icon></button>
+                            </div>
+                            <mat-icon class="quiz-chevron" [class.open]="qvm.expanded">expand_more</mat-icon>
+                          </div>
+
+                          <!-- Questions (lazy) -->
+                          @if (qvm.expanded) {
+                            <div class="questions-section">
+                              @if (!qvm.questionsLoaded) {
+                                <div class="q-loading"><mat-spinner diameter="20"></mat-spinner></div>
+                              }
+                              @if (qvm.questionsLoaded) {
+                                <div class="questions-header">
+                                  <span>{{ qvm.questions.length }} question(s)</span>
+                                  <button class="inline-add" (click)="addQuestion(qvm)">+ Add question</button>
+                                </div>
+                                @for (qnvm of qvm.questions; track qnvm.data.id; let qi = $index) {
+                                  <div class="question-card" [class.q-expanded]="qnvm.reponsesLoaded">
+                                    <div class="question-row" (click)="toggleQuestion(qnvm)">
+                                      <span class="q-num">Q{{ qi + 1 }}</span>
+                                      <span class="q-type-badge">{{ qTypeLabel(qnvm.data.typeQuestion) }}</span>
+                                      <span class="q-enonce">{{ qnvm.data.enonce }}</span>
+                                      <span class="q-pts">{{ qnvm.data.points }}pt</span>
+                                      <div class="q-actions" (click)="$event.stopPropagation()">
+                                        <button class="act-btn sm" matTooltip="Edit" (click)="editQuestion(qnvm)"><mat-icon>edit</mat-icon></button>
+                                        <button class="act-btn danger sm" matTooltip="Delete" (click)="deleteQuestion(qvm, qnvm)"><mat-icon>close</mat-icon></button>
+                                      </div>
+                                      <mat-icon class="q-chevron" [class.open]="qnvm.reponsesLoaded">expand_more</mat-icon>
+                                    </div>
+
+                                    <!-- Answers -->
+                                    @if (qnvm.reponsesLoaded) {
+                                      <div class="answers-section">
+                                        @for (rvm of qnvm.reponses; track rvm.data.id) {
+                                          <div class="answer-chip" [class.correct]="rvm.data.correcte">
+                                            <mat-icon>{{ rvm.data.correcte ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
+                                            <span>{{ rvm.data.texte }}</span>
+                                            <button class="ans-del" (click)="deleteReponse(qnvm, rvm)"><mat-icon>close</mat-icon></button>
+                                          </div>
+                                        }
+                                        <button class="add-answer-inline" (click)="addReponse(qnvm)">
+                                          <mat-icon>add</mat-icon>Add answer
+                                        </button>
+                                      </div>
+                                    }
+                                  </div>
+                                }
+                                @if (qvm.questions.length === 0) {
+                                  <div class="inner-empty" style="margin:8px 0;">
+                                    <mat-icon>help_outline</mat-icon><span>No questions.</span>
+                                    <button class="inline-add" (click)="addQuestion(qvm)">+ Add</button>
+                                  </div>
+                                }
+                              }
+                            </div>
+                          }
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>

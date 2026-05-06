@@ -1,33 +1,21 @@
 import { Routes } from '@angular/router';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'statistiques', pathMatch: 'full' },
+  { path: '', redirectTo: 'overview', pathMatch: 'full' },
   {
-    path: 'statistiques',
-    loadComponent: () => import('./statistiques/statistiques.component').then(m => m.StatistiquesComponent),
-  },
-  {
-    path: 'modules',
-    loadComponent: () => import('./modules/modules-list.component').then(m => m.ModulesListComponent),
-  },
-  {
-    path: 'cours',
-    loadComponent: () => import('./cours/cours-list.component').then(m => m.CoursListComponent),
-  },
-  {
-    path: 'quizzes',
-    loadComponent: () => import('./quizzes/quizzes-list.component').then(m => m.QuizzesListComponent),
-  },
-  {
-    path: 'questions',
-    loadComponent: () => import('./questions/questions-list.component').then(m => m.QuestionsListComponent),
-  },
-  {
-    path: 'reponses',
-    loadComponent: () => import('./reponses/reponses-list.component').then(m => m.ReponsesListComponent),
+    path: 'overview',
+    loadComponent: () => import('./elearning/elearning-manager.component').then(m => m.ElearningManagerComponent),
   },
   {
     path: 'certificats',
     loadComponent: () => import('./certificats/certificats-list.component').then(m => m.CertificatsListComponent),
+  },
+  {
+    path: 'catalog',
+    loadComponent: () => import('./student/catalog/catalog.component').then(m => m.CatalogComponent),
+  },
+  {
+    path: 'quiz/:id',
+    loadComponent: () => import('./student/quiz-play/quiz-play.component').then(m => m.QuizPlayComponent),
   },
 ];

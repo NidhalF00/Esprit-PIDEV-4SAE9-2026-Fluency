@@ -15,6 +15,10 @@ export class ReponseService {
     return this.http.get<unknown>(`${this.api}/reponses`).pipe(map(r => unwrapArray<Reponse>(r)));
   }
 
+  getByQuestionId(questionId: number): Observable<Reponse[]> {
+    return this.http.get<unknown>(`${this.api}/reponses/question/${questionId}`).pipe(map(r => unwrapArray<Reponse>(r)));
+  }
+
   getById(id: number): Observable<Reponse> {
     return this.http.get<Reponse>(`${this.api}/reponses/${id}`);
   }

@@ -40,15 +40,15 @@ public class UserController {
                     Map.of("route", "", "name", "all-claims", "type", "link", "icon", "list")
                   );
 
-        List<Map<String, Object>> elearningChildren = List.of(
-                Map.of("route", "statistiques", "name", "Statistics",   "type", "link", "icon", "bar_chart"),
-                Map.of("route", "modules",      "name", "Modules",      "type", "link", "icon", "folder"),
-                Map.of("route", "cours",        "name", "Courses",      "type", "link", "icon", "menu_book"),
-                Map.of("route", "quizzes",      "name", "Quizzes",      "type", "link", "icon", "quiz"),
-                Map.of("route", "questions",    "name", "Questions",    "type", "link", "icon", "help_outline"),
-                Map.of("route", "reponses",     "name", "Answers",      "type", "link", "icon", "check_circle_outline"),
-                Map.of("route", "certificats",  "name", "Certificates", "type", "link", "icon", "workspace_premium")
-        );
+        List<Map<String, Object>> elearningChildren = role.equals("ADMIN")
+                ? List.of(
+                    Map.of("route", "overview",    "name", "Content",      "type", "link", "icon", "layers"),
+                    Map.of("route", "certificats", "name", "Certificates", "type", "link", "icon", "workspace_premium")
+                  )
+                : List.of(
+                    Map.of("route", "catalog",     "name", "My Learning",  "type", "link", "icon", "menu_book"),
+                    Map.of("route", "certificats", "name", "Certificates", "type", "link", "icon", "workspace_premium")
+                  );
 
         List<Map<String, Object>> menu = List.of(
                 Map.of("route", "dashboard", "name", "dashboard", "type", "link", "icon", "dashboard"),
