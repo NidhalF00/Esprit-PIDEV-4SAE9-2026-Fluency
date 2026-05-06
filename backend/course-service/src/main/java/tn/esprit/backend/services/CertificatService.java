@@ -172,12 +172,25 @@ public class CertificatService {
             return;
         }
 
-        if (!userRepository.existsById(userId)) {
-            User u = new User();
-            u.setId(userId);
-            u.setNom(userName != null && !userName.isBlank() ? userName : "Étudiant");
+        User u = userRepository.findById(userId).orElseGet(() -> {
+            User newUser = new User();
+            newUser.setId(userId);
+            newUser.setRole("STUDENT");
+            return newUser;
+        });
+        boolean needsSave = false;
+        if (userName != null && !userName.isBlank() && (u.getNom() == null || u.getNom().equals("Étudiant"))) {
+            u.setNom(userName);
+            needsSave = true;
+        } else if (u.getNom() == null) {
+            u.setNom("Étudiant");
+            needsSave = true;
+        }
+        if (userEmail != null && !userEmail.isBlank() && (u.getEmail() == null || u.getEmail().isBlank())) {
             u.setEmail(userEmail);
-            u.setRole("STUDENT");
+            needsSave = true;
+        }
+        if (needsSave || u.getId() == null) {
             userRepository.save(u);
         }
 
