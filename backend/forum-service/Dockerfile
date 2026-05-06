@@ -9,11 +9,11 @@ COPY retake-service/pom.xml retake-service/pom.xml
 COPY course-service/pom.xml course-service/pom.xml
 COPY forum-service/pom.xml forum-service/pom.xml
 COPY resource-service/pom.xml resource-service/pom.xml
-COPY resource-service/src resource-service/src
-RUN mvn package -pl resource-service -DskipTests -q
+COPY forum-service/src forum-service/src
+RUN mvn package -pl forum-service -DskipTests -q
 
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
-COPY --from=build /app/resource-service/target/*.jar app.jar
-EXPOSE 8078
+COPY --from=build /app/forum-service/target/*.jar app.jar
+EXPOSE 8087
 ENTRYPOINT ["java", "-jar", "app.jar"]

@@ -153,6 +153,48 @@ services:
     networks:
       - platform-network
 
+  # ── Forum Service ────────────────────────────────────────────────────────────
+  forum-service:
+    build:
+      context: ./backend
+      dockerfile: forum-service/Dockerfile
+    container_name: forum-service
+    ports:
+      - "8087:8087"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/forum_db?createDatabaseIfNotExist=true&useUnicode=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+    networks:
+      - platform-network
+
+  # ── Resource Service ──────────────────────────────────────────────────────────
+  resource-service:
+    build:
+      context: ./backend
+      dockerfile: resource-service/Dockerfile
+    container_name: resource-service
+    ports:
+      - "8078:8078"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/resource_db?createDatabaseIfNotExist=true&useUnicode=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+    networks:
+      - platform-network
+
   # ── ML Service (Python FastAPI) ───────────────────────────────────────────────
   ml-service:
     platform: linux/amd64
