@@ -155,6 +155,7 @@ services:
 
   # ── ML Service (Python FastAPI) ───────────────────────────────────────────────
   ml-service:
+    platform: linux/amd64
     build:
       context: ./backend/ml-service
     container_name: ml-service
