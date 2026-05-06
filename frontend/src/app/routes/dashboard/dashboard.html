@@ -94,7 +94,7 @@
             <mat-icon [style.color]="card.color">{{ card.icon }}</mat-icon>
           </div>
           <div class="fl-el-num" [style.color]="card.color">
-            {{ courseStats ? (courseStats[card.key] | number:'1.0-1') : '—' }}
+            {{ getStat(card.key) !== null ? (getStat(card.key) | number:'1.0-1') : '—' }}
           </div>
           <div class="fl-el-label">{{ card.label }}</div>
         </div>
@@ -121,15 +121,15 @@
           <div class="fl-metrics">
             <div class="fl-metric-row">
               <span class="fl-metric-label"><mat-icon>help_outline</mat-icon> Questions</span>
-              <span class="fl-metric-val">{{ courseStats.totalQuestions | number }}</span>
+              <span class="fl-metric-val">{{ getStat('totalQuestions') | number }}</span>
             </div>
             <div class="fl-metric-row">
               <span class="fl-metric-label"><mat-icon>check_circle_outline</mat-icon> Answers</span>
-              <span class="fl-metric-val">{{ courseStats.totalReponses | number }}</span>
+              <span class="fl-metric-val">{{ getStat('totalReponses') | number }}</span>
             </div>
             <div class="fl-metric-row">
               <span class="fl-metric-label"><mat-icon>emoji_events</mat-icon> Avg Quiz Score</span>
-              <span class="fl-metric-val fl-metric-val--gold">{{ courseStats.moyenneScoreMaxQuiz | number:'1.0-1' }}</span>
+              <span class="fl-metric-val fl-metric-val--gold">{{ getStat('moyenneScoreMaxQuiz') | number:'1.0-1' }}</span>
             </div>
             <div class="fl-metric-row">
               <span class="fl-metric-label"><mat-icon>library_books</mat-icon> Resources</span>
@@ -296,6 +296,22 @@
             <em>{{ greeting }},</em><br>{{ displayName }}.
           </h1>
           <p class="fl-greeting-tagline">Keep learning — fluency is a journey, not a destination.</p>
+        </div>
+        <div class="fl-greeting-right">
+          <div class="fl-greeting-ring">
+            <svg viewBox="0 0 120 120" class="fl-ring-svg">
+              <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(196,154,60,0.15)" stroke-width="10"/>
+              <circle cx="60" cy="60" r="50" fill="none" stroke="#c49a3c" stroke-width="10"
+                stroke-dasharray="314"
+                [attr.stroke-dashoffset]="314 - (myCertificates.length * 15)"
+                stroke-linecap="round"
+                transform="rotate(-90 60 60)"/>
+            </svg>
+            <div class="fl-ring-center">
+              <span class="fl-ring-num">{{ myCertificates.length }}</span>
+              <span class="fl-ring-sub">certs</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>

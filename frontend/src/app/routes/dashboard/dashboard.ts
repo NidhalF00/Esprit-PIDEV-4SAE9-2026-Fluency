@@ -152,4 +152,9 @@ export class Dashboard implements OnInit {
     const map: Record<string, string> = { PENDING: '#d97706', APPROVED: '#059669', REJECTED: '#dc2626' };
     return map[status] ?? '#94a3b8';
   }
+
+  getStat(key: string): number | null {
+    if (!this.courseStats) return null;
+    return (this.courseStats as Record<string, number>)[key] ?? null;
+  }
 }
