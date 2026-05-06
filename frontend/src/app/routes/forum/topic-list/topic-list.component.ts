@@ -41,8 +41,8 @@ export class TopicListComponent implements OnInit {
   ngOnInit() {
     this.categoryId = Number(this.route.snapshot.paramMap.get('categoryId'));
     this.auth.user().subscribe(u => {
-      const role: string = (u as any)['role'] ?? '';
-      this.isAdmin = role === 'ADMIN' || role === 'ROLE_ADMIN';
+      const roles: string[] = (u as any)['roles'] ?? [];
+      this.isAdmin = roles.includes('ADMIN') || roles.includes('ROLE_ADMIN');
       this.userEmail = (u as any)['email'] ?? '';
       this.cdr.markForCheck();
     });

@@ -48,8 +48,8 @@ export class ReplyListComponent implements OnInit {
     this.topicId = Number(this.route.snapshot.paramMap.get('topicId'));
     this.current.topicId = this.topicId;
     this.auth.user().subscribe(u => {
-      const role: string = (u as any)['role'] ?? '';
-      this.isAdmin = role === 'ADMIN' || role === 'ROLE_ADMIN';
+      const roles: string[] = (u as any)['roles'] ?? [];
+      this.isAdmin = roles.includes('ADMIN') || roles.includes('ROLE_ADMIN');
       this.cdr.markForCheck();
     });
     this.load();
