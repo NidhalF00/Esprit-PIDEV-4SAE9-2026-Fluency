@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, inject, Inject, OnInit } from '@angular/core';
+import { Component, inject, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -54,7 +54,6 @@ export class QuizFormDialogComponent implements OnInit {
   private snack = inject(MatSnackBar);
   private ref = inject(MatDialogRef<QuizFormDialogComponent>);
 
-  private cdr = inject(ChangeDetectorRef);
   saving = false;
   cours: Cours[] = [];
   form: Quiz;
@@ -64,7 +63,7 @@ export class QuizFormDialogComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.coursSvc.getAll().subscribe(c => { this.cours = c; this.cdr.detectChanges(); });
+    this.coursSvc.getAll().subscribe(c => { setTimeout(() => { this.cours = c; }); });
   }
 
   save() {

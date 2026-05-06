@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -16,7 +16,6 @@ interface StatCard { label: string; value: number | null; icon: string; color: s
 })
 export class StatistiquesComponent implements OnInit {
   private svc = inject(StatistiqueService);
-  private cdr = inject(ChangeDetectorRef);
   loading = true;
 
   cards: StatCard[] = [
@@ -38,10 +37,9 @@ export class StatistiquesComponent implements OnInit {
         this.cards[1].value = c;
         this.cards[2].value = q;
         this.cards[3].value = qu;
-        this.loading = false;
-        this.cdr.detectChanges();
+        setTimeout(() => { this.loading = false; });
       },
-      error: () => { this.loading = false; this.cdr.detectChanges(); },
+      error: () => { setTimeout(() => { this.loading = false; }); },
     });
   }
 }
