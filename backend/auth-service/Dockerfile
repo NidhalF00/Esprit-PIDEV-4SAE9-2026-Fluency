@@ -7,6 +7,8 @@ COPY auth-service/pom.xml auth-service/pom.xml
 COPY claim-service/pom.xml claim-service/pom.xml
 COPY retake-service/pom.xml retake-service/pom.xml
 COPY course-service/pom.xml course-service/pom.xml
+COPY forum-service/pom.xml forum-service/pom.xml
+COPY resource-service/pom.xml resource-service/pom.xml
 COPY auth-service/src auth-service/src
 RUN mvn package -pl auth-service -DskipTests -q
 

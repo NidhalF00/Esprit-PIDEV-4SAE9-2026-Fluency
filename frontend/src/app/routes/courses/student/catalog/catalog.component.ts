@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
@@ -27,6 +27,7 @@ export class CatalogComponent implements OnInit {
   private coursSvc = inject(CoursService);
   private quizSvc = inject(QuizService);
   private router = inject(Router);
+  private cdr = inject(ChangeDetectorRef);
 
   loading = true;
   modules: ModuleCard[] = [];
@@ -48,9 +49,10 @@ export class CatalogComponent implements OnInit {
               })),
           }))
           .filter(m => m.cours.length > 0);
-        setTimeout(() => { this.loading = false; });
+        this.loading = false;
+        this.cdr.markForCheck();
       },
-      error: () => { setTimeout(() => { this.loading = false; }); },
+      error: () => { this.loading = false; this.cdr.markForCheck(); },
     });
   }
 

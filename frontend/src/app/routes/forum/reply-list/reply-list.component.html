@@ -1,0 +1,111 @@
+<div class="forum-page">
+  <div class="forum-content" style="padding-top:1.75rem">
+
+    <!-- Breadcrumb -->
+    <div class="forum-breadcrumb">
+      <button (click)="goBack()">
+        <mat-icon style="font-size:13px;width:13px;height:13px;vertical-align:middle">arrow_back</mat-icon>
+        Back
+      </button>
+    </div>
+
+    <!-- Thread header -->
+    <div class="forum-thread-header">
+      <div class="forum-thread-title">Discussion Thread</div>
+      <div class="forum-thread-meta">
+        <mat-icon style="font-size:14px;width:14px;height:14px">reply_all</mat-icon>
+        {{ replies.length }} repl{{ replies.length !== 1 ? 'ies' : 'y' }}
+      </div>
+    </div>
+
+    <!-- Delete confirmation -->
+    @if (deleteTargetId != null) {
+      <div class="forum-danger-banner">
+        <mat-icon style="color:#dc2626;flex-shrink:0">warning</mat-icon>
+        <span style="flex:1">Delete this reply?</span>
+        <button class="fbtn-danger fbtn-sm" (click)="doDelete()">Delete</button>
+        <button class="fbtn-ghost fbtn-sm" (click)="cancelDelete()">Cancel</button>
+      </div>
+    }
+
+    <!-- Report form -->
+    @if (reportReplyId != null) {
+      <div class="forum-report-form">
+        <div class="forum-report-title">Report this reply</div>
+        <p style="font-size:.78rem;color:#92400e;margin:0 0 .6rem">Why are you reporting this content?</p>
+        <div style="display:flex;flex-direction:column;gap:.3rem">
+          @for (r of reportReasons; track r) {
+            <label class="forum-report-option">
+              <input type="radio" [value]="r" [(ngModel)]="reportReason" style="accent-color:#d97706" />
+              <span>{{ r }}</span>
+            </label>
+          }
+        </div>
+        <div class="flex gap-2 mt-3">
+          <button class="fbtn-accent fbtn-sm" (click)="submitReport()">Submit Report</button>
+          <button class="fbtn-ghost fbtn-sm" (click)="cancelReport()">Cancel</button>
+        </div>
+      </div>
+    }
+
+    <!-- Replies -->
+    <div class="forum-replies-list">
+      @for (reply of replies; track reply.id) {
+        <div class="forum-reply-item">
+          <div class="forum-avatar" [style.background]="getAvatarColor(reply.authorEmail)">
+            {{ getInitials(reply.authorEmail) }}
+          </div>
+          <div class="forum-reply-body">
+            <div style="font-size:.72rem;font-weight:600;color:var(--f-muted);margin-bottom:.2rem">
+              {{ reply.authorEmail ?? 'Anonymous' }}
+            </div>
+            <div class="forum-reply-content">{{ reply.content }}</div>
+            <div class="forum-reply-time">{{ reply.createdAt | date:'MMM d, yyyy · HH:mm' }}</div>
+          </div>
+          <div class="forum-reply-actions">
+            <button class="ficon-btn" title="Report" (click)="openReport(reply.id)" style="color:#f59e0b">
+              <mat-icon>flag</mat-icon>
+            </button>
+            @if (isAdmin) {
+              <button class="ficon-btn" (click)="edit(reply)"><mat-icon>edit</mat-icon></button>
+              <button class="ficon-btn danger" (click)="confirmDelete(reply.id)"><mat-icon>delete</mat-icon></button>
+            }
+          </div>
+        </div>
+      } @empty {
+        <div class="forum-empty">
+          <mat-icon>chat_bubble_outline</mat-icon>
+          <p>No replies yet. Be the first to respond!</p>
+        </div>
+      }
+    </div>
+
+    <!-- Composer -->
+    <div class="forum-composer">
+      @if (!showForm) {
+        <button class="fbtn-primary" (click)="showForm = true" style="width:100%;justify-content:center">
+          <mat-icon>add_comment</mat-icon>
+          Write a reply
+        </button>
+      } @else {
+        <div class="forum-composer-label">{{ current.id ? 'Edit reply' : 'Your reply' }}</div>
+        <mat-form-field class="w-full" appearance="outline">
+          <mat-label>Write your message…</mat-label>
+          <textarea matInput [(ngModel)]="current.content" rows="4"></textarea>
+        </mat-form-field>
+        @if (badWordError) {
+          <div style="background:#fee2e2;border:1px solid #fecaca;border-radius:8px;padding:.5rem .75rem;font-size:.8rem;color:#dc2626;margin-bottom:.75rem">
+            ⚠ {{ badWordError }}
+          </div>
+        }
+        <div class="flex gap-2">
+          <button class="fbtn-primary" (click)="save()" [disabled]="!current.content || current.content.trim().length < 3">
+            {{ current.id ? 'Update' : 'Post Reply' }}
+          </button>
+          <button class="fbtn-ghost" (click)="cancelForm()">Cancel</button>
+        </div>
+      }
+    </div>
+
+  </div>
+</div>

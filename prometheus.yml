@@ -38,3 +38,17 @@ scrape_configs:
       - targets: ['course-service:8086']
         labels:
           application: 'course-service'
+
+  - job_name: 'forum-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['forum-service:8087']
+        labels:
+          application: 'forum-service'
+
+  - job_name: 'resource-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['resource-service:8078']
+        labels:
+          application: 'resource-service'

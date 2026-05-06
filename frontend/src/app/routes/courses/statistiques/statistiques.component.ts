@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -15,6 +15,7 @@ interface StatCard { label: string; value: number | null; icon: string; color: s
 })
 export class StatistiquesComponent implements OnInit {
   private svc = inject(StatistiqueService);
+  private cdr = inject(ChangeDetectorRef);
   loading = true;
 
   cards: StatCard[] = [
@@ -35,9 +36,10 @@ export class StatistiquesComponent implements OnInit {
         this.cards[3].value = s.totalQuestions;
         this.cards[4].value = s.totalReponses;
         this.cards[5].value = s.moyenneScoreMaxQuiz;
-        setTimeout(() => { this.loading = false; });
+        this.loading = false;
+        this.cdr.markForCheck();
       },
-      error: () => { setTimeout(() => { this.loading = false; }); },
+      error: () => { this.loading = false; this.cdr.markForCheck(); },
     });
   }
 }
