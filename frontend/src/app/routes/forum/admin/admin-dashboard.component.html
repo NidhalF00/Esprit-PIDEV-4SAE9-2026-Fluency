@@ -1,0 +1,137 @@
+<div class="forum-page">
+
+  <!-- Hero -->
+  <div class="forum-hero" style="padding-bottom:3rem">
+    <div class="forum-hero-glow"></div>
+    <div class="forum-hero-wrap">
+      <div class="forum-hero-eyebrow">Admin Area</div>
+      <h1 class="forum-hero-title">Forum Moderation</h1>
+      <p class="forum-hero-subtitle">Manage reports, blocked words and pending resources</p>
+    </div>
+  </div>
+
+  <div class="forum-content">
+
+    <!-- Stats -->
+    <div class="forum-mod-stats">
+      <div class="forum-mod-stat">
+        <div class="forum-mod-stat-val" style="color:#d97706">{{ pendingReports }}</div>
+        <div class="forum-mod-stat-lbl">Pending Reports</div>
+      </div>
+      <div class="forum-mod-stat">
+        <div class="forum-mod-stat-val" style="color:#e11d48">{{ badwords.length }}</div>
+        <div class="forum-mod-stat-lbl">Blocked Words</div>
+      </div>
+      <div class="forum-mod-stat">
+        <div class="forum-mod-stat-val" style="color:#7c3aed">{{ pendingResources }}</div>
+        <div class="forum-mod-stat-lbl">Pending Resources</div>
+      </div>
+    </div>
+
+    <mat-tab-group>
+
+      <!-- Reports -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon style="margin-right:6px;font-size:18px">flag</mat-icon>
+          Reports ({{ reports.length }})
+        </ng-template>
+        <div style="padding-top:1.25rem">
+          @for (r of reports; track r.id) {
+            <div class="forum-report-row">
+              <div style="flex:1;min-width:0">
+                <span class="fpill" [class]="(r.status || 'pending').toLowerCase()">{{ r.status }}</span>
+                <div style="font-size:.875rem;margin-top:.4rem">
+                  Reason: <strong>{{ r.reason }}</strong>
+                </div>
+                <div style="font-size:.72rem;color:var(--f-muted);margin-top:.2rem">
+                  Reply #{{ r.replyId }} · {{ r.reportedAt | date:'MMM d, yyyy · HH:mm' }}
+                </div>
+              </div>
+              <div class="flex gap-2">
+                <button class="fbtn-ghost fbtn-sm" (click)="updateReportStatus(r.id, 'REVIEWED')">
+                  <mat-icon>check</mat-icon>Reviewed
+                </button>
+                <button class="fbtn-ghost fbtn-sm" style="color:#6b7280" (click)="updateReportStatus(r.id, 'DISMISSED')">
+                  Dismiss
+                </button>
+              </div>
+            </div>
+          } @empty {
+            <div class="forum-empty">
+              <mat-icon>check_circle</mat-icon>
+              <p>No pending reports.</p>
+            </div>
+          }
+        </div>
+      </mat-tab>
+
+      <!-- Blocked Words -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon style="margin-right:6px;font-size:18px">block</mat-icon>
+          Blocked Words ({{ badwords.length }})
+        </ng-template>
+        <div style="padding-top:1.25rem">
+          <div class="forum-form-panel" style="margin-bottom:1.25rem">
+            <p class="forum-form-title">Add a blocked word</p>
+            <div style="display:flex;gap:.65rem;align-items:center">
+              <mat-form-field appearance="outline" style="flex:1;margin-bottom:-1.25em">
+                <mat-label>New word</mat-label>
+                <input matInput [(ngModel)]="newBadword" placeholder="e.g. spam" (keyup.enter)="addBadword()" />
+              </mat-form-field>
+              <button class="fbtn-primary" (click)="addBadword()" [disabled]="!newBadword.trim()">
+                <mat-icon>add</mat-icon>Add
+              </button>
+            </div>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:.5rem">
+            @for (w of badwords; track w.id) {
+              <div class="forum-badword-chip">
+                {{ w.word }}
+                <button class="forum-badword-remove" (click)="deleteBadword(w.id)" title="Remove">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </div>
+            } @empty {
+              <p style="font-size:.85rem;color:var(--f-muted)">No blocked words configured.</p>
+            }
+          </div>
+        </div>
+      </mat-tab>
+
+      <!-- Resources -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon style="margin-right:6px;font-size:18px">folder</mat-icon>
+          Resources ({{ resources.length }})
+        </ng-template>
+        <div style="padding-top:1.25rem">
+          @for (r of resources; track r.id) {
+            <div class="forum-report-row">
+              <div style="flex:1;min-width:0">
+                <span class="fpill" [class]="(r.status || 'pending').toLowerCase()">{{ r.status ?? 'PENDING' }}</span>
+                <div style="font-size:.9rem;font-weight:600;margin-top:.35rem">{{ r.title }}</div>
+                <div style="font-size:.72rem;color:var(--f-muted)">{{ r.type }} · {{ r.topicName }}</div>
+              </div>
+              <div class="flex gap-2">
+                <button class="fbtn-ghost fbtn-sm" style="color:#059669;border-color:#d1fae5" (click)="updateResourceStatus(r.id, 'APPROVED')">
+                  <mat-icon>check</mat-icon>Approve
+                </button>
+                <button class="fbtn-ghost fbtn-sm" style="color:#dc2626;border-color:#fecaca" (click)="updateResourceStatus(r.id, 'REJECTED')">
+                  <mat-icon>close</mat-icon>Reject
+                </button>
+              </div>
+            </div>
+          } @empty {
+            <div class="forum-empty">
+              <mat-icon>folder_open</mat-icon>
+              <p>No pending resources.</p>
+            </div>
+          }
+        </div>
+      </mat-tab>
+
+    </mat-tab-group>
+  </div>
+</div>

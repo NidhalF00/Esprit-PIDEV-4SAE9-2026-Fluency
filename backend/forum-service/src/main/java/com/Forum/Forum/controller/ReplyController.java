@@ -5,6 +5,7 @@ import com.Forum.Forum.Services.ImplServiceReply;
 import com.Forum.Forum.entity.Reply;
 import com.Forum.Forum.entity.ReplyDTO;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,9 @@ public class ReplyController {
 
     @PostMapping("/topic/{topicId}")
     public ReplyDTO create(@RequestBody Reply reply,
-                           @PathVariable Long topicId) {
+                           @PathVariable Long topicId,
+                           Authentication auth) {
+        if (auth != null) reply.setAuthorEmail(auth.getName());
         return replyService.create(reply, topicId);
     }
 

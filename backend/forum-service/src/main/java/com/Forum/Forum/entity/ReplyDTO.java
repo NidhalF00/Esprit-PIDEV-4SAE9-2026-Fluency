@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 public class ReplyDTO {
     private Long id;
     private String content;
+    private String authorEmail;
     private LocalDateTime createdAt;
     private Long topicId;
 }

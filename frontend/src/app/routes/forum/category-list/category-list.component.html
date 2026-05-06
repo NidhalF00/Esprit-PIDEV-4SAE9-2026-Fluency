@@ -1,0 +1,108 @@
+<div class="forum-page">
+
+  <!-- Hero -->
+  <div class="forum-hero">
+    <div class="forum-hero-glow"></div>
+    <div class="forum-hero-wrap">
+      <div class="forum-hero-row">
+        <div>
+          <div class="forum-hero-eyebrow">Community Space</div>
+          <h1 class="forum-hero-title">Discussion Forum</h1>
+          <p class="forum-hero-subtitle">Ask questions · Share knowledge · Learn together</p>
+        </div>
+        @if (isAdmin) {
+          <button class="fbtn-accent" (click)="showForm = !showForm" style="margin-top:.5rem">
+            <mat-icon>{{ showForm ? 'close' : 'add' }}</mat-icon>
+            {{ showForm ? 'Close' : 'New Category' }}
+          </button>
+        }
+      </div>
+      <div class="forum-stats">
+        <div class="forum-stat">
+          <span class="forum-stat-value">{{ categories.length }}</span>
+          <span class="forum-stat-label">Categories</span>
+        </div>
+        <div class="forum-stat-sep"></div>
+        <div class="forum-stat">
+          <span class="forum-stat-value">{{ totalTopics }}</span>
+          <span class="forum-stat-label">Topics</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="forum-content">
+
+    <!-- Admin form -->
+    @if (showForm && isAdmin) {
+      <div class="forum-form-panel">
+        <p class="forum-form-title">{{ current.id ? 'Edit Category' : 'New Category' }}</p>
+        <mat-form-field class="w-full" appearance="outline">
+          <mat-label>Category name</mat-label>
+          <input matInput [(ngModel)]="current.name" placeholder="e.g. Technical Help" />
+        </mat-form-field>
+        <mat-form-field class="w-full" appearance="outline">
+          <mat-label>Description (optional)</mat-label>
+          <textarea matInput [(ngModel)]="current.description" rows="2" placeholder="Describe what this category is about…"></textarea>
+        </mat-form-field>
+        <div class="flex gap-2 mt-1">
+          <button class="fbtn-primary" (click)="save()" [disabled]="!current.name || current.name.trim().length < 3">
+            {{ current.id ? 'Update' : 'Create' }}
+          </button>
+          <button class="fbtn-ghost" (click)="cancelForm()">Cancel</button>
+        </div>
+      </div>
+    }
+
+    <!-- Delete confirmation -->
+    @if (deleteTargetId != null) {
+      <div class="forum-danger-banner">
+        <mat-icon style="color:#dc2626;flex-shrink:0">warning</mat-icon>
+        <span style="flex:1">Delete this category? All associated topics will be permanently lost.</span>
+        <button class="fbtn-danger fbtn-sm" (click)="doDelete()">Delete</button>
+        <button class="fbtn-ghost fbtn-sm" (click)="cancelDelete()">Cancel</button>
+      </div>
+    }
+
+    <!-- Categories -->
+    <div class="forum-categories-grid">
+      @for (cat of categories; track cat.id; let i = $index) {
+        <div class="forum-category-card" (click)="viewTopics(cat)">
+          <div class="forum-cat-accent" [style.background]="getColor(i)"></div>
+          <div class="forum-cat-icon" [style.background]="getColor(i) + '18'">
+            <mat-icon [style.color]="getColor(i)">forum</mat-icon>
+          </div>
+          <div class="forum-cat-body">
+            <div class="forum-cat-name">{{ cat.name }}</div>
+            @if (cat.description) {
+              <div class="forum-cat-desc">{{ cat.description }}</div>
+            }
+            <span class="forum-cat-pill"
+              [style.background]="getColor(i) + '14'"
+              [style.color]="getColor(i)">
+              <mat-icon>chat_bubble_outline</mat-icon>
+              {{ cat.topicCount ?? 0 }} topic{{ (cat.topicCount ?? 0) !== 1 ? 's' : '' }}
+            </span>
+          </div>
+          <div class="forum-cat-actions">
+            @if (isAdmin) {
+              <button class="ficon-btn" title="Edit" (click)="$event.stopPropagation(); edit(cat)">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button class="ficon-btn danger" title="Delete" (click)="$event.stopPropagation(); confirmDelete(cat.id!)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            }
+            <mat-icon style="color:#d1cdc5;margin-left:.2rem">chevron_right</mat-icon>
+          </div>
+        </div>
+      } @empty {
+        <div class="forum-empty">
+          <mat-icon>forum</mat-icon>
+          <p>No categories yet.</p>
+        </div>
+      }
+    </div>
+
+  </div>
+</div>

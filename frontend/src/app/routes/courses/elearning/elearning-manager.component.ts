@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -46,6 +46,7 @@ export class ElearningManagerComponent implements OnInit {
   private reponseSvc = inject(ReponseService);
   private dialog = inject(MatDialog);
   private snack = inject(MatSnackBar);
+  private cdr = inject(ChangeDetectorRef);
 
   loading = true;
   modules: ModuleVM[] = [];
@@ -76,9 +77,10 @@ export class ElearningManagerComponent implements OnInit {
             })),
           })),
         }));
-        setTimeout(() => { this.loading = false; });
+        this.loading = false;
+        this.cdr.markForCheck();
       },
-      error: () => { setTimeout(() => { this.loading = false; }); },
+      error: () => { this.loading = false; this.cdr.markForCheck(); },
     });
   }
 
@@ -90,10 +92,9 @@ export class ElearningManagerComponent implements OnInit {
     if (qvm.expanded && !qvm.questionsLoaded) {
       this.questionSvc.getByQuizId(qvm.data.id!).subscribe({
         next: questions => {
-          setTimeout(() => {
-            qvm.questions = questions.map(q => ({ data: q, reponses: [], reponsesLoaded: false }));
-            qvm.questionsLoaded = true;
-          });
+          qvm.questions = questions.map(q => ({ data: q, reponses: [], reponsesLoaded: false }));
+          qvm.questionsLoaded = true;
+          this.cdr.markForCheck();
         },
       });
     }
@@ -104,7 +105,7 @@ export class ElearningManagerComponent implements OnInit {
     qnvm.reponsesLoaded = !qnvm.reponsesLoaded;
     if (qnvm.reponsesLoaded && qnvm.reponses.length === 0) {
       this.reponseSvc.getByQuestionId(qnvm.data.id!).subscribe({
-        next: reponses => { setTimeout(() => { qnvm.reponses = reponses.map(r => ({ data: r })); }); },
+        next: reponses => { qnvm.reponses = reponses.map(r => ({ data: r })); this.cdr.markForCheck(); },
       });
     }
   }
@@ -114,7 +115,7 @@ export class ElearningManagerComponent implements OnInit {
     event.stopPropagation();
     const updated = { ...qvm.data, actif: !qvm.data.actif };
     this.quizSvc.update(qvm.data.id!, updated).subscribe({
-      next: saved => { setTimeout(() => { qvm.data = saved; }); },
+      next: saved => { qvm.data = saved; this.cdr.markForCheck(); },
       error: () => this.snack.open('Error updating quiz.', 'Close', { duration: 3000 }),
     });
   }
@@ -206,7 +207,7 @@ export class ElearningManagerComponent implements OnInit {
       .subscribe(ok => {
         if (ok) {
           this.reponseSvc.getByQuestionId(qnvm.data.id!).subscribe({
-            next: r => { setTimeout(() => { qnvm.reponses = r.map(x => ({ data: x })); }); },
+            next: r => { qnvm.reponses = r.map(x => ({ data: x })); this.cdr.markForCheck(); },
           });
         }
       });

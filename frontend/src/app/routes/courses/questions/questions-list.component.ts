@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild, inject } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -26,6 +26,7 @@ export class QuestionsListComponent implements OnInit, AfterViewInit {
   private svc = inject(QuestionService);
   private dialog = inject(MatDialog);
   private snack = inject(MatSnackBar);
+  private cdr = inject(ChangeDetectorRef);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -50,8 +51,8 @@ export class QuestionsListComponent implements OnInit, AfterViewInit {
   load() {
     this.loading = true;
     this.svc.getAll().subscribe({
-      next: data => { this.dataSource.data = data; setTimeout(() => { this.loading = false; this.dataSource.paginator = this.paginator; this.dataSource.sort = this.sort; }); },
-      error: () => { setTimeout(() => { this.loading = false; }); },
+      next: data => { this.dataSource.data = data; this.loading = false; this.dataSource.paginator = this.paginator; this.dataSource.sort = this.sort; this.cdr.markForCheck(); },
+      error: () => { this.loading = false; this.cdr.markForCheck(); },
     });
   }
 

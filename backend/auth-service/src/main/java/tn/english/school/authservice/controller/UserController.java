@@ -50,6 +50,17 @@ public class UserController {
                     Map.of("route", "certificats", "name", "Certificates", "type", "link", "icon", "workspace_premium")
                   );
 
+        List<Map<String, Object>> forumChildren = role.equals("ADMIN")
+                ? List.of(
+                    Map.of("route", "",       "name", "Categories", "type", "link", "icon", "forum"),
+                    Map.of("route", "resources", "name", "Resources", "type", "link", "icon", "folder"),
+                    Map.of("route", "admin",  "name", "Admin",      "type", "link", "icon", "admin_panel_settings")
+                  )
+                : List.of(
+                    Map.of("route", "",          "name", "Categories", "type", "link", "icon", "forum"),
+                    Map.of("route", "resources", "name", "Resources",  "type", "link", "icon", "folder")
+                  );
+
         List<Map<String, Object>> menu = List.of(
                 Map.of("route", "dashboard", "name", "dashboard", "type", "link", "icon", "dashboard"),
                 Map.of(
@@ -65,6 +76,13 @@ public class UserController {
                         "type",     "sub",
                         "icon",     "school",
                         "children", elearningChildren
+                ),
+                Map.of(
+                        "route",    "forum",
+                        "name",     "Forum",
+                        "type",     "sub",
+                        "icon",     "chat",
+                        "children", forumChildren
                 )
         );
 

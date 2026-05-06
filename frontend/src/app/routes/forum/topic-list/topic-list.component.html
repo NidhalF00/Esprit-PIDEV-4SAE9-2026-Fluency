@@ -1,0 +1,104 @@
+<div class="forum-page">
+  <div class="forum-content" style="padding-top:1.75rem">
+
+    <!-- Breadcrumb -->
+    <div class="forum-breadcrumb">
+      <button (click)="goBack()">Forum</button>
+      <mat-icon>chevron_right</mat-icon>
+      <span>Topics</span>
+    </div>
+
+    <!-- Header -->
+    <div class="forum-section-header">
+      <h2 class="forum-section-title">Topics</h2>
+      <button class="fbtn-primary" (click)="openCreate()">
+        <mat-icon>add</mat-icon>New Topic
+      </button>
+    </div>
+
+    <!-- Search bar -->
+    <div class="forum-search-bar">
+      <mat-form-field appearance="outline" style="flex:1;min-width:180px;margin-bottom:-1.25em">
+        <mat-label>Search topics…</mat-label>
+        <input matInput [(ngModel)]="searchTitle" (input)="onSearch()" />
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+      <mat-form-field appearance="outline" style="width:175px;margin-bottom:-1.25em">
+        <mat-label>From date</mat-label>
+        <input matInput type="date" [(ngModel)]="searchDateFrom" (change)="onSearch()" />
+      </mat-form-field>
+      <button class="fbtn-ghost fbtn-sm" (click)="searchTitle=''; searchDateFrom=''; load()">Reset</button>
+    </div>
+
+    <!-- New topic form -->
+    @if (showForm) {
+      <div class="forum-form-panel">
+        <p class="forum-form-title">{{ current.id ? 'Edit Topic' : 'New Topic' }}</p>
+        <mat-form-field class="w-full" appearance="outline">
+          <mat-label>Title</mat-label>
+          <input matInput [(ngModel)]="current.title" placeholder="What's your topic about?" />
+        </mat-form-field>
+        <mat-form-field class="w-full" appearance="outline">
+          <mat-label>Content</mat-label>
+          <textarea matInput [(ngModel)]="current.content" rows="4" placeholder="Describe your question or topic in detail…"></textarea>
+        </mat-form-field>
+        <mat-form-field class="w-full" appearance="outline">
+          <mat-label>Your email</mat-label>
+          <input matInput type="email" [(ngModel)]="current.authorEmail" />
+        </mat-form-field>
+        <div class="flex gap-2 mt-1">
+          <button class="fbtn-primary" (click)="save()"
+            [disabled]="!current.title || !current.content || !current.authorEmail">
+            {{ current.id ? 'Update' : 'Post' }}
+          </button>
+          <button class="fbtn-ghost" (click)="cancelForm()">Cancel</button>
+        </div>
+      </div>
+    }
+
+    <!-- Delete confirmation -->
+    @if (deleteTargetId != null) {
+      <div class="forum-danger-banner">
+        <mat-icon style="color:#dc2626;flex-shrink:0">warning</mat-icon>
+        <span style="flex:1">Delete this topic and all its replies?</span>
+        <button class="fbtn-danger fbtn-sm" (click)="doDelete()">Delete</button>
+        <button class="fbtn-ghost fbtn-sm" (click)="cancelDelete()">Cancel</button>
+      </div>
+    }
+
+    <!-- Topics -->
+    <div class="forum-topic-list">
+      @for (t of topics; track t.id) {
+        <div class="forum-topic-item" (click)="goToReplies(t)">
+          <div class="forum-avatar" [style.background]="getAvatarColor(t.authorEmail)">
+            {{ getInitials(t.authorEmail) }}
+          </div>
+          <div class="forum-topic-body">
+            <div class="forum-topic-title">{{ t.title }}</div>
+            <div class="forum-topic-excerpt">{{ t.content }}</div>
+            <div class="forum-topic-meta">
+              <span><mat-icon>person</mat-icon> {{ t.authorEmail }}</span>
+              <span><mat-icon>chat_bubble</mat-icon> {{ t.replyCount ?? 0 }} repl{{ (t.replyCount ?? 0) !== 1 ? 'ies' : 'y' }}</span>
+              @if ((t.replyCount ?? 0) >= 5) {
+                <span class="forum-hot"><mat-icon style="font-size:10px;width:10px;height:10px">local_fire_department</mat-icon>Hot</span>
+              }
+            </div>
+          </div>
+          <div class="forum-topic-actions" (click)="$event.stopPropagation()">
+            @if (isAdmin) {
+              <button class="ficon-btn" (click)="edit(t)"><mat-icon>edit</mat-icon></button>
+              <button class="ficon-btn danger" (click)="confirmDelete(t.id!)"><mat-icon>delete</mat-icon></button>
+            }
+            <mat-icon style="color:#d1cdc5">chevron_right</mat-icon>
+          </div>
+        </div>
+      } @empty {
+        <div class="forum-empty">
+          <mat-icon>chat_bubble_outline</mat-icon>
+          <p>No topics yet. Be the first to start a discussion!</p>
+        </div>
+      }
+    </div>
+
+  </div>
+</div>

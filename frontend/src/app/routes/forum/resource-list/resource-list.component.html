@@ -1,0 +1,143 @@
+<div class="forum-page">
+
+  <!-- Hero -->
+  <div class="forum-hero" style="padding-bottom:3rem">
+    <div class="forum-hero-glow"></div>
+    <div class="forum-hero-wrap">
+      <div class="forum-hero-row">
+        <div>
+          <div class="forum-hero-eyebrow">Learning Materials</div>
+          <h1 class="forum-hero-title">Resource Library</h1>
+          <p class="forum-hero-subtitle">Videos, articles, PDFs and links shared by the community</p>
+        </div>
+        <button class="fbtn-accent" (click)="openCreate()" style="margin-top:.5rem">
+          <mat-icon>add</mat-icon>Share a Resource
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="forum-content">
+
+    <!-- Form -->
+    @if (showForm) {
+      <div class="forum-form-panel">
+        <p class="forum-form-title">{{ isEditing ? 'Edit Resource' : 'Share a Resource' }}</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.75rem">
+          <mat-form-field appearance="outline">
+            <mat-label>Title</mat-label>
+            <input matInput [(ngModel)]="current.title" placeholder="Resource name" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>URL</mat-label>
+            <input matInput [(ngModel)]="current.url" placeholder="https://…" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Type</mat-label>
+            <mat-select [(ngModel)]="current.type">
+              @for (t of types; track t) { <mat-option [value]="t">{{ t }}</mat-option> }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Related Topic</mat-label>
+            <mat-select [(ngModel)]="current.topicId">
+              @for (t of topics; track t.id) { <mat-option [value]="t.id">{{ t.title }}</mat-option> }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline" style="grid-column:1/-1">
+            <mat-label>Description</mat-label>
+            <textarea matInput [(ngModel)]="current.description" rows="2" placeholder="Briefly describe this resource…"></textarea>
+          </mat-form-field>
+        </div>
+        <div class="flex gap-2 mt-1">
+          <button class="fbtn-primary" (click)="save()">{{ isEditing ? 'Update' : 'Share' }}</button>
+          <button class="fbtn-ghost" (click)="cancelForm()">Cancel</button>
+        </div>
+      </div>
+    }
+
+    <!-- Filters -->
+    <div class="forum-filter-bar">
+      <span style="font-size:.76rem;font-weight:600;color:var(--f-muted);margin-right:.25rem">Filter:</span>
+      <button class="forum-filter-pill" [class.active]="filterType === ''" (click)="filterType=''; applyFilters()">All</button>
+      @for (t of types; track t) {
+        <button class="forum-filter-pill" [class.active]="filterType === t" (click)="filterType = t; applyFilters()">{{ t }}</button>
+      }
+      @if (filterTitle || filterType) {
+        <button class="fbtn-ghost fbtn-sm" (click)="filterTitle=''; filterType=''; applyFilters()">
+          <mat-icon>close</mat-icon>Reset
+        </button>
+      }
+    </div>
+
+    <!-- Search -->
+    <div style="margin-bottom:1.25rem;position:relative">
+      <mat-icon style="position:absolute;left:.85rem;top:50%;transform:translateY(-50%);color:var(--f-muted);font-size:18px">search</mat-icon>
+      <input
+        [(ngModel)]="filterTitle" (input)="applyFilters()"
+        placeholder="Search by title…"
+        style="width:100%;padding:.6rem .85rem .6rem 2.6rem;border:1px solid var(--f-border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.875rem;background:white;outline:none;color:var(--f-text)"
+      />
+    </div>
+
+    <!-- Cards -->
+    <div class="forum-resources-grid">
+      @for (r of filtered; track r.id) {
+        <div class="forum-resource-card">
+          <div class="forum-resource-bar" [style.background]="getTypeColor(r.type)"></div>
+          <div class="forum-resource-body">
+            <span class="forum-resource-badge"
+              [style.background]="getTypeColor(r.type) + '18'"
+              [style.color]="getTypeColor(r.type)">
+              <mat-icon style="font-size:11px;width:11px;height:11px">{{ getTypeIcon(r.type) }}</mat-icon>
+              {{ r.type }}
+            </span>
+            <div class="forum-resource-title">{{ r.title }}</div>
+            @if (r.description) {
+              <div class="forum-resource-desc">{{ r.description }}</div>
+            }
+            <span class="forum-resource-topic">
+              <mat-icon style="font-size:10px;width:10px;height:10px;vertical-align:middle">forum</mat-icon>
+              {{ r.topicName }}
+            </span>
+            @if (r.aiSummary) {
+              <div class="forum-resource-ai">✦ {{ r.aiSummary }}</div>
+            }
+          </div>
+          <div class="forum-resource-footer">
+            <button class="fbtn-ghost fbtn-sm" (click)="togglePreview(r.id)">
+              <mat-icon>{{ openPreviewId === r.id ? 'visibility_off' : 'visibility' }}</mat-icon>
+              {{ openPreviewId === r.id ? 'Close' : 'Preview' }}
+            </button>
+            <div class="forum-resource-actions">
+              <a [href]="r.url" target="_blank" class="ficon-btn" title="Open link" style="text-decoration:none">
+                <mat-icon>open_in_new</mat-icon>
+              </a>
+              @if (isAdmin) {
+                <button class="ficon-btn" (click)="openEdit(r)"><mat-icon>edit</mat-icon></button>
+                <button class="ficon-btn danger" (click)="delete(r.id)"><mat-icon>delete</mat-icon></button>
+              }
+            </div>
+          </div>
+          @if (openPreviewId === r.id) {
+            <div style="border-top:1px solid var(--f-border)">
+              @if (r.type === 'VIDEO') {
+                <iframe [src]="getEmbedUrl(r.url)" width="100%" height="220" frameborder="0" allowfullscreen></iframe>
+              } @else if (r.type === 'PDF') {
+                <iframe [src]="getEmbedUrl(r.url)" width="100%" height="300" frameborder="0"></iframe>
+              } @else {
+                <a [href]="r.url" target="_blank" style="display:block;padding:.75rem 1.1rem;font-size:.82rem;color:#2563eb;word-break:break-all">{{ r.url }}</a>
+              }
+            </div>
+          }
+        </div>
+      } @empty {
+        <div class="forum-empty" style="grid-column:1/-1">
+          <mat-icon>folder_open</mat-icon>
+          <p>No resources yet.</p>
+        </div>
+      }
+    </div>
+
+  </div>
+</div>

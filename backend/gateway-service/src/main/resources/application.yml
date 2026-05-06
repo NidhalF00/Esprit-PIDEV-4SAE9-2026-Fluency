@@ -49,15 +49,15 @@ spring:
           predicates:
             - Path=/api/cours/**, /api/modules/**, /api/quizzes/**, /api/certificats/**, /api/questions/**, /api/reponses/**, /api/recommandations/**, /api/statistiques/**, /api/recherche/**
 
-        # ── Forum Service (port 8082) ─────────────────────────────────────────
+        # ── Forum Service (port 8087) ─────────────────────────────────────────
         - id: forum-service
-          uri: http://forum-service:8087
+          uri: lb://forum-service
           predicates:
             - Path=/topic/**, /category/**, /reply/**, /report/**, /badword/**
 
         # ── Resource Service (port 8078) ──────────────────────────────────────
         - id: resource-service
-          uri: http://resource-service:8078
+          uri: lb://resource-service
           predicates:
             - Path=/resources/**
 
