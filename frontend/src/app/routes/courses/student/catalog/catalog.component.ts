@@ -47,8 +47,7 @@ export class CatalogComponent implements OnInit {
                   .filter(q => q.coursId === c.id && q.actif)
                   .map(q => ({ data: q })),
               })),
-          }))
-          .filter(m => m.cours.length > 0);
+          }));
         this.loading = false;
         this.cdr.markForCheck();
       },
