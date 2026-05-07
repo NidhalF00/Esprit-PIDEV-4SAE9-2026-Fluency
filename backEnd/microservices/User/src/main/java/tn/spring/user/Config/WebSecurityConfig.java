@@ -43,7 +43,8 @@ public class WebSecurityConfig {
                                 "/api/auth/**",
                                 "/api/users/**",
                                 "/actuator/health",
-                                "/actuator/info"
+                                "/actuator/info",
+                                "/actuator/prometheus"
 
 
                         )
