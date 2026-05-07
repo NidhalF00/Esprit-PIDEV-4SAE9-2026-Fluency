@@ -15,16 +15,26 @@
         <processorPath useClasspath="false">
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.38/lombok-1.18.38.jar" />
         </processorPath>
-        <module name="retake-service" />
+        <module name="course-service" />
+        <module name="auth-service" />
         <module name="claim-service" />
+        <module name="retake-service" />
+        <module name="gateway-service" />
+        <module name="resource-service" />
         <module name="eureka-server" />
+        <module name="Forum" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Forum" options="-parameters" />
+      <module name="auth-service" options="-parameters" />
       <module name="claim-service" options="-parameters" />
+      <module name="course-service" options="-parameters" />
       <module name="eureka-server" options="-parameters" />
+      <module name="gateway-service" options="-parameters" />
+      <module name="resource-service" options="-parameters" />
       <module name="retake-service" options="-parameters" />
     </option>
   </component>

@@ -27,25 +27,25 @@ spring:
       routes:
         # ── Auth Service (port 8083) ──────────────────────────────────────────
         - id: auth-service
-          uri: http://auth-service:8083
+          uri: http://${AUTH_SERVICE_HOSTNAME:auth-service}:8083
           predicates:
             - Path=/auth/**, /user/**, /api/students/**
 
         # ── Claim Service (port 8081) ─────────────────────────────────────────
         - id: claim-service
-          uri: http://claim-service:8081
+          uri: http://${CLAIM_SERVICE_HOSTNAME:claim-service}:8081
           predicates:
             - Path=/api/claims/**
 
         # ── Retake Service (port 8082) ────────────────────────────────────────
         - id: retake-service
-          uri: http://retake-service:8082
+          uri: http://${RETAKE_SERVICE_HOSTNAME:retake-service}:8082
           predicates:
             - Path=/api/retake-requests/**
 
         # ── Course Service (port 8086) ───────────────────────────────────────
         - id: course-service
-          uri: http://course-service:8086
+          uri: http://${COURSE_SERVICE_HOSTNAME:course-service}:8086
           predicates:
             - Path=/api/cours/**, /api/modules/**, /api/quizzes/**, /api/certificats/**, /api/questions/**, /api/reponses/**, /api/recommandations/**, /api/statistiques/**, /api/recherche/**
 
@@ -76,7 +76,7 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://eureka-server:8761/eureka/
+      defaultZone: http://${EUREKA_HOSTNAME:eureka-server}:8761/eureka/
   instance:
     prefer-ip-address: true
 

@@ -29,3 +29,4 @@ backend/uploads/
 # Fichiers système
 .DS_Store
 Thumbs.db
+env_vars
