@@ -1,0 +1,102 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service
+  namespace: fluency
+  labels:
+    app: user-service
+    app.kubernetes.io/name: user-service
+    app.kubernetes.io/part-of: fluency-platform
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-service
+  template:
+    metadata:
+      labels:
+        app: user-service
+        app.kubernetes.io/name: user-service
+        app.kubernetes.io/part-of: fluency-platform
+    spec:
+      containers:
+        - name: user-service
+          image: mohamednoursassi/fluency-user:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8081
+          env:
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: fluency-config
+                  key: DB_NAME
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:postgresql://postgres:5432/$(DB_NAME)"
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: fluency-config
+                  key: DB_USER
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: fluency-secrets
+                  key: DB_PASSWORD
+            - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+              valueFrom:
+                configMapKeyRef:
+                  name: fluency-config
+                  key: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: fluency-secrets
+                  key: JWT_SECRET
+            - name: GOOGLE_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: fluency-secrets
+                  key: GOOGLE_CLIENT_ID
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: http
+            initialDelaySeconds: 45
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 12
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: http
+            initialDelaySeconds: 90
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: 150m
+              memory: 256Mi
+            limits:
+              cpu: 700m
+              memory: 768Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service
+  namespace: fluency
+  labels:
+    app: user-service
+    app.kubernetes.io/name: user-service
+    app.kubernetes.io/part-of: fluency-platform
+spec:
+  type: ClusterIP
+  selector:
+    app: user-service
+  ports:
+    - name: http
+      port: 8081
+      targetPort: http

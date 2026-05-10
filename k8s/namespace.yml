@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: fluency
+  labels:
+    app.kubernetes.io/name: fluency
+    app.kubernetes.io/part-of: fluency-platform

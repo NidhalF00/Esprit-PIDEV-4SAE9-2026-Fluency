@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluency-config
+  namespace: fluency
+  labels:
+    app.kubernetes.io/name: fluency
+    app.kubernetes.io/part-of: fluency-platform
+data:
+  DB_NAME: "fluency"
+  DB_USER: "fluency_user"
+  EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eureka:8761/eureka/"
+  CORS_ALLOWED_ORIGIN: "http://192.168.33.20:30080"
+  GATEWAY_USER_URL: "http://user-service:8081"
+  GATEWAY_QUIZ_URL: "http://quiz-service:8056"

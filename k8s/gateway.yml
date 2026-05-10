@@ -1,0 +1,101 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway
+  namespace: fluency
+  labels:
+    app: gateway
+    app.kubernetes.io/name: gateway
+    app.kubernetes.io/part-of: fluency-platform
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gateway
+  template:
+    metadata:
+      labels:
+        app: gateway
+        app.kubernetes.io/name: gateway
+        app.kubernetes.io/part-of: fluency-platform
+    spec:
+      containers:
+        - name: gateway
+          image: mohamednoursassi/fluency-gateway:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8090
+          env:
+            - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+              valueFrom:
+                configMapKeyRef:
+                  name: fluency-config
+                  key: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+            - name: CORS_ALLOWED_ORIGIN
+              valueFrom:
+                configMapKeyRef:
+                  name: fluency-config
+                  key: CORS_ALLOWED_ORIGIN
+            - name: GATEWAY_SERVICES_USER_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: fluency-config
+                  key: GATEWAY_USER_URL
+            - name: GATEWAY_SERVICES_QUIZ_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: fluency-config
+                  key: GATEWAY_QUIZ_URL
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: fluency-secrets
+                  key: JWT_SECRET
+            - name: GOOGLE_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: fluency-secrets
+                  key: GOOGLE_CLIENT_ID
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: http
+            initialDelaySeconds: 45
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 12
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: http
+            initialDelaySeconds: 90
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: 150m
+              memory: 256Mi
+            limits:
+              cpu: 700m
+              memory: 512Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gateway
+  namespace: fluency
+  labels:
+    app: gateway
+    app.kubernetes.io/name: gateway
+    app.kubernetes.io/part-of: fluency-platform
+spec:
+  type: NodePort
+  selector:
+    app: gateway
+  ports:
+    - name: http
+      port: 8090
+      targetPort: http
+      nodePort: 30090
