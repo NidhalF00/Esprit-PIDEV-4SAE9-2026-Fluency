@@ -47,6 +47,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/quiz-attempts/**").authenticated()
                         .requestMatchers("/api/quiz-assignments/**").authenticated()
                         .requestMatchers("/api/applications/**").authenticated()
+                        .requestMatchers("/api/assistant/**").authenticated()
                         .anyRequest().permitAll()
                 )
                 .addFilterBefore(bearerHeaderAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

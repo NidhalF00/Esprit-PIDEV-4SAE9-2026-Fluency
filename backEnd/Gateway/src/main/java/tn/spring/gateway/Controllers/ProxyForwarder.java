@@ -3,6 +3,8 @@ package tn.spring.gateway.Controllers;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
@@ -41,14 +43,44 @@ public class ProxyForwarder {
 
         HttpEntity<Object> entity = new HttpEntity<>(body, headers);
 
-        ResponseEntity<String> response =
-                restTemplate.exchange(url, method, entity, String.class);
+        try {
+            ResponseEntity<String> response =
+                    restTemplate.exchange(url, method, entity, String.class);
 
+            return new ResponseEntity<>(
+                    response.getBody(),
+                    responseHeaders(response.getHeaders()),
+                    response.getStatusCode()
+            );
+        } catch (RestClientResponseException ex) {
+            return new ResponseEntity<>(
+                    ex.getResponseBodyAsString(),
+                    responseHeaders(ex.getResponseHeaders()),
+                    ex.getStatusCode()
+            );
+        } catch (RestClientException ex) {
+            return ResponseEntity
+                    .status(HttpStatus.SERVICE_UNAVAILABLE)
+                    .body("{\"error\":\"UPSTREAM_SERVICE_UNAVAILABLE\"}");
+        }
+    }
+
+    private HttpHeaders responseHeaders(HttpHeaders sourceHeaders) {
         HttpHeaders out = new HttpHeaders();
-        List<String> cookies = response.getHeaders().get(HttpHeaders.SET_COOKIE);
+        if (sourceHeaders == null) {
+            return out;
+        }
+
+        MediaType contentType = sourceHeaders.getContentType();
+        if (contentType != null) {
+            out.setContentType(contentType);
+        }
+
+        List<String> cookies = sourceHeaders.get(HttpHeaders.SET_COOKIE);
         if (cookies != null) {
             out.put(HttpHeaders.SET_COOKIE, cookies);
         }
-        return new ResponseEntity<>(response.getBody(), out, response.getStatusCode());
+
+        return out;
     }
 }

@@ -58,107 +58,110 @@
     </div>
 
     <!-- QUESTIONS -->
-    <div *ngFor="let question of displayedQuestions; let i = index; trackBy: trackByQuestion"
-         class="mb-8 border-b pb-6">
+    <div id="quiz-questions">
+      <div *ngFor="let question of displayedQuestions; let i = index; trackBy: trackByQuestion"
+           class="mb-8 border-b pb-6">
 
-      <div class="flex items-center gap-3 mb-3">
+        <div class="flex items-center gap-3 mb-3">
 
-        <!-- Question text -->
-        <h3 *ngIf="!isEditMode" class="font-bold flex-1">
-          {{ question.text }}
-        </h3>
+          <!-- Question text -->
+          <h3 *ngIf="!isEditMode" class="font-bold flex-1">
+            {{ question.text }}
+          </h3>
 
-        <input *ngIf="isEditMode"
-               [(ngModel)]="editedQuiz.questions[i].text"
-               class="border p-2 rounded w-full"/>
+          <input *ngIf="isEditMode"
+                 [(ngModel)]="editedQuiz.questions[i].text"
+                 class="border p-2 rounded w-full"/>
 
-        <span *ngIf="isEditMode"
-              class="rounded-full px-3 py-1 text-xs font-semibold"
-              [ngClass]="editedQuiz.questions[i].isNew
-                ? 'bg-emerald-100 text-emerald-700'
-                : 'bg-slate-200 text-slate-700'">
-          {{ editedQuiz.questions[i].isNew ? 'New question' : 'Existing question' }}
-        </span>
+          <span *ngIf="isEditMode"
+                class="rounded-full px-3 py-1 text-xs font-semibold"
+                [ngClass]="editedQuiz.questions[i].isNew
+                  ? 'bg-emerald-100 text-emerald-700'
+                  : 'bg-slate-200 text-slate-700'">
+            {{ editedQuiz.questions[i].isNew ? 'New question' : 'Existing question' }}
+          </span>
 
-        <button *ngIf="isEditMode"
-                (click)="deleteQuestion(i)"
-                class="bg-red-500 text-white px-3 py-2 rounded-lg text-sm">
-          Delete Question
-        </button>
+          <button *ngIf="isEditMode"
+                  (click)="deleteQuestion(i)"
+                  class="bg-red-500 text-white px-3 py-2 rounded-lg text-sm">
+            Delete Question
+          </button>
 
-        <!-- Show correct answer -->
-        <button (click)="toggleShowCorrectAnswer(question.id!)"
-                *ngIf="(userRole === 'ADMIN' || userRole === 'TUTOR') && !isEditMode"
-                class="bg-blue-500 text-white px-3 py-1 rounded-lg text-sm">
-          {{ showCorrectAnswerMap[question.id!] ? 'Hide Answer' : 'Show Answer' }}
-        </button>
-      </div>
+          <!-- Show correct answer -->
+          <button (click)="toggleShowCorrectAnswer(question.id!)"
+                  *ngIf="(userRole === 'ADMIN' || userRole === 'TUTOR') && !isEditMode"
+                  class="bg-blue-500 text-white px-3 py-1 rounded-lg text-sm">
+            {{ showCorrectAnswerMap[question.id!] ? 'Hide Answer' : 'Show Answer' }}
+          </button>
+        </div>
 
-      <!-- ANSWERS -->
-      <div class="mt-3">
+        <!-- ANSWERS -->
+        <div class="mt-3">
 
-        <div *ngFor="let answer of answersForDisplay(question); let j = index; trackBy: trackByAnswer"
-             class="mb-2 flex items-center gap-2">
+          <div *ngFor="let answer of answersForDisplay(question); let j = index; trackBy: trackByAnswer"
+               class="mb-2 flex items-center gap-2">
 
-          <!-- STUDENT MODE -->
-          <ng-container *ngIf="!isEditMode">
-            <input type="radio"
-                   name="{{question.id}}"
-                   [disabled]="showCorrectAnswerMap[question.id!]"
-                   (change)="selectAnswer(question.id!, answer.id!)">
-            <span>{{ answer.text }}</span>
-          </ng-container>
+            <!-- STUDENT MODE -->
+            <ng-container *ngIf="!isEditMode">
+              <input type="radio"
+                     name="{{question.id}}"
+                     [checked]="selectedAnswers[question.id!] === answer.id"
+                     [disabled]="showCorrectAnswerMap[question.id!]"
+                     (change)="selectAnswer(question.id!, answer.id!)">
+              <span>{{ answer.text }}</span>
+            </ng-container>
 
-          <!-- EDIT MODE -->
-          <ng-container *ngIf="isEditMode">
+            <!-- EDIT MODE -->
+            <ng-container *ngIf="isEditMode">
 
-            <!-- Text -->
-            <input [(ngModel)]="editedQuiz.questions[i].answers[j].text"
-                   class="border p-1 rounded w-full"/>
+              <!-- Text -->
+              <input [(ngModel)]="editedQuiz.questions[i].answers[j].text"
+                     class="border p-1 rounded w-full"/>
 
-            <span class="rounded-full px-3 py-1 text-xs font-semibold"
-                  [ngClass]="editedQuiz.questions[i].answers[j].isNew
-                    ? 'bg-emerald-100 text-emerald-700'
-                    : 'bg-slate-200 text-slate-700'">
-              {{ editedQuiz.questions[i].answers[j].isNew ? 'New answer' : 'Existing answer' }}
-            </span>
+              <span class="rounded-full px-3 py-1 text-xs font-semibold"
+                    [ngClass]="editedQuiz.questions[i].answers[j].isNew
+                      ? 'bg-emerald-100 text-emerald-700'
+                      : 'bg-slate-200 text-slate-700'">
+                {{ editedQuiz.questions[i].answers[j].isNew ? 'New answer' : 'Existing answer' }}
+              </span>
 
-            <!-- Correct answer selector -->
-            <input
-                   type="radio"
-                   [name]="'correct-answer-' + i"
-                   [checked]="editedQuiz.questions[i].answers[j].correct"
-                   (change)="setCorrectAnswer(i, j)" />
+              <!-- Correct answer selector -->
+              <input
+                     type="radio"
+                     [name]="'correct-answer-' + i"
+                     [checked]="editedQuiz.questions[i].answers[j].correct"
+                     (change)="setCorrectAnswer(i, j)" />
 
-            <!-- Delete Answer -->
-            <button (click)="deleteAnswer(i, j)"
-                    class="bg-red-500 text-white px-2 py-1 rounded-full text-sm">
-              Delete Answer
-            </button>
+              <!-- Delete Answer -->
+              <button (click)="deleteAnswer(i, j)"
+                      class="bg-red-500 text-white px-2 py-1 rounded-full text-sm">
+                Delete Answer
+              </button>
 
-          </ng-container>
+            </ng-container>
+
+          </div>
+
+          <!-- Add Answer Button -->
+          <button *ngIf="isEditMode"
+                  (click)="addAnswer(editedQuiz.questions[i])"
+                  class="mt-2 bg-indigo-500 text-white px-3 py-1 rounded-lg text-sm">
+            Add Answer
+          </button>
 
         </div>
 
-        <!-- Add Answer Button -->
-        <button *ngIf="isEditMode"
-                (click)="addAnswer(editedQuiz.questions[i])"
-                class="mt-2 bg-indigo-500 text-white px-3 py-1 rounded-lg text-sm">
-          Add Answer
-        </button>
+        <!-- Correct Answer Display -->
+        <div *ngIf="showCorrectAnswerMap[question.id!] && correctAnswersMap[question.id!]?.length
+                    && (userRole === 'ADMIN' || userRole === 'TUTOR')
+                    && !isEditMode"
+             class="mt-2 text-green-600 font-semibold">
+          <li *ngFor="let answer of correctAnswersMap[question.id!]">
+            {{ answer.text }}
+          </li>
+        </div>
 
       </div>
-
-      <!-- Correct Answer Display -->
-      <div *ngIf="showCorrectAnswerMap[question.id!] && correctAnswersMap[question.id!]?.length
-                  && (userRole === 'ADMIN' || userRole === 'TUTOR')
-                  && !isEditMode"
-           class="mt-2 text-green-600 font-semibold">
-        <li *ngFor="let answer of correctAnswersMap[question.id!]">
-          {{ answer.text }}
-        </li>
-      </div>
-
     </div>
 
     <!-- Add Question Button -->
@@ -184,9 +187,40 @@
         You must wait {{ cooldownRemaining }} seconds before retrying.
       </div>
 
+      <div *ngIf="quizFeedbackMessage"
+           class="mt-5 rounded-2xl border p-5 shadow-sm"
+           [ngClass]="quizFeedbackClass">
+        <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <div>
+            <p class="text-xs font-black uppercase tracking-[0.2em] opacity-70">Smart Quiz Feedback</p>
+            <p class="mt-2 text-lg font-black">Score: {{ quizScore }}%</p>
+          </div>
+          <div *ngIf="quizFeedbackLevel"
+               class="rounded-full bg-white/70 px-4 py-2 text-sm font-bold">
+            {{ quizFeedbackLevel }}
+          </div>
+        </div>
+        <p class="mt-4 text-sm font-semibold leading-6">
+          {{ quizFeedbackMessage }}
+        </p>
+      </div>
+
+      <div *ngIf="quizFeedbackMessage"
+           class="mt-4 flex flex-col gap-2 rounded-2xl border border-slate-200 bg-slate-50 p-4 md:flex-row md:items-center md:justify-between">
+        <p class="text-sm font-semibold text-slate-600">
+          Questions and answers will be shuffled for a fresh attempt.
+        </p>
+        <button type="button"
+                (click)="retakeQuiz()"
+                [disabled]="submitDisabled && cooldownRemaining > 0"
+                class="bg-slate-900 text-white px-5 py-3 rounded-xl font-bold disabled:bg-gray-400">
+          Retake Quiz
+        </button>
+      </div>
+
       <button *ngIf="passedQuiz"
               (click)="generateCertificate()"
-              class="bg-indigo-600 text-white px-6 py-3 rounded-xl font-bold">
+              class="mt-5 bg-indigo-600 text-white px-6 py-3 rounded-xl font-bold">
         Generate Membership
       </button>
 

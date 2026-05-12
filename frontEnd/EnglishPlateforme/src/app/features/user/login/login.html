@@ -65,15 +65,22 @@
         </a>
         <br>
 
+        <div
+          *ngIf="errorMessage"
+          role="alert"
+          class="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
+          {{ errorMessage }}
+        </div>
+
         <!-- Button -->
         <button 
           type="submit" 
-          [disabled]="loginForm.invalid"
+          [disabled]="loginForm.invalid || loading"
           class="w-1/2 h-13 bg-gradient-to-r from-[#7c3aed] to-[#a855f7] text-white rounded-2xl font-bold text-base
                  hover:from-[#6d28d9] hover:to-[#9333ea]
                  transition-all duration-200 active:scale-[0.98]
                  disabled:opacity-50 shadow-lg shadow-violet-500/25 mt-2 ml-20 p-2">
-          Login
+          {{ loading ? 'Signing in...' : 'Login' }}
         </button>
       </form>
 

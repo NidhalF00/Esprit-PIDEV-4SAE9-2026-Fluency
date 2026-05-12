@@ -43,7 +43,10 @@ export class QuizDetailsComponent implements OnInit {
   correctAnswersMap: { [questionId: number]: Answer[] } = {};
   userRole = '';
   passedQuiz = false;
-  quizScore!: number;
+  quizScore: number | null = null;
+  quizFeedbackMessage = '';
+  quizFeedbackLevel = '';
+  quizFeedbackClass = '';
   attemptCount = 0;
   submitDisabled = false;
   cooldownRemaining = 0;
@@ -289,14 +292,80 @@ export class QuizDetailsComponent implements OnInit {
     };
 
     this.quizService.submitQuiz(payload).subscribe(res => {
-      this.quizScore = res.score;
+      const score = res.score;
+      this.quizScore = score;
       this.passedQuiz = !!res.passed;
+      this.buildQuizFeedback(score);
       if (this.passedQuiz) {
         alert('Welcome, you can generate your membership');
       } else {
-        alert('Quiz submitted! Score: ' + res.score);
+        alert('Quiz submitted! Score: ' + score);
       }
     });
+  }
+
+  retakeQuiz(): void {
+    this.selectedAnswers = {};
+    this.quizScore = null;
+    this.passedQuiz = false;
+    this.quizFeedbackMessage = '';
+    this.quizFeedbackLevel = '';
+    this.quizFeedbackClass = '';
+    this.showCertPopup = false;
+    this.certUserName = '';
+    this.certUserEmail = '';
+    this.isSending = false;
+
+    this.quiz = {
+      ...this.quiz,
+      questions: this.shuffleQuestionsAndAnswers(this.quiz.questions)
+    };
+
+    this.rebuildCorrectAnswerState();
+
+    if (this.cooldownRemaining <= 0) {
+      this.submitDisabled = false;
+    }
+
+    setTimeout(() => {
+      document.getElementById('quiz-questions')?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    });
+  }
+
+  buildQuizFeedback(score: number): void {
+    if (score >= 80) {
+      this.quizFeedbackMessage = 'Excellent work! You are ready for the next level.';
+      this.quizFeedbackClass = 'border-emerald-200 bg-emerald-50 text-emerald-800';
+    } else if (score >= 50) {
+      this.quizFeedbackMessage = 'Good start! Review grammar and vocabulary, then try a higher level.';
+      this.quizFeedbackClass = 'border-amber-200 bg-amber-50 text-amber-800';
+    } else {
+      this.quizFeedbackMessage = 'Keep practicing. Revise the basics and try again.';
+      this.quizFeedbackClass = 'border-blue-200 bg-blue-50 text-blue-800';
+    }
+
+    this.quizFeedbackLevel = this.detectPlacementLevel();
+  }
+
+  private detectPlacementLevel(): string {
+    const title = (this.quiz?.title ?? '').toUpperCase();
+
+    if (title.includes('A1')) {
+      return 'Recommended level: A1 Beginner';
+    }
+
+    if (title.includes('A2')) {
+      return 'Recommended level: A2 Elementary';
+    }
+
+    if (title.includes('B1')) {
+      return 'Recommended level: B1 Intermediate';
+    }
+
+    return '';
   }
 
   generateCertificate() {
@@ -492,7 +561,9 @@ export class QuizDetailsComponent implements OnInit {
 
       this.quiz = {
         ...quizData,
-        questions: hydratedQuestions
+        questions: this.userRole === 'STUDENT'
+          ? this.shuffleQuestionsAndAnswers(hydratedQuestions)
+          : hydratedQuestions
       };
 
       this.rebuildCorrectAnswerState();
@@ -546,6 +617,24 @@ export class QuizDetailsComponent implements OnInit {
 
     this.tempKeyCounter += 1;
     return `${prefix}-new-${this.tempKeyCounter}`;
+  }
+
+  private shuffleArray<T>(items: T[]): T[] {
+    const shuffled = [...items];
+
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+
+    return shuffled;
+  }
+
+  private shuffleQuestionsAndAnswers(questions: Question[]): Question[] {
+    return this.shuffleArray(questions).map((question) => ({
+      ...question,
+      answers: this.shuffleArray(question.answers ?? [])
+    }));
   }
 
   private resetEditState(): void {

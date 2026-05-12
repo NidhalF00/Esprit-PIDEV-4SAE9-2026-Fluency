@@ -62,6 +62,8 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       SPRING_MAIL_USERNAME: ${MAIL_USERNAME}
       SPRING_MAIL_PASSWORD: ${MAIL_PASSWORD}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-2.5-flash}
     volumes:
       - quiz_uploads:/app/uploads
     depends_on:
