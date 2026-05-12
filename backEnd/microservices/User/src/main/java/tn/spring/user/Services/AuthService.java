@@ -113,9 +113,33 @@ public class AuthService {
 
 
     public AuthenticationResponse registerStudent(RegisterClientRequest request) {
+        String email = normalize(request.getEmail());
+        String phone = normalize(request.getPhone());
+        String requestedRole = normalize(request.getRole());
+
+        if (email == null || email.isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email is required.");
+        }
+
+        if (phone == null || phone.isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Phone number is required.");
+        }
+
+        if (requestedRole != null && !requestedRole.isBlank() && !"STUDENT".equalsIgnoreCase(requestedRole)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Public registration is only available for students.");
+        }
+
+        if (userRepos.existsByEmailIgnoreCase(email)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email is already used.");
+        }
+
+        if (userRepos.existsByPhone(phone)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Phone number is already used.");
+        }
+
         String password = passwordEncoder.encode(request.getPassword());
 
-        String role = request.getRole().toUpperCase();
+        String role = requestedRole == null || requestedRole.isBlank() ? "STUDENT" : requestedRole.toUpperCase();
         User user;
 
         if ("ADMIN".equals(role)) {
@@ -137,11 +161,11 @@ public class AuthService {
         }
 
         // Champs communs
-        user.setEmail(request.getEmail());
+        user.setEmail(email);
         user.setPassword(password);
         user.setName(request.getName());
         user.setLastName(request.getLastName());
-        user.setPhone(request.getPhone());
+        user.setPhone(phone);
         user.setPrefix(request.getPrefix());
         user.setActive(true);
 
@@ -165,6 +189,10 @@ public class AuthService {
                 .user(userDTO)
                 .build();
 
+    }
+
+    private String normalize(String value) {
+        return value == null ? null : value.trim();
     }
 
 

@@ -10,6 +10,8 @@ import java.util.UUID;
 
 public interface UserRepos extends JpaRepository<User, UUID> {
     Optional<User> findByEmailIgnoreCase(String email);
+    boolean existsByEmailIgnoreCase(String email);
+    boolean existsByPhone(String phone);
     Optional<User> findByPrefixAndPhone(String prefix,String  phone); // ✅ nouvelle méthode
 
     // ✅ FIX

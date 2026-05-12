@@ -67,9 +67,44 @@ export class RegisterComponent {
       },
       error: (err: any) => {
         this.loading = false;
-        this.errorMessage = err.error?.message || 'Registration failed. Please try again.';
-        console.error('Signup failed', err);
+        this.errorMessage = this.getRegistrationErrorMessage(err);
       }
     });
+  }
+
+  private getRegistrationErrorMessage(err: any): string {
+    const errorText = this.extractErrorText(err).toLowerCase();
+
+    if (errorText.includes('email')) {
+      return 'This email is already used. Please sign in or use another email.';
+    }
+
+    if (errorText.includes('phone')) {
+      return 'This phone number is already used. Please use another phone number.';
+    }
+
+    if (err?.status === 409) {
+      return 'This email or phone number is already used. Please check your information.';
+    }
+
+    return 'Registration failed. Please try again.';
+  }
+
+  private extractErrorText(err: any): string {
+    const error = err?.error;
+
+    if (!error) {
+      return '';
+    }
+
+    if (typeof error === 'string') {
+      return error;
+    }
+
+    return [
+      error.message,
+      error.detail,
+      error.error
+    ].filter(Boolean).join(' ');
   }
 }

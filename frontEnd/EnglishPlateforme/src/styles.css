@@ -22,3 +22,197 @@ body {
   font-family: 'Inter', sans-serif;
   margin: 0;
 }
+
+.fluency-animated-bg {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 9% 10%, rgba(34, 211, 238, 0.46), transparent 30rem),
+    radial-gradient(circle at 88% 8%, rgba(124, 58, 237, 0.28), transparent 30rem),
+    radial-gradient(circle at 68% 88%, rgba(16, 185, 129, 0.25), transparent 34rem),
+    radial-gradient(circle at 18% 82%, rgba(251, 191, 36, 0.13), transparent 24rem),
+    linear-gradient(135deg, #dff5ff 0%, #eef2ff 38%, #e0faff 68%, #dbeafe 100%);
+  background-size: 140% 140%, 130% 130%, 140% 140%, 120% 120%, 100% 100%;
+  animation: fluencyBackgroundShift 24s ease-in-out infinite alternate;
+}
+
+.fluency-animated-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle, rgba(37, 99, 235, 0.12) 1px, transparent 1.4px),
+    linear-gradient(rgba(37, 99, 235, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37, 99, 235, 0.04) 1px, transparent 1px);
+  background-size: 22px 22px, 44px 44px, 44px 44px;
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.72), transparent 82%);
+}
+
+.fluency-animated-bg > * {
+  position: relative;
+  z-index: 1;
+}
+
+.fluency-bg-blob {
+  position: absolute;
+  z-index: 0;
+  border-radius: 9999px;
+  filter: blur(64px);
+  opacity: 0.26;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  animation: fluencyFloat 12s ease-in-out infinite alternate;
+}
+
+.fluency-glass-card {
+  border: 1px solid rgba(255, 255, 255, 0.58);
+  border-radius: 14px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.70), rgba(224, 242, 254, 0.48)),
+    linear-gradient(135deg, rgba(0, 102, 255, 0.16), rgba(34, 211, 238, 0.11), rgba(124, 58, 237, 0.10));
+  box-shadow: 0 28px 80px rgba(37, 99, 235, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(22px) saturate(1.12);
+}
+
+.fluency-action-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.62);
+  border-radius: 12px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.72), rgba(236, 254, 255, 0.50)),
+    linear-gradient(135deg, rgba(0, 102, 255, 0.10), rgba(124, 58, 237, 0.08));
+  box-shadow: 0 18px 45px rgba(37, 99, 235, 0.10);
+  backdrop-filter: blur(14px);
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.fluency-action-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 4px;
+  background: linear-gradient(90deg, #0066ff, #22d3ee, #8b5cf6);
+}
+
+.fluency-action-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(59, 130, 246, 0.36);
+  box-shadow: 0 22px 55px rgba(37, 99, 235, 0.14);
+}
+
+.fluency-gradient-button {
+  border-radius: 10px;
+  background: linear-gradient(135deg, #0057ff 0%, #06b6d4 46%, #7c3aed 100%);
+  box-shadow: 0 16px 34px rgba(37, 99, 235, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+  transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
+}
+
+.fluency-gradient-button:hover {
+  transform: translateY(-1px);
+  filter: saturate(1.08);
+  box-shadow: 0 18px 36px rgba(37, 99, 235, 0.30);
+}
+
+.fluency-soft-badge {
+  border: 1px solid rgba(255, 255, 255, 0.58);
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.76), rgba(224, 242, 254, 0.48));
+  box-shadow: 0 10px 26px rgba(37, 99, 235, 0.10);
+  backdrop-filter: blur(10px);
+}
+
+.fluency-hero-surface {
+  position: relative;
+  overflow: hidden;
+  border-radius: 14px;
+  background:
+    linear-gradient(135deg, rgba(0, 102, 255, 0.15), rgba(34, 211, 238, 0.16), rgba(124, 58, 237, 0.12)),
+    rgba(255, 255, 255, 0.58);
+}
+
+.fluency-hero-surface::after {
+  content: '';
+  position: absolute;
+  inset: auto -18% -45% 38%;
+  z-index: 0;
+  height: 260px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(34, 211, 238, 0.28), rgba(124, 58, 237, 0.20));
+  filter: blur(42px);
+  pointer-events: none;
+}
+
+.fluency-hero-surface > * {
+  position: relative;
+  z-index: 1;
+}
+
+.fluency-tinted-panel {
+  border: 1px solid rgba(255, 255, 255, 0.58);
+  border-radius: 12px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.62), rgba(224, 242, 254, 0.42)),
+    linear-gradient(135deg, rgba(34, 211, 238, 0.12), rgba(124, 58, 237, 0.07));
+  box-shadow: 0 16px 40px rgba(37, 99, 235, 0.10);
+  backdrop-filter: blur(14px);
+}
+
+.fluency-card-blue {
+  background:
+    linear-gradient(145deg, rgba(239, 246, 255, 0.84), rgba(207, 250, 254, 0.52)),
+    linear-gradient(135deg, rgba(0, 102, 255, 0.12), rgba(34, 211, 238, 0.10));
+}
+
+.fluency-card-violet {
+  background:
+    linear-gradient(145deg, rgba(245, 243, 255, 0.84), rgba(224, 242, 254, 0.48)),
+    linear-gradient(135deg, rgba(124, 58, 237, 0.14), rgba(0, 102, 255, 0.08));
+}
+
+.fluency-card-mint {
+  background:
+    linear-gradient(145deg, rgba(236, 253, 245, 0.84), rgba(207, 250, 254, 0.48)),
+    linear-gradient(135deg, rgba(16, 185, 129, 0.13), rgba(34, 211, 238, 0.10));
+}
+
+.fluency-bg-blob:nth-of-type(2) {
+  animation-delay: -3s;
+}
+
+.fluency-bg-blob:nth-of-type(3) {
+  animation-delay: -6s;
+}
+
+@keyframes fluencyFloat {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  to {
+    transform: translate3d(18px, -22px, 0) scale(1.05);
+  }
+}
+
+@keyframes fluencyBackgroundShift {
+  from {
+    background-position: 0% 0%, 100% 0%, 50% 100%, 0% 100%, 0 0;
+  }
+
+  to {
+    background-position: 14% 10%, 86% 18%, 58% 88%, 8% 86%, 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fluency-animated-bg,
+  .fluency-bg-blob,
+  .fluency-action-card,
+  .fluency-gradient-button {
+    animation: none;
+    transition: none;
+  }
+}

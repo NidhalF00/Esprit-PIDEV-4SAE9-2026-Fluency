@@ -1,55 +1,80 @@
-<div class="min-h-screen bg-white">
+<div class="min-h-screen fluency-animated-bg">
+  <div class="fluency-bg-blob left-[-6rem] top-20 h-80 w-80 bg-cyan-300"></div>
+  <div class="fluency-bg-blob right-[-5rem] top-36 h-96 w-96 bg-violet-300"></div>
+  <div class="fluency-bg-blob bottom-16 left-1/3 h-80 w-80 bg-emerald-200"></div>
+
   <app-navbar [showNavLinks]="false"></app-navbar>
 
-  <section class="relative overflow-hidden bg-slate-50 py-20">
-    <div class="absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-blue-100/70 via-blue-50/40 to-transparent"></div>
-    <div class="absolute left-1/2 top-10 h-56 w-56 -translate-x-1/2 rounded-full bg-blue-200/20 blur-3xl"></div>
-    <div class="container mx-auto px-4">
-      <div class="relative mx-auto max-w-5xl rounded-[36px] border border-slate-200/80 bg-white/95 p-8 shadow-xl shadow-slate-200/70 md:p-14">
-        <div class="mb-8 flex flex-wrap items-center justify-center gap-3 text-sm font-semibold md:justify-start">
-          <span class="rounded-full bg-blue-50 px-4 py-2 text-[#0066FF]">Welcome</span>
-          <span class="rounded-full bg-emerald-50 px-4 py-2 text-emerald-700">Registration complete</span>
-          <span class="rounded-full bg-slate-100 px-4 py-2 text-slate-600">Welcome Quiz onboarding</span>
-        </div>
-
-        <div class="grid gap-8 lg:grid-cols-[1.6fr_1fr] lg:items-start">
-          <div>
-            <h1 class="mb-4 text-4xl font-black tracking-tight text-slate-900 md:text-6xl">
-              Thank you for your registration
-            </h1>
-
-            <p class="mb-4 max-w-2xl text-lg leading-8 text-slate-600 md:text-xl">
-              Our teacher will assign you a Welcome Quiz
-            </p>
-
-            <p class="max-w-2xl text-base leading-7 text-slate-500">
-              Please complete the assigned quiz below so we can guide you into the right starting path for your learning journey.
-            </p>
+  <main class="mx-auto max-w-6xl px-4 py-8 md:py-10">
+    <section class="fluency-glass-card fluency-hero-surface p-6 md:p-8">
+      <div class="grid gap-8 lg:grid-cols-[1.4fr_1fr] lg:items-center">
+        <div>
+          <div class="mb-5 flex items-center gap-3">
+            <img src="assets/branding/fluency-logo.png"
+                 alt="Fluency logo"
+                 class="h-14 w-14 rounded-xl object-contain">
+            <div>
+              <p class="text-xs font-bold uppercase tracking-[0.16em] text-[#0066FF]">Fluency Platform</p>
+              <p class="text-sm font-semibold text-slate-500">Personal English learning path</p>
+            </div>
           </div>
 
-          <div class="grid gap-4">
-            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-              <p class="mb-2 text-xs font-black uppercase tracking-[0.2em] text-slate-400">Next Step</p>
-              <p class="text-lg font-bold text-slate-900">Wait for your assigned Welcome Quiz</p>
-              <p class="mt-2 text-sm leading-6 text-slate-500">Your teacher will prepare the quiz and it will appear below on this page.</p>
-            </div>
-            <div class="rounded-2xl border border-blue-100 bg-blue-50 p-5">
-              <p class="mb-2 text-xs font-black uppercase tracking-[0.2em] text-[#0066FF]">What to Do</p>
-              <p class="text-lg font-bold text-slate-900">Open the quiz and complete it carefully</p>
-              <p class="mt-2 text-sm leading-6 text-slate-600">Your result helps unlock the next steps in your onboarding flow.</p>
-            </div>
+          <div class="mb-5 flex flex-wrap gap-2 text-xs font-bold">
+            <span class="fluency-soft-badge px-3 py-1 text-[#0066FF]">Student dashboard</span>
+            <span class="fluency-soft-badge px-3 py-1 text-emerald-700">Registration complete</span>
+            <span class="fluency-soft-badge px-3 py-1 text-violet-700">Placement path</span>
+          </div>
+
+          <h1 class="text-3xl font-black tracking-tight text-slate-900 md:text-5xl">
+            Welcome to your English learning space
+          </h1>
+
+          <p class="mt-4 max-w-2xl text-base leading-7 text-slate-600">
+            Complete your assigned placement quiz, practice pronunciation, and ask Fluency Assistant when you need guidance.
+          </p>
+        </div>
+
+        <div class="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
+          <div class="fluency-tinted-panel fluency-card-blue p-4">
+            <p class="text-xs font-bold uppercase tracking-[0.16em] text-cyan-700">Available quizzes</p>
+            <p class="mt-2 text-3xl font-black text-slate-900">{{ assignedQuizzes.length }}</p>
+          </div>
+          <div class="fluency-tinted-panel fluency-card-mint p-4">
+            <p class="text-xs font-bold uppercase tracking-[0.16em] text-[#0066FF]">Quiz status</p>
+            <p class="mt-2 text-sm font-bold text-slate-900">
+              {{ assignedLoading ? 'Loading' : (assignedQuizzes.length > 0 ? 'Ready to start' : 'Waiting for tutor') }}
+            </p>
+          </div>
+          <div class="fluency-tinted-panel fluency-card-violet p-4">
+            <p class="text-xs font-bold uppercase tracking-[0.16em] text-violet-700">Next step</p>
+            <p class="mt-2 text-sm font-bold text-slate-900">Take the placement quiz carefully</p>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="bg-slate-50 pb-4">
-    <div class="container mx-auto px-4">
-      <div class="mx-auto max-w-5xl rounded-[32px] border border-blue-100 bg-white p-6 shadow-xl shadow-slate-200/60 md:p-8">
-        <div class="grid gap-6 lg:grid-cols-[1fr_1.3fr] lg:items-start">
+    <section class="mt-6 grid gap-4 md:grid-cols-3">
+      <div class="fluency-action-card fluency-card-violet p-5">
+        <p class="text-xs font-bold uppercase tracking-[0.16em] text-[#0066FF]">Placement quiz</p>
+        <h2 class="mt-2 text-lg font-black text-slate-900">Find your level</h2>
+        <p class="mt-2 text-sm leading-6 text-slate-500">Answer grammar, vocabulary, and comprehension questions to receive guidance.</p>
+      </div>
+      <div class="fluency-action-card fluency-card-mint p-5">
+        <p class="text-xs font-bold uppercase tracking-[0.16em] text-emerald-700">Pronunciation</p>
+        <h2 class="mt-2 text-lg font-black text-slate-900">Listen and repeat</h2>
+        <p class="mt-2 text-sm leading-6 text-slate-500">Use the helper below to hear English words before practicing aloud.</p>
+      </div>
+      <div class="fluency-action-card fluency-card-blue p-5">
+        <p class="text-xs font-bold uppercase tracking-[0.16em] text-violet-700">Fluency Assistant</p>
+        <h2 class="mt-2 text-lg font-black text-slate-900">Ask for help</h2>
+        <p class="mt-2 text-sm leading-6 text-slate-500">Open the floating assistant for quizzes, levels, certificates, or tutor support.</p>
+      </div>
+    </section>
+
+    <section class="fluency-glass-card mt-6 p-6 md:p-8">
+      <div class="grid gap-6 lg:grid-cols-[1fr_1.2fr] lg:items-start">
           <div>
-            <p class="mb-2 text-xs font-black uppercase tracking-[0.25em] text-[#0066FF]">Pronunciation Helper</p>
+            <p class="text-xs font-bold uppercase tracking-[0.16em] text-[#0066FF]">Pronunciation Helper</p>
             <h2 class="text-2xl font-black text-slate-900 md:text-3xl">Listen before you answer</h2>
             <p class="mt-3 text-sm leading-6 text-slate-500">
               Practice an English word or sentence before taking your Welcome Quiz.
@@ -60,14 +85,14 @@
                 *ngFor="let sample of pronunciationSamples"
                 type="button"
                 (click)="usePronunciationSample(sample)"
-                class="rounded-full border border-blue-100 bg-blue-50 px-4 py-2 text-xs font-bold text-[#0066FF] transition-all hover:bg-blue-100">
+                class="rounded-full border border-cyan-100 bg-cyan-50 px-3 py-2 text-xs font-bold text-[#0066FF] transition-all hover:-translate-y-0.5 hover:bg-cyan-100">
                 {{ sample }}
               </button>
             </div>
           </div>
 
-          <div class="rounded-[26px] border border-slate-200 bg-slate-50 p-5">
-            <label for="pronunciationText" class="mb-2 block text-xs font-black uppercase tracking-[0.2em] text-slate-400">
+          <div class="fluency-tinted-panel fluency-card-blue p-5">
+            <label for="pronunciationText" class="mb-2 block text-xs font-bold uppercase tracking-[0.16em] text-slate-400">
               Text to hear
             </label>
             <textarea
@@ -76,7 +101,7 @@
               [value]="pronunciationText"
               (input)="pronunciationText = $any($event.target).value"
               placeholder="Type an English word or sentence"
-              class="w-full resize-none rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 outline-none transition-all focus:border-[#0066FF] focus:ring-4 focus:ring-blue-100"></textarea>
+              class="w-full resize-none rounded-xl border border-cyan-100 bg-white/70 px-4 py-3 text-sm text-slate-700 outline-none transition-all focus:border-[#0066FF] focus:ring-4 focus:ring-blue-100"></textarea>
 
             <div class="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div *ngIf="pronunciationMessage" class="text-sm font-semibold text-slate-600">
@@ -87,41 +112,37 @@
                 <button
                   type="button"
                   (click)="stopPronunciation()"
-                  class="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-600 transition-all hover:bg-slate-100">
+                  class="rounded-lg border border-cyan-100 bg-white/60 px-4 py-2 text-sm font-bold text-slate-600 transition-all hover:-translate-y-0.5 hover:bg-white/90">
                   Stop
                 </button>
                 <button
                   type="button"
                   (click)="speakPronunciation()"
-                  class="rounded-xl bg-[#0066FF] px-5 py-2 text-sm font-bold text-white shadow-lg shadow-blue-500/20 transition-all hover:bg-blue-700">
+                  class="fluency-gradient-button px-5 py-2 text-sm font-bold">
                   Listen
                 </button>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="bg-slate-50 py-16">
-    <div class="container mx-auto px-4">
-      <div class="mx-auto max-w-5xl">
+    <section class="fluency-glass-card mt-6 p-6 md:p-8">
         <div class="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
-            <p class="mb-2 text-xs font-black uppercase tracking-[0.25em] text-slate-400">Assigned Quizzes</p>
+            <p class="mb-2 text-xs font-bold uppercase tracking-[0.16em] text-slate-400">Assigned Quizzes</p>
             <h2 class="text-3xl font-black text-slate-900 md:text-4xl">Your Welcome Quiz Area</h2>
             <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-500">
               Your assigned quizzes appear here as soon as your teacher prepares them. Open any available quiz to begin.
             </p>
           </div>
           <div class="grid grid-cols-2 gap-3 md:min-w-[260px]">
-            <div class="rounded-2xl border border-slate-200 bg-white px-5 py-4 text-center shadow-sm">
-              <p class="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Available</p>
+            <div class="fluency-tinted-panel fluency-card-mint px-5 py-4 text-center">
+              <p class="text-xs font-bold uppercase tracking-[0.16em] text-emerald-700">Available</p>
               <p class="mt-2 text-3xl font-black text-slate-900">{{ assignedQuizzes.length }}</p>
             </div>
-            <div class="rounded-2xl border border-blue-100 bg-blue-50 px-5 py-4 text-center shadow-sm">
-              <p class="text-xs font-black uppercase tracking-[0.2em] text-[#0066FF]">Status</p>
+            <div class="fluency-tinted-panel fluency-card-blue px-5 py-4 text-center">
+              <p class="text-xs font-bold uppercase tracking-[0.16em] text-[#0066FF]">Status</p>
               <p class="mt-2 text-sm font-bold text-slate-900">
                 {{ assignedLoading ? 'Loading' : (assignedQuizzes.length > 0 ? 'Ready' : 'Waiting') }}
               </p>
@@ -129,73 +150,86 @@
           </div>
         </div>
 
-        <div class="rounded-[32px] border border-slate-200 bg-white p-8 shadow-xl shadow-slate-200/60 md:p-10">
-          <div *ngIf="assignedLoading" class="rounded-2xl border border-slate-200 bg-slate-50 px-5 py-6 text-slate-500">
+        <div>
+          <div *ngIf="assignedLoading" class="fluency-tinted-panel px-5 py-6 text-slate-500">
             Loading assigned quizzes...
           </div>
-          <div *ngIf="assignedError" class="rounded-2xl border border-red-200 bg-red-50 px-5 py-6 text-red-600">
+          <div *ngIf="assignedError" class="rounded-xl border border-red-200 bg-red-50 px-5 py-6 text-red-600">
             {{ assignedError }}
           </div>
-          <div *ngIf="!assignedLoading && !assignedError && assignedQuizzes.length === 0" class="rounded-2xl border border-slate-200 bg-slate-50 px-5 py-8 text-center text-slate-500">
+          <div *ngIf="!assignedLoading && !assignedError && assignedQuizzes.length === 0" class="rounded-xl border border-dashed border-cyan-200 bg-cyan-50/50 px-5 py-8 text-center text-slate-500">
             No quizzes assigned yet.
           </div>
 
           <div *ngIf="!assignedLoading && !assignedError && assignedQuizzes.length > 0" class="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <div *ngFor="let quiz of assignedQuizzes" class="group rounded-[28px] border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg">
+            <div *ngFor="let quiz of assignedQuizzes" class="fluency-action-card fluency-card-blue group p-5">
               <div class="mb-5 flex items-start justify-between gap-4">
                 <div>
-                  <p class="mb-2 text-xs font-black uppercase tracking-[0.2em] text-[#0066FF]">Welcome Quiz</p>
+                  <p class="mb-2 text-xs font-bold uppercase tracking-[0.16em] text-[#0066FF]">Welcome Quiz</p>
                   <h3 class="text-xl font-bold text-slate-900">{{ quiz.title }}</h3>
                 </div>
-                <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">Assigned</span>
+                <span class="fluency-soft-badge px-3 py-1 text-xs font-semibold text-emerald-700">Assigned</span>
               </div>
 
               <div class="mb-6 grid grid-cols-2 gap-3">
-                <div class="rounded-2xl bg-white px-4 py-3 shadow-sm ring-1 ring-slate-100">
-                  <p class="text-[11px] font-black uppercase tracking-[0.18em] text-slate-400">Passing Score</p>
+                <div class="rounded-xl bg-white/58 px-4 py-3 ring-1 ring-white/70">
+                  <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-400">Passing Score</p>
                   <p class="mt-2 text-2xl font-black text-slate-900">{{ quiz.passingScore }}%</p>
                 </div>
-                <div class="rounded-2xl bg-blue-50 px-4 py-3 shadow-sm ring-1 ring-blue-100">
-                  <p class="text-[11px] font-black uppercase tracking-[0.18em] text-[#0066FF]">Action</p>
+                <div class="rounded-xl bg-cyan-50/70 px-4 py-3 ring-1 ring-cyan-100">
+                  <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-[#0066FF]">Action</p>
                   <p class="mt-2 text-sm font-bold text-slate-900">Complete your quiz</p>
                 </div>
               </div>
 
               <a
                 [routerLink]="['/quizDetails', quiz.quizId]"
-                class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#0066FF] px-4 py-3 text-sm font-semibold text-white no-underline transition-all group-hover:bg-blue-600">
+                class="fluency-gradient-button inline-flex w-full items-center justify-center gap-2 px-4 py-3 text-sm font-semibold no-underline">
                 Start Quiz
               </a>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  </section>
+    </section>
+  </main>
 
-  <div class="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
+  <div #assistantWidget
+       class="fixed z-50 flex touch-none select-none flex-col items-end gap-3"
+       [ngStyle]="getAssistantPositionStyle()">
     <div
       *ngIf="assistantOpen"
-      class="w-[min(92vw,380px)] overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-2xl shadow-slate-300/70">
-      <div class="flex items-start justify-between gap-4 bg-[#0066FF] px-5 py-4 text-white">
-        <div>
+      class="w-[min(92vw,380px)] overflow-hidden rounded-xl border border-white/70 bg-sky-50/95 shadow-2xl shadow-blue-300/40 backdrop-blur">
+      <div class="flex cursor-grab items-start justify-between gap-4 bg-[#0066FF] px-5 py-4 text-white active:cursor-grabbing"
+           (pointerdown)="startAssistantDrag($event)">
+        <div class="flex items-center gap-3">
+          <img src="assets/branding/fluency-bot.png"
+               alt="Fluency Assistant robot"
+               class="h-12 w-12 rounded-xl bg-white/15 object-contain p-1">
+          <div>
           <h3 class="text-lg font-black">Fluency Assistant</h3>
           <p class="mt-1 text-xs font-medium text-blue-100">
             Ask about quizzes, levels, pronunciation, certificates, or tutors.
           </p>
+          </div>
         </div>
         <button
           type="button"
           (click)="toggleAssistant()"
+          data-assistant-no-drag
           aria-label="Close Fluency Assistant"
-          class="grid h-8 w-8 place-items-center rounded-full bg-white/15 text-sm font-black transition-all hover:bg-white/25">
+          class="grid h-8 w-8 place-items-center rounded-lg bg-white/15 text-sm font-black transition-all hover:bg-white/25">
           X
         </button>
       </div>
 
-      <div class="max-h-[360px] space-y-3 overflow-y-auto bg-slate-50 px-4 py-4">
-        <div *ngIf="assistantMessages.length === 0" class="rounded-2xl border border-blue-100 bg-white px-4 py-4 text-sm leading-6 text-slate-600">
-          Hi, I am Fluency Assistant. I can help you understand placement quizzes, English levels, pronunciation practice, certificates, and tutor support.
+      <div class="max-h-[360px] space-y-3 overflow-y-auto bg-cyan-50/70 px-4 py-4">
+        <div *ngIf="assistantMessages.length === 0" class="flex gap-3 rounded-xl border border-blue-100 bg-white/70 px-4 py-4 text-sm leading-6 text-slate-600">
+          <img src="assets/branding/fluency-bot.png"
+               alt="Fluency Assistant robot"
+               class="h-12 w-12 shrink-0 rounded-xl bg-blue-50 object-contain p-1">
+          <p>
+            Hi, I am Fluency Assistant. I can help you understand placement quizzes, English levels, pronunciation practice, certificates, and tutor support.
+          </p>
         </div>
 
         <div
@@ -203,10 +237,10 @@
           class="flex"
           [ngClass]="message.role === 'user' ? 'justify-end' : 'justify-start'">
           <div
-            class="max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-6 shadow-sm"
+            class="max-w-[85%] rounded-xl px-4 py-3 text-sm leading-6 shadow-sm"
             [ngClass]="message.role === 'user'
               ? 'bg-[#0066FF] text-white'
-              : 'border border-slate-200 bg-white text-slate-700'">
+              : 'border border-cyan-100 bg-white/78 text-slate-700'">
             <p>{{ message.text }}</p>
             <div
               *ngIf="message.role === 'assistant'"
@@ -217,13 +251,13 @@
           </div>
         </div>
 
-        <div *ngIf="assistantLoading" class="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-500">
+        <div *ngIf="assistantLoading" class="rounded-xl border border-cyan-100 bg-white/75 px-4 py-3 text-sm font-semibold text-slate-500">
           Thinking...
         </div>
       </div>
 
-      <div class="border-t border-slate-200 bg-white px-4 py-4">
-        <div *ngIf="assistantError" class="mb-3 rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-semibold text-red-600">
+      <div class="border-t border-cyan-100 bg-white/75 px-4 py-4">
+        <div *ngIf="assistantError" class="mb-3 rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-semibold text-red-600">
           {{ assistantError }}
         </div>
 
@@ -245,12 +279,12 @@
             (input)="assistantInput = $any($event.target).value; clearAssistantError()"
             (keydown.enter)="sendAssistantMessage()"
             placeholder="Ask Fluency Assistant"
-            class="min-w-0 flex-1 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 outline-none transition-all focus:border-[#0066FF] focus:ring-4 focus:ring-blue-100">
+            class="min-w-0 flex-1 rounded-xl border border-cyan-100 bg-white/80 px-4 py-3 text-sm text-slate-700 outline-none transition-all focus:border-[#0066FF] focus:ring-4 focus:ring-blue-100">
           <button
             type="button"
             (click)="sendAssistantMessage()"
             [disabled]="assistantLoading"
-            class="rounded-2xl bg-[#0066FF] px-5 py-3 text-sm font-black text-white shadow-lg shadow-blue-500/20 transition-all hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60">
+            class="rounded-xl bg-[#0066FF] px-5 py-3 text-sm font-black text-white shadow-sm transition-all hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60">
             Send
           </button>
         </div>
@@ -259,11 +293,13 @@
 
     <button
       type="button"
+      (pointerdown)="startAssistantDrag($event)"
       (click)="toggleAssistant()"
-      class="flex items-center gap-3 rounded-full bg-[#0066FF] px-5 py-4 text-sm font-black text-white shadow-2xl shadow-blue-500/30 transition-all hover:-translate-y-0.5 hover:bg-blue-700"
+      class="group grid h-20 w-20 cursor-grab place-items-center rounded-full border border-white/80 bg-gradient-to-br from-white via-cyan-50 to-violet-100 p-2 shadow-2xl shadow-blue-500/30 ring-4 ring-cyan-100/80 transition-all hover:-translate-y-0.5 hover:scale-105 hover:ring-violet-200 active:cursor-grabbing"
       aria-label="Open Fluency Assistant">
-      <span class="grid h-8 w-8 place-items-center rounded-full bg-white text-xs font-black text-[#0066FF]">AI</span>
-      <span>Fluency Assistant</span>
+      <img src="assets/branding/fluency-bot.png"
+           alt="Fluency Assistant robot"
+           class="h-16 w-16 rounded-full object-contain transition-transform group-hover:scale-105">
     </button>
   </div>
 

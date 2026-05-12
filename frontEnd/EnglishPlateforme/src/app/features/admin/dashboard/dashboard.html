@@ -1,92 +1,152 @@
-<!-- Stats Grid -->
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-  <div class="bg-white p-6 rounded-[24px] border border-slate-100 shadow-sm flex items-center gap-5">
-    <div class="w-14 h-14 bg-blue-50 text-[#0066FF] rounded-2xl flex items-center justify-center">
-      <!-- icon -->
-    </div>
-    <div>
-      <p class="text-slate-500 text-sm font-medium">Total Applications</p>
-      <h4 class="text-2xl font-black text-slate-900">{{ total }}</h4>
+<section class="space-y-8">
+  <div class="fluency-hero-surface overflow-hidden rounded-[2rem] p-6 md:p-8">
+    <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+      <div class="max-w-2xl">
+        <span class="inline-flex rounded-full border border-white/50 bg-white/35 px-3 py-1 text-[11px] font-black uppercase tracking-[0.18em] text-blue-700">
+          Admin role
+        </span>
+        <h2 class="mt-4 text-3xl font-black tracking-tight text-slate-950 md:text-4xl">
+          Admin Application Center
+        </h2>
+        <p class="mt-3 max-w-xl text-sm font-medium leading-6 text-slate-600">
+          Review teacher applications, schedule interviews, download CVs, and keep the acceptance workflow clear for the Fluency team.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-3 gap-3 rounded-3xl border border-white/60 bg-white/45 p-3 shadow-lg shadow-blue-200/20 backdrop-blur-xl">
+        <div class="rounded-2xl bg-white/70 px-4 py-3 text-center">
+          <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Total</p>
+          <p class="text-2xl font-black text-slate-950">{{ total }}</p>
+        </div>
+        <div class="rounded-2xl bg-amber-50/80 px-4 py-3 text-center">
+          <p class="text-[10px] font-black uppercase tracking-widest text-amber-600">Pending</p>
+          <p class="text-2xl font-black text-amber-700">{{ pending }}</p>
+        </div>
+        <div class="rounded-2xl bg-cyan-50/80 px-4 py-3 text-center">
+          <p class="text-[10px] font-black uppercase tracking-widest text-cyan-600">Scheduled</p>
+          <p class="text-2xl font-black text-cyan-700">{{ scheduled }}</p>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="bg-white p-6 rounded-[24px] border border-slate-100 shadow-sm flex items-center gap-5">
-    <div class="w-14 h-14 bg-yellow-50 text-yellow-800 rounded-2xl flex items-center justify-center">
-      <!-- icon -->
+  <div class="grid grid-cols-1 gap-5 md:grid-cols-3">
+    <div class="fluency-action-card fluency-card-blue p-5">
+      <p class="text-[11px] font-black uppercase tracking-[0.18em] text-blue-600">Applications</p>
+      <h3 class="mt-3 text-3xl font-black text-slate-950">{{ total }}</h3>
+      <p class="mt-2 text-sm font-medium text-slate-600">All submitted teacher applications.</p>
     </div>
-    <div>
-      <p class="text-slate-500 text-sm font-medium">Pending Applications</p>
-      <h4 class="text-2xl font-black text-slate-900">{{ pending }}</h4>
+
+    <div class="fluency-action-card p-5" style="background: linear-gradient(135deg, rgba(255,255,255,.76), rgba(254,243,199,.66));">
+      <p class="text-[11px] font-black uppercase tracking-[0.18em] text-amber-600">Waiting review</p>
+      <h3 class="mt-3 text-3xl font-black text-slate-950">{{ pending }}</h3>
+      <p class="mt-2 text-sm font-medium text-slate-600">Applications that need an admin decision.</p>
+    </div>
+
+    <div class="fluency-action-card fluency-card-mint p-5">
+      <p class="text-[11px] font-black uppercase tracking-[0.18em] text-emerald-600">Interviews</p>
+      <h3 class="mt-3 text-3xl font-black text-slate-950">{{ scheduled }}</h3>
+      <p class="mt-2 text-sm font-medium text-slate-600">Applications already moved to interview planning.</p>
     </div>
   </div>
 
-  <div class="bg-white p-6 rounded-[24px] border border-slate-100 shadow-sm flex items-center gap-5">
-    <div class="w-14 h-14 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center">
-      <!-- icon -->
+  <div class="fluency-glass-card overflow-hidden rounded-[2rem]">
+    <div class="flex flex-col gap-4 border-b border-white/60 p-6 md:flex-row md:items-center md:justify-between md:p-8">
+      <div>
+        <span class="fluency-soft-badge inline-flex px-3 py-1 text-[11px] font-black uppercase tracking-[0.18em] text-violet-700">
+          Application workflow
+        </span>
+        <h3 class="mt-3 text-2xl font-black text-slate-950">Recent Applications</h3>
+        <p class="mt-1 text-sm font-medium text-slate-600">
+          Keep the same accept, reject, interview, and CV actions while giving the admin a clearer workspace.
+        </p>
+      </div>
+
+      <div class="rounded-2xl border border-blue-100 bg-blue-50/80 px-4 py-2 text-xs font-black uppercase tracking-[0.14em] text-[#0066FF]">
+        {{ applications.length }} visible
+      </div>
     </div>
-    <div>
-      <p class="text-slate-500 text-sm font-medium">Scheduled Applications</p>
-      <h4 class="text-2xl font-black text-slate-900">{{ scheduled }}</h4>
-    </div>
+
+    <ng-container *ngIf="applications.length; else emptyApplications">
+      <div class="overflow-x-auto">
+        <table class="w-full min-w-[880px] border-collapse text-left">
+          <thead class="border-b border-white/60 bg-white/35 text-[11px] font-black uppercase tracking-[0.18em] text-slate-500">
+            <tr>
+              <th class="px-6 py-4">Candidate Email</th>
+              <th class="px-6 py-4">Status</th>
+              <th class="px-6 py-4 text-center">Decision Actions</th>
+              <th class="px-6 py-4 text-center">Interview</th>
+            </tr>
+          </thead>
+          <tbody class="text-sm">
+            <tr *ngFor="let app of applications" class="border-b border-white/50 transition-all hover:bg-white/35">
+              <td class="px-6 py-5">
+                <div class="flex items-center gap-3">
+                  <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-cyan-400 text-xs font-black text-white">
+                    CV
+                  </div>
+                  <div>
+                    <p class="font-black text-slate-900">{{ app.email }}</p>
+                    <p class="text-xs font-medium text-slate-500">Teacher application</p>
+                  </div>
+                </div>
+              </td>
+
+              <td class="px-6 py-5">
+                <span class="inline-flex rounded-full px-3 py-1 text-[11px] font-black uppercase tracking-[0.12em]" [ngClass]="getStatusColor(app.status)">
+                  {{ app.status }}
+                </span>
+              </td>
+
+              <td class="px-6 py-5">
+                <div class="flex flex-wrap items-center justify-center gap-2">
+                  <button
+                    type="button"
+                    class="rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 px-3 py-2 text-xs font-black text-white shadow-md shadow-emerald-500/20 transition-all hover:-translate-y-0.5 hover:brightness-105"
+                    (click)="acceptApplication(app)">
+                    Accept
+                  </button>
+
+                  <button
+                    type="button"
+                    class="rounded-xl bg-gradient-to-r from-rose-500 to-red-500 px-3 py-2 text-xs font-black text-white shadow-md shadow-red-500/20 transition-all hover:-translate-y-0.5 hover:brightness-105"
+                    (click)="rejectApplication(app)">
+                    Reject
+                  </button>
+
+                  <button
+                    type="button"
+                    class="rounded-xl border border-blue-100 bg-white/75 px-3 py-2 text-xs font-black text-[#0066FF] shadow-sm transition-all hover:-translate-y-0.5 hover:bg-blue-50"
+                    (click)="app.id ? downloadCv(app.id) : null">
+                    Download CV
+                  </button>
+                </div>
+              </td>
+
+              <td class="px-6 py-5 text-center">
+                <button
+                  type="button"
+                  class="rounded-xl border border-violet-100 bg-violet-50/90 px-4 py-2 text-xs font-black text-violet-700 transition-all hover:-translate-y-0.5 hover:bg-violet-100"
+                  (click)="app.id ? programInterview(app.id) : null">
+                  Program Interview
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </ng-container>
+
+    <ng-template #emptyApplications>
+      <div class="p-8">
+        <div class="rounded-3xl border border-dashed border-cyan-200 bg-cyan-50/60 p-8 text-center">
+          <p class="text-sm font-black uppercase tracking-[0.18em] text-cyan-700">No applications yet</p>
+          <h4 class="mt-3 text-2xl font-black text-slate-950">Applications will appear here.</h4>
+          <p class="mt-2 text-sm font-medium text-slate-600">
+            When teacher candidates submit their CVs, admins can review, schedule interviews, download files, and decide from this workflow.
+          </p>
+        </div>
+      </div>
+    </ng-template>
   </div>
-</div>
-
-<!-- Recent Applications Table -->
-<div class="bg-white rounded-[32px] border border-slate-200 shadow-sm overflow-hidden">
-  <div class="p-8 border-b border-slate-100 flex items-center justify-between">
-    <h3 class="text-xl font-bold text-slate-900">Recent Job Applications</h3>
-    <button class="text-sm font-bold text-[#0066FF] hover:underline">View All</button>
-  </div>
-
-  <table class="w-full text-left border-collapse">
-    <thead class="bg-slate-50/50 text-slate-500 text-xs uppercase font-bold tracking-wider">
-      <tr>
-        <th class="px-8 py-4">Email</th>
-        <th class="px-8 py-4">Status</th>
-        <th class="px-8 py-4 text-center">Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let app of applications" class="border-b border-slate-100">
-        <td class="px-8 py-4">{{ app.email }}</td>
-
-        <td class="px-8 py-4">
-          <span class="px-3 py-1 rounded-full text-xs font-semibold" [ngClass]="getStatusColor(app.status)">
-            {{ app.status }}
-          </span>
-        </td>
-        <td class="px-8 py-4 text-center">
-  <div class="flex items-center justify-center gap-3">
-
-    <!-- Accept -->
-    <button
-      class="px-3 py-1 text-xs font-bold text-white bg-green-600 rounded-lg hover:bg-green-700 transition"
-      (click)="acceptApplication(app)">
-      Accept
-    </button>
-
-    <!-- Reject -->
-    <button
-      class="px-3 py-1 text-xs font-bold text-white bg-red-600 rounded-lg hover:bg-red-700 transition"
-      (click)="rejectApplication(app)">
-      Reject
-    </button>
- <button
-      class="px-3 py-1 text-xs font-bold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition"
-(click)="app.id ? downloadCv(app.id) : null">      Download CV
-    </button>
-
-  </div>
-</td>
-       
-<td class="px-8 py-4 text-center">
-  <button class="text-sm text-[#0066FF] hover:underline"
-          (click)="app.id ? programInterview(app.id) : null">
-    Program Interview
-  </button>
-</td>   
-      </tr>
-    </tbody>
-  </table>
-  
-</div>
+</section>

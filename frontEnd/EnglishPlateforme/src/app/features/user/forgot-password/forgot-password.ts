@@ -6,5 +6,15 @@ import { Component } from '@angular/core';
   styleUrls: ['./forgot-password.css']
 })
 export class ForgotPassword {
+  email = '';
+  submitted = false;
 
+  onSubmit(): void {
+    this.submitted = true;
+  }
+
+  resetForm(): void {
+    this.email = '';
+    this.submitted = false;
+  }
 }

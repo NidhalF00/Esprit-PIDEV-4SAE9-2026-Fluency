@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { AuthService } from '../../../services/auth.service';
 import { AssistantChatResponse, AssistantService } from '../../../services/assistant.service';
 import { AssignedQuiz, QuizService } from '../../../services/quiz.service';
@@ -17,6 +17,8 @@ interface AssistantMessage {
   templateUrl: './student-home.html'
 })
 export class StudentHomeComponent implements OnInit {
+  @ViewChild('assistantWidget') assistantWidgetRef?: ElementRef<HTMLElement>;
+
   currentUser: any;
   assignedQuizzes: AssignedQuiz[] = [];
   assignedLoading = false;
@@ -32,6 +34,8 @@ export class StudentHomeComponent implements OnInit {
   assistantInput = '';
   assistantLoading = false;
   assistantError = '';
+  assistantDragging = false;
+  assistantPosition = { x: 24, y: 24 };
   assistantMessages: AssistantMessage[] = [];
   assistantSuggestions = [
     'How do I take a placement quiz?',
@@ -48,6 +52,12 @@ export class StudentHomeComponent implements OnInit {
     { title: 'Certificates', desc: 'Download your diplomas.', icon: '🏆' }
   ];
 
+  private readonly assistantPositionStorageKey = 'fluencyAssistantPosition';
+  private readonly assistantDragThreshold = 5;
+  private assistantDragStart = { pointerX: 0, pointerY: 0, x: 24, y: 24 };
+  private assistantMovedDuringDrag = false;
+  private assistantSuppressClick = false;
+
   constructor(
     private authService: AuthService,
     private quizService: QuizService,
@@ -56,6 +66,7 @@ export class StudentHomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.currentUser = this.authService.getUser();
+    this.loadAssistantPosition();
     this.loadAssignedQuizzes();
   }
 
@@ -99,8 +110,85 @@ export class StudentHomeComponent implements OnInit {
   }
 
   toggleAssistant(): void {
+    if (this.assistantSuppressClick) {
+      return;
+    }
+
     this.assistantOpen = !this.assistantOpen;
     this.clearAssistantError();
+
+    setTimeout(() => {
+      this.assistantPosition = this.clampAssistantPosition(this.assistantPosition);
+      this.saveAssistantPosition();
+    });
+  }
+
+  startAssistantDrag(event: PointerEvent): void {
+    if ((event.pointerType === 'mouse' && event.button !== 0) || (event.target as HTMLElement).closest('[data-assistant-no-drag]')) {
+      return;
+    }
+
+    event.preventDefault();
+    this.assistantDragging = true;
+    this.assistantMovedDuringDrag = false;
+    this.assistantDragStart = {
+      pointerX: event.clientX,
+      pointerY: event.clientY,
+      x: this.assistantPosition.x,
+      y: this.assistantPosition.y
+    };
+
+    (event.currentTarget as HTMLElement).setPointerCapture?.(event.pointerId);
+  }
+
+  @HostListener('document:pointermove', ['$event'])
+  moveAssistantDrag(event: PointerEvent): void {
+    if (!this.assistantDragging) {
+      return;
+    }
+
+    const deltaX = event.clientX - this.assistantDragStart.pointerX;
+    const deltaY = event.clientY - this.assistantDragStart.pointerY;
+
+    if (Math.abs(deltaX) > this.assistantDragThreshold || Math.abs(deltaY) > this.assistantDragThreshold) {
+      this.assistantMovedDuringDrag = true;
+    }
+
+    this.assistantPosition = this.clampAssistantPosition({
+      x: this.assistantDragStart.x + deltaX,
+      y: this.assistantDragStart.y + deltaY
+    });
+  }
+
+  @HostListener('document:pointerup')
+  @HostListener('document:pointercancel')
+  endAssistantDrag(): void {
+    if (!this.assistantDragging) {
+      return;
+    }
+
+    this.assistantDragging = false;
+    this.saveAssistantPosition();
+
+    if (this.assistantMovedDuringDrag) {
+      this.assistantSuppressClick = true;
+      setTimeout(() => {
+        this.assistantSuppressClick = false;
+      }, 120);
+    }
+  }
+
+  getAssistantPositionStyle(): { [key: string]: string } {
+    return {
+      left: `${this.assistantPosition.x}px`,
+      top: `${this.assistantPosition.y}px`
+    };
+  }
+
+  @HostListener('window:resize')
+  keepAssistantInViewport(): void {
+    this.assistantPosition = this.clampAssistantPosition(this.assistantPosition);
+    this.saveAssistantPosition();
   }
 
   sendAssistantMessage(): void {
@@ -170,6 +258,96 @@ export class StudentHomeComponent implements OnInit {
     }
 
     return window.speechSynthesis;
+  }
+
+  private loadAssistantPosition(): void {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    try {
+      const stored = localStorage.getItem(this.assistantPositionStorageKey);
+      if (!stored) {
+        this.assistantPosition = this.getDefaultAssistantPosition();
+        return;
+      }
+
+      const position = JSON.parse(stored) as { x?: number; y?: number; anchor?: string };
+      if (Number.isFinite(position.x) && Number.isFinite(position.y)) {
+        const parsedPosition = {
+          x: Number(position.x),
+          y: Number(position.y)
+        };
+        this.assistantPosition = this.clampAssistantPosition(
+          position.anchor === 'left-top' ? parsedPosition : this.convertRightBottomPosition(parsedPosition)
+        );
+      }
+    } catch {
+      this.assistantPosition = this.getDefaultAssistantPosition();
+    }
+  }
+
+  private saveAssistantPosition(): void {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    localStorage.setItem(this.assistantPositionStorageKey, JSON.stringify({
+      ...this.assistantPosition,
+      anchor: 'left-top'
+    }));
+  }
+
+  private clampAssistantPosition(position: { x: number; y: number }): { x: number; y: number } {
+    if (typeof window === 'undefined') {
+      return position;
+    }
+
+    const margin = 12;
+    const { width: widgetWidth, height: widgetHeight } = this.getAssistantWidgetSize();
+    const maxX = Math.max(margin, window.innerWidth - widgetWidth - margin);
+    const maxY = Math.max(margin, window.innerHeight - widgetHeight - margin);
+
+    return {
+      x: Math.min(Math.max(position.x, margin), maxX),
+      y: Math.min(Math.max(position.y, margin), maxY)
+    };
+  }
+
+  private getDefaultAssistantPosition(): { x: number; y: number } {
+    if (typeof window === 'undefined') {
+      return { x: 24, y: 24 };
+    }
+
+    const margin = 24;
+    const { width: widgetWidth, height: widgetHeight } = this.getAssistantWidgetSize();
+
+    return this.clampAssistantPosition({
+      x: window.innerWidth - widgetWidth - margin,
+      y: window.innerHeight - widgetHeight - margin
+    });
+  }
+
+  private convertRightBottomPosition(position: { x: number; y: number }): { x: number; y: number } {
+    if (typeof window === 'undefined') {
+      return position;
+    }
+
+    const { width: widgetWidth, height: widgetHeight } = this.getAssistantWidgetSize();
+
+    return {
+      x: window.innerWidth - widgetWidth - position.x,
+      y: window.innerHeight - widgetHeight - position.y
+    };
+  }
+
+  private getAssistantWidgetSize(): { width: number; height: number } {
+    const widget = this.assistantWidgetRef?.nativeElement;
+
+    return {
+      width: widget?.offsetWidth || 88,
+      height: widget?.offsetHeight || 88
+    };
   }
 
   private addAssistantResponse(response: AssistantChatResponse): void {

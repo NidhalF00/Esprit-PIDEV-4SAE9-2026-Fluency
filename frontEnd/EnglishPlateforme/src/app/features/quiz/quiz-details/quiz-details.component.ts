@@ -271,7 +271,18 @@ export class QuizDetailsComponent implements OnInit {
   }
 
   selectAnswer(questionId: number, answerId: number) {
-    this.selectedAnswers[questionId] = answerId;
+    if (this.isAnswerSelectionLocked(questionId)) {
+      return;
+    }
+
+    this.selectedAnswers = {
+      ...this.selectedAnswers,
+      [questionId]: answerId
+    };
+  }
+
+  isAnswerSelectionLocked(questionId: number): boolean {
+    return !!this.showCorrectAnswerMap[questionId];
   }
 
   toggleShowCorrectAnswer(questionId: number) {

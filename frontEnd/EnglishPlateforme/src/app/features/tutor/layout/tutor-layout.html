@@ -1,20 +1,29 @@
-<div class="flex min-h-screen bg-[#f8fafc]">
-  <!-- Your Sidebar -->
+<div class="relative min-h-screen">
   <app-tutor-sidebar></app-tutor-sidebar>
 
-  <!-- Content Area -->
-  <div class="flex-1 flex flex-col md:pl-64">
-    
-    <!-- Top Navbar (optional) -->
-    <header class="h-16 bg-white border-b border-slate-200 flex items-center px-8">
-       <span class="font-bold">Tutor Dashboard</span>
-    </header>
+  <div class="relative min-h-screen overflow-hidden fluency-animated-bg md:pl-64">
+    <div class="fluency-bg-blob left-[-7rem] top-20 h-96 w-96 bg-cyan-300"></div>
+    <div class="fluency-bg-blob right-[-8rem] top-44 h-[28rem] w-[28rem] bg-violet-300"></div>
+    <div class="fluency-bg-blob bottom-[-5rem] left-1/3 h-96 w-96 bg-emerald-200"></div>
 
-    <!-- Page Content -->
-    <main class="p-8">
-      <!-- CRITICAL: Without this tag, TutorDashboardComponent will NOT show -->
-      <router-outlet></router-outlet> 
-    </main>
-    
+    <div class="relative z-10 flex min-h-screen flex-col">
+      <header class="sticky top-0 z-30 border-b border-white/50 bg-white/55 px-5 py-4 shadow-sm shadow-blue-100/40 backdrop-blur-xl md:px-8">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <span class="fluency-soft-badge inline-flex px-3 py-1 text-[11px] font-black uppercase tracking-[0.18em] text-[#0066FF]">
+              Tutor workspace
+            </span>
+            <h1 class="mt-2 text-xl font-black tracking-tight text-slate-950">Fluency Tutor Dashboard</h1>
+          </div>
+          <div class="fluency-tinted-panel fluency-card-mint px-4 py-2 text-xs font-bold text-emerald-700">
+            Welcome Quiz workflow active
+          </div>
+        </div>
+      </header>
+
+      <main class="relative z-10 p-4 md:p-8">
+        <router-outlet></router-outlet>
+      </main>
+    </div>
   </div>
 </div>
