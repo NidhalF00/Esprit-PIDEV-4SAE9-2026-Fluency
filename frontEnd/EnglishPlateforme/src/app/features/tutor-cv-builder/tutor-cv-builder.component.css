@@ -1,0 +1,27 @@
+.cv-preview-print {
+  break-inside: avoid;
+}
+
+@media print {
+  :host {
+    display: block;
+  }
+
+  .cv-builder-no-print,
+  .fluency-bg-blob {
+    display: none !important;
+  }
+
+  .cv-builder-page {
+    min-height: auto !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+  }
+
+  .cv-preview-print {
+    width: 100% !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+  }
+}

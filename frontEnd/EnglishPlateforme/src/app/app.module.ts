@@ -19,6 +19,7 @@ import { QuizDetailsComponent } from './features/quiz/quiz-details/quiz-details.
 import { ApplicationComponent } from './features/application/application.component';
 import { ApplicationListComponent } from './features/application-list/application-list.component';
 import { AddTeacherComponent } from './features/admin/add-teacher/add-teacher.component';
+import { TutorCvBuilderComponent } from './features/tutor-cv-builder/tutor-cv-builder.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { AddTeacherComponent } from './features/admin/add-teacher/add-teacher.co
     QuizDetailsComponent,
     ApplicationComponent,
     ApplicationListComponent,
-    AddTeacherComponent
+    AddTeacherComponent,
+    TutorCvBuilderComponent
   ],
   imports: [
     BrowserModule,

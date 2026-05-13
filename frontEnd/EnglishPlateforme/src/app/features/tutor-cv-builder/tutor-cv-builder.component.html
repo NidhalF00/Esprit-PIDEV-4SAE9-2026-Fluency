@@ -1,0 +1,265 @@
+<section class="cv-builder-page fluency-animated-bg min-h-screen px-4 py-8 text-slate-950 sm:px-6 lg:px-10">
+  <span class="fluency-bg-blob left-8 top-16 h-64 w-64 bg-cyan-300"></span>
+  <span class="fluency-bg-blob right-10 top-24 h-72 w-72 bg-violet-300"></span>
+  <span class="fluency-bg-blob bottom-12 left-1/3 h-72 w-72 bg-emerald-200"></span>
+
+  <div class="mx-auto flex max-w-7xl flex-col gap-8">
+    <header class="fluency-hero-surface fluency-glass-card cv-builder-no-print p-6 sm:p-8">
+      <div class="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+        <div class="flex items-center gap-4">
+          <img src="assets/branding/fluency-logo.png" alt="Fluency logo" class="h-16 w-16 rounded-2xl object-contain shadow-lg">
+          <div>
+            <span class="fluency-soft-badge inline-flex px-3 py-1 text-xs font-bold uppercase tracking-[0.22em] text-blue-700">
+              Tutor CV Builder
+            </span>
+            <h1 class="mt-3 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">
+              Build a polished tutor CV before applying
+            </h1>
+            <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-700">
+              Create a professional CV, preview it live, then print or save it as PDF before submitting your teacher application.
+            </p>
+          </div>
+        </div>
+        <a routerLink="/apply" class="inline-flex items-center justify-center rounded-xl border border-blue-200 bg-white/70 px-5 py-3 text-sm font-bold text-blue-700 shadow-sm transition hover:-translate-y-0.5 hover:bg-white">
+          Back to Apply
+        </a>
+      </div>
+    </header>
+
+    <div class="grid gap-8 lg:grid-cols-[minmax(0,0.95fr)_minmax(420px,1.05fr)]">
+      <form class="fluency-glass-card cv-builder-no-print p-6 sm:p-7" [formGroup]="cvForm" (ngSubmit)="savedCvId ? updateCv() : createCv()">
+        <div class="mb-6">
+          <span class="fluency-soft-badge inline-flex px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-cyan-700">
+            Your information
+          </span>
+          <h2 class="mt-3 text-2xl font-black text-slate-950">CV details</h2>
+          <p class="mt-2 text-sm text-slate-600">
+            Required fields are marked with an asterisk. Your edit access is saved only in this browser after creation.
+          </p>
+        </div>
+
+        <div *ngIf="successMessage" class="mb-5 rounded-xl border border-emerald-200 bg-emerald-50/80 px-4 py-3 text-sm font-semibold text-emerald-800">
+          {{ successMessage }}
+        </div>
+        <div *ngIf="errorMessage" class="mb-5 rounded-xl border border-rose-200 bg-rose-50/80 px-4 py-3 text-sm font-semibold text-rose-800">
+          {{ errorMessage }}
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <label class="space-y-2">
+            <span class="text-sm font-bold text-slate-700">Full name *</span>
+            <input type="text" formControlName="fullName" class="w-full rounded-xl border border-blue-100 bg-white/75 px-4 py-3 text-sm outline-none transition focus:border-blue-400 focus:ring-4 focus:ring-blue-100" placeholder="Example: Lina Ben Ali">
+            <span *ngIf="fieldInvalid('fullName')" class="text-xs font-semibold text-rose-600">Full name is required.</span>
+          </label>
+
+          <label class="space-y-2">
+            <span class="text-sm font-bold text-slate-700">Email *</span>
+            <input type="email" formControlName="email" class="w-full rounded-xl border border-blue-100 bg-white/75 px-4 py-3 text-sm outline-none transition focus:border-blue-400 focus:ring-4 focus:ring-blue-100" placeholder="name@example.com">
+            <span *ngIf="fieldInvalid('email')" class="text-xs font-semibold text-rose-600">Enter a valid email.</span>
+          </label>
+
+          <label class="space-y-2">
+            <span class="text-sm font-bold text-slate-700">Phone</span>
+            <input type="tel" formControlName="phone" class="w-full rounded-xl border border-blue-100 bg-white/75 px-4 py-3 text-sm outline-none transition focus:border-blue-400 focus:ring-4 focus:ring-blue-100" placeholder="+216 ...">
+          </label>
+
+          <div class="grid grid-cols-2 gap-3">
+            <label class="space-y-2">
+              <span class="text-sm font-bold text-slate-700">City</span>
+              <input type="text" formControlName="city" class="w-full rounded-xl border border-blue-100 bg-white/75 px-4 py-3 text-sm outline-none transition focus:border-blue-400 focus:ring-4 focus:ring-blue-100" placeholder="Tunis">
+            </label>
+            <label class="space-y-2">
+              <span class="text-sm font-bold text-slate-700">Country</span>
+              <input type="text" formControlName="country" class="w-full rounded-xl border border-blue-100 bg-white/75 px-4 py-3 text-sm outline-none transition focus:border-blue-400 focus:ring-4 focus:ring-blue-100" placeholder="Tunisia">
+            </label>
+          </div>
+
+          <label class="space-y-2">
+            <span class="text-sm font-bold text-slate-700">English level *</span>
+            <select formControlName="englishLevel" class="w-full rounded-xl border border-blue-100 bg-white/75 px-4 py-3 text-sm outline-none transition focus:border-blue-400 focus:ring-4 focus:ring-blue-100">
+              <option value="">Choose level</option>
+              <option *ngFor="let level of englishLevels" [value]="level">{{ level }}</option>
+            </select>
+            <span *ngIf="fieldInvalid('englishLevel')" class="text-xs font-semibold text-rose-600">English level is required.</span>
+          </label>
+
+          <label class="space-y-2">
+            <span class="text-sm font-bold text-slate-700">Years of experience</span>
+            <input type="number" formControlName="yearsOfExperience" min="0" class="w-full rounded-xl border border-blue-100 bg-white/75 px-4 py-3 text-sm outline-none transition focus:border-blue-400 focus:ring-4 focus:ring-blue-100" placeholder="1">
+            <span *ngIf="fieldInvalid('yearsOfExperience')" class="text-xs font-semibold text-rose-600">Experience cannot be negative.</span>
+          </label>
+        </div>
+
+        <label class="mt-4 block space-y-2">
+          <span class="text-sm font-bold text-slate-700">Speciality</span>
+          <input type="text" formControlName="speciality" class="w-full rounded-xl border border-blue-100 bg-white/75 px-4 py-3 text-sm outline-none transition focus:border-blue-400 focus:ring-4 focus:ring-blue-100" placeholder="English grammar, placement support, speaking practice...">
+        </label>
+
+        <label class="mt-4 block space-y-2">
+          <span class="text-sm font-bold text-slate-700">Professional summary</span>
+          <textarea rows="4" formControlName="professionalSummary" class="w-full rounded-xl border border-blue-100 bg-white/75 px-4 py-3 text-sm outline-none transition focus:border-blue-400 focus:ring-4 focus:ring-blue-100" placeholder="Write a short introduction about your teaching style and learning support."></textarea>
+        </label>
+
+        <div class="mt-4 grid gap-4 sm:grid-cols-2">
+          <label class="space-y-2">
+            <span class="text-sm font-bold text-slate-700">Education</span>
+            <textarea rows="4" formControlName="education" class="w-full rounded-xl border border-blue-100 bg-white/75 px-4 py-3 text-sm outline-none transition focus:border-blue-400 focus:ring-4 focus:ring-blue-100" placeholder="Degree, university, training..."></textarea>
+          </label>
+
+          <label class="space-y-2">
+            <span class="text-sm font-bold text-slate-700">Certifications</span>
+            <textarea rows="4" formControlName="certifications" class="w-full rounded-xl border border-blue-100 bg-white/75 px-4 py-3 text-sm outline-none transition focus:border-blue-400 focus:ring-4 focus:ring-blue-100" placeholder="TEFL, IELTS, teaching certificates..."></textarea>
+          </label>
+        </div>
+
+        <label class="mt-4 block space-y-2">
+          <span class="text-sm font-bold text-slate-700">Skills</span>
+          <textarea rows="3" formControlName="skills" class="w-full rounded-xl border border-blue-100 bg-white/75 px-4 py-3 text-sm outline-none transition focus:border-blue-400 focus:ring-4 focus:ring-blue-100" placeholder="Grammar coaching, pronunciation, lesson planning, student evaluation"></textarea>
+          <span class="text-xs text-slate-500">Separate skills with commas, semicolons, or new lines.</span>
+        </label>
+
+        <div class="mt-6 flex flex-wrap gap-3">
+          <button type="submit" class="fluency-gradient-button px-5 py-3 text-sm font-black disabled:cursor-not-allowed disabled:opacity-60" [disabled]="loading">
+            {{ loading ? 'Saving...' : savedCvId ? 'Update CV' : 'Create CV' }}
+          </button>
+          <button type="button" class="rounded-xl border border-blue-200 bg-white/75 px-5 py-3 text-sm font-bold text-blue-700 shadow-sm transition hover:-translate-y-0.5 hover:bg-white" (click)="printCv()">
+            Print / Save as PDF
+          </button>
+          <button *ngIf="savedCvId" type="button" class="rounded-xl border border-rose-200 bg-rose-50/80 px-5 py-3 text-sm font-bold text-rose-700 transition hover:bg-rose-100" (click)="deleteCv()" [disabled]="loading">
+            Delete CV
+          </button>
+        </div>
+
+        <section class="mt-6 rounded-2xl border border-cyan-100 bg-gradient-to-br from-cyan-50/85 via-white/70 to-violet-50/75 p-5 shadow-sm">
+          <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <span class="fluency-soft-badge inline-flex px-3 py-1 text-xs font-black uppercase tracking-[0.18em] text-cyan-700">
+                External API
+              </span>
+              <h3 class="mt-3 text-xl font-black text-slate-950">English Quality Checker</h3>
+              <p class="mt-2 text-sm leading-6 text-slate-600">
+                Use a free external grammar API to improve your CV before applying.
+              </p>
+            </div>
+            <button type="button" class="rounded-xl bg-gradient-to-r from-cyan-500 via-blue-600 to-violet-600 px-5 py-3 text-sm font-black text-white shadow-lg shadow-blue-500/20 transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60" (click)="checkEnglishQuality()" [disabled]="englishCheckLoading">
+              {{ englishCheckLoading ? 'Checking English quality...' : 'Check English quality' }}
+            </button>
+          </div>
+
+          <div *ngIf="englishCheckError" class="mt-4 rounded-xl border border-amber-200 bg-amber-50/85 px-4 py-3 text-sm font-semibold text-amber-800">
+            {{ englishCheckError }}
+          </div>
+
+          <div *ngIf="englishCheckResult" class="mt-5 space-y-4">
+            <div class="rounded-xl border border-white/60 bg-white/70 px-4 py-3">
+              <div class="flex flex-wrap items-center gap-3">
+                <span class="rounded-full px-3 py-1 text-xs font-black" [ngClass]="englishCheckResult.available ? 'bg-blue-50 text-blue-700' : 'bg-amber-50 text-amber-700'">
+                  {{ englishCheckResult.available ? englishCheckResult.issueCount + ' issue(s) found' : 'Checker unavailable' }}
+                </span>
+                <p class="text-sm font-semibold text-slate-700">{{ englishCheckResult.qualityMessage }}</p>
+              </div>
+            </div>
+
+            <div *ngIf="englishCheckResult.available && englishCheckResult.suggestions.length" class="space-y-3">
+              <div *ngFor="let suggestion of englishCheckResult.suggestions" class="rounded-xl border border-blue-100 bg-white/75 p-4 shadow-sm">
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="rounded-full bg-violet-50 px-3 py-1 text-xs font-black text-violet-700">
+                    {{ suggestion.category || 'Language' }}
+                  </span>
+                  <span class="text-xs font-semibold text-slate-500" *ngIf="suggestion.ruleId">{{ suggestion.ruleId }}</span>
+                </div>
+                <p class="mt-3 text-sm font-bold text-slate-900">{{ suggestion.message }}</p>
+                <p class="mt-2 text-sm leading-6 text-slate-600" *ngIf="suggestion.context">{{ suggestion.context }}</p>
+                <div class="mt-3 flex flex-wrap gap-2" *ngIf="suggestion.replacements.length">
+                  <span *ngFor="let replacement of suggestion.replacements" class="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">
+                    {{ replacement }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf="englishCheckResult.available && englishCheckResult.issueCount === 0" class="rounded-xl border border-emerald-200 bg-emerald-50/80 px-4 py-3 text-sm font-semibold text-emerald-800">
+              No grammar or spelling issues were returned for the checked text.
+            </div>
+          </div>
+        </section>
+      </form>
+
+      <article class="cv-preview-print fluency-glass-card overflow-hidden">
+        <div class="bg-gradient-to-br from-blue-700 via-cyan-600 to-violet-700 p-7 text-white">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <p class="text-xs font-bold uppercase tracking-[0.24em] text-cyan-100">Fluency Tutor CV</p>
+              <h2 class="mt-3 text-3xl font-black tracking-tight">{{ preview.fullName || 'Your full name' }}</h2>
+              <p class="mt-2 text-sm text-blue-50">{{ preview.speciality || 'English tutor speciality' }}</p>
+            </div>
+            <img src="assets/branding/fluency-logo.png" alt="Fluency logo" class="h-14 w-14 rounded-2xl bg-white/20 object-contain p-1">
+          </div>
+          <div class="mt-6 flex flex-wrap gap-2 text-xs font-semibold">
+            <span class="rounded-full bg-white/20 px-3 py-1">{{ preview.email || 'email@example.com' }}</span>
+            <span class="rounded-full bg-white/20 px-3 py-1" *ngIf="preview.phone">{{ preview.phone }}</span>
+            <span class="rounded-full bg-white/20 px-3 py-1" *ngIf="preview.city || preview.country">{{ preview.city }}{{ preview.city && preview.country ? ', ' : '' }}{{ preview.country }}</span>
+          </div>
+        </div>
+
+        <div class="space-y-6 p-7">
+          <div class="flex flex-wrap gap-3">
+            <span class="rounded-full bg-blue-50 px-4 py-2 text-sm font-black text-blue-700">
+              Level {{ preview.englishLevel || 'A1-C2' }}
+            </span>
+            <span class="rounded-full bg-emerald-50 px-4 py-2 text-sm font-black text-emerald-700">
+              {{ preview.yearsOfExperience || 0 }} year{{ preview.yearsOfExperience === 1 ? '' : 's' }} experience
+            </span>
+          </div>
+
+          <section>
+            <h3 class="text-sm font-black uppercase tracking-[0.18em] text-blue-700">Profile summary</h3>
+            <p class="mt-2 whitespace-pre-line text-sm leading-7 text-slate-700">
+              {{ preview.professionalSummary || 'Write a short summary about your teaching style, strengths, and how you support students.' }}
+            </p>
+          </section>
+
+          <section>
+            <h3 class="text-sm font-black uppercase tracking-[0.18em] text-blue-700">Teaching focus</h3>
+            <p class="mt-2 text-sm leading-7 text-slate-700">
+              {{ preview.speciality || 'Placement quizzes, pronunciation practice, grammar, vocabulary, and learner confidence.' }}
+            </p>
+          </section>
+
+          <div class="grid gap-5 md:grid-cols-2">
+            <section>
+              <h3 class="text-sm font-black uppercase tracking-[0.18em] text-blue-700">Education</h3>
+              <p class="mt-2 whitespace-pre-line text-sm leading-7 text-slate-700">
+                {{ preview.education || 'Add your degree, training, or relevant education.' }}
+              </p>
+            </section>
+
+            <section>
+              <h3 class="text-sm font-black uppercase tracking-[0.18em] text-blue-700">Certifications</h3>
+              <div class="mt-3 flex flex-wrap gap-2" *ngIf="certificationsList.length; else certificationPlaceholder">
+                <span *ngFor="let certification of certificationsList" class="rounded-full bg-violet-50 px-3 py-1 text-xs font-bold text-violet-700">
+                  {{ certification }}
+                </span>
+              </div>
+              <ng-template #certificationPlaceholder>
+                <p class="mt-2 text-sm leading-7 text-slate-700">Add teaching or English certifications.</p>
+              </ng-template>
+            </section>
+          </div>
+
+          <section>
+            <h3 class="text-sm font-black uppercase tracking-[0.18em] text-blue-700">Skills</h3>
+            <div class="mt-3 flex flex-wrap gap-2" *ngIf="skillsList.length; else skillsPlaceholder">
+              <span *ngFor="let skill of skillsList" class="rounded-full bg-cyan-50 px-3 py-1 text-xs font-bold text-cyan-700">
+                {{ skill }}
+              </span>
+            </div>
+            <ng-template #skillsPlaceholder>
+              <p class="mt-2 text-sm leading-7 text-slate-700">Add skills such as pronunciation coaching, grammar support, and student evaluation.</p>
+            </ng-template>
+          </section>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>

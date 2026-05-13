@@ -30,6 +30,19 @@
     >
       {{ isSubmitting ? 'Submitting...' : 'Submit Application' }}
     </button>
+
+    <div class="mt-6 rounded-2xl border border-blue-100 bg-blue-50/80 p-4 text-center shadow-sm">
+      <p class="text-sm font-black text-slate-900">Do not have a CV?</p>
+      <p class="mt-1 text-sm leading-6 text-slate-600">
+        Build a polished tutor CV, then print or save it as PDF before applying.
+      </p>
+      <a
+        routerLink="/cv-builder"
+        class="mt-4 inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 via-cyan-500 to-violet-600 px-5 py-3 text-sm font-black text-white shadow-lg shadow-blue-500/20 transition hover:-translate-y-0.5 hover:shadow-xl"
+      >
+        Create CV with Fluency
+      </a>
+    </div>
   </div>
 </div>
 

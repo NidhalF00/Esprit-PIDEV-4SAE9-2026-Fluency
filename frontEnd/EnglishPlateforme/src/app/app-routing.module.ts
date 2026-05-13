@@ -18,6 +18,7 @@ import { QuizDetailsComponent } from './features/quiz/quiz-details/quiz-details.
 import { ApplicationComponent } from './features/application/application.component';
 import { ApplicationListComponent } from './features/application-list/application-list.component';
 import { AddTeacherComponent } from './features/admin/add-teacher/add-teacher.component';
+import { TutorCvBuilderComponent } from './features/tutor-cv-builder/tutor-cv-builder.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -29,6 +30,7 @@ const routes: Routes = [
   { path: 'AddQuiz/:courseId', component: AddQuizComponent },
   { path: 'quizDetails/:id', component: QuizDetailsComponent },
   { path: 'apply', component: ApplicationComponent },
+  { path: 'cv-builder', component: TutorCvBuilderComponent },
   { path: 'listApplications', component: ApplicationListComponent },
 
   { 
